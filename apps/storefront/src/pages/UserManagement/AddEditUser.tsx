@@ -314,7 +314,7 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         },
       }}
       dialogContentSx={{
-        padding: '24px 24px 16px',
+        padding: '9px 24px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -328,17 +328,15 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         border: '1px solid #0067A0',
         borderRadius: '5px',
         padding: '10px',
-        gap: '10px',
         color: '#000000',
         backgroundColor: '#FFFFFF',
         fontFamily: "'Lato', sans-serif",
         fontWeight: 600,
         fontSize: '16px',
         lineHeight: '24px',
-        textTransform: 'uppercase',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        textTransform: 'capitalize',
+        display: 'block',
+        textAlign: 'center',
         '&:hover': {
           backgroundColor: '#FFFFFF',
         },
@@ -349,7 +347,6 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         opacity: 1,
         borderRadius: '5px',
         padding: '10px',
-        gap: '10px',
         color: '#FFFFFF',
         backgroundColor: '#0067A0',
         border: '1px solid #0067A0',
@@ -357,10 +354,9 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         fontWeight: 600,
         fontSize: '16px',
         lineHeight: '24px',
-        textTransform: 'uppercase',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        textTransform: 'capitalize',
+        display: 'block',
+        textAlign: 'center',
         '&:hover': {
           backgroundColor: '#0067A0',
         },
@@ -380,6 +376,9 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
             control={control}
             getValues={getValues}
             setValue={setValue}
+            containerProps={{
+              spacing: 2.5,
+            }}
           />
         </Box>
       </Box>
