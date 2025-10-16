@@ -1,4 +1,5 @@
 import { forwardRef, Ref, useEffect, useImperativeHandle, useState } from 'react';
+import { Box } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import concat from 'lodash-es/concat';
 
@@ -12,6 +13,7 @@ import { channelId, isKeyOf, snackbar } from '@/utils';
 import { addUser } from './addUser';
 import { checkUserEmail } from './checkUserEmail';
 import {
+  addEditUserFieldBaseSx,
   emailError,
   ExtraFieldsProps,
   FilterProps,
@@ -251,7 +253,14 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         companyRoleItem.default = data?.companyRoleId || '';
       }
     }
-    const allUsersFiles = concat(usersFiles, userExtrafields);
+    const allUsersFiles = concat(usersFiles, userExtrafields).map((item: UsersFilesProps) => ({
+      ...item,
+      sx: {
+        ...addEditUserFieldBaseSx,
+        ...(item.sx || {}),
+      },
+    })) as UsersFilesProps[];
+
     setUsersFiles(allUsersFiles);
 
     setType(type);
@@ -273,15 +282,109 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
       handleLeftClick={handleCancelClick}
       handRightClick={handleAddUserClick}
       loading={addUpdateLoading}
-      isShowBordered
+      isShowBordered={false}
+      dialogWidth="396px"
+      applyDialogWidthOnMobile
+      fullScreenOnMobile={false}
+      maxWidth={false}
+      dialogSx={{
+        '& .MuiDialog-container': {
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        '& .MuiDialog-paper': {
+          borderRadius: '0px',
+          backgroundColor: '#FFFFFF',
+        },
+        '& .MuiDialogTitle-root': {
+          fontFamily: "'Lato', sans-serif",
+          fontWeight: 600,
+          fontSize: '24px',
+          lineHeight: '28px',
+          color: '#000000',
+          borderBottom: '0.5px solid #000000',
+          padding: '24px 24px 16px',
+        },
+        '& .MuiDialogActions-root': {
+          borderTop: '0.5px solid #000000',
+          padding: '16px 24px 24px',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '16px',
+        },
+      }}
+      dialogContentSx={{
+        padding: '9px 24px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        width: '100%',
+      }}
+      leftStyleBtn={{
+        width: '150px',
+        height: '44px',
+        opacity: 1,
+        border: '1px solid #0067A0',
+        borderRadius: '5px',
+        padding: '10px',
+        color: '#000000',
+        backgroundColor: '#FFFFFF',
+        fontFamily: "'Lato', sans-serif",
+        fontWeight: 600,
+        fontSize: '16px',
+        lineHeight: '24px',
+        textTransform: 'capitalize',
+        display: 'block',
+        textAlign: 'center',
+        '&:hover': {
+          backgroundColor: '#FFFFFF',
+        },
+      }}
+      rightStyleBtn={{
+        width: '150px',
+        height: '44px',
+        opacity: 1,
+        borderRadius: '5px',
+        padding: '10px',
+        color: '#FFFFFF',
+        backgroundColor: '#0067A0',
+        border: '1px solid #0067A0',
+        fontFamily: "'Lato', sans-serif",
+        fontWeight: 600,
+        fontSize: '16px',
+        lineHeight: '24px',
+        textTransform: 'capitalize',
+        display: 'block',
+        textAlign: 'center',
+        '&:hover': {
+          backgroundColor: '#0067A0',
+        },
+      }}
     >
-      <B3CustomForm
-        formFields={usersFiles}
-        errors={errors}
-        control={control}
-        getValues={getValues}
-        setValue={setValue}
-      />
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <Box sx={{ width: '100%', maxWidth: '369px' }}>
+          <B3CustomForm
+            formFields={usersFiles}
+            errors={errors}
+            control={control}
+            getValues={getValues}
+            setValue={setValue}
+            containerProps={{
+              spacing: 2.5,
+              sx: {
+                mt: '0 !important',
+              },
+            }}
+          />
+        </Box>
+      </Box>
     </B3Dialog>
   );
 }

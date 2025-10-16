@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material';
+import type { GridProps } from '@mui/material/Grid';
 
 import B3UI from './form/ui';
 import {
@@ -16,7 +17,19 @@ import {
 } from './form';
 
 export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
-  const { formFields, errors, control, getValues, setValue, setError } = props;
+  const {
+    formFields,
+    errors,
+    control,
+    getValues,
+    setValue,
+    setError,
+    containerProps,
+    ...restProps
+  } = props;
+
+  const { spacing: gridSpacing = 2, ...restContainerProps } =
+    (containerProps || {}) as GridProps;
 
   const renderFormFields = (fields: any) =>
     fields.map((field: B3UI.B3CustomFormValue) => {
@@ -25,25 +38,33 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
         <Grid item key={field.name} xs={field.xs || 6} id="b3-customForm-id-name">
           <>
             {['text', 'number', 'password', 'multiline'].includes(fieldType) && (
-              <B3ControlTextField {...field} {...props} errors={errors} control={control} />
+              <B3ControlTextField {...field} {...restProps} errors={errors} control={control} />
             )}
             {['checkbox'].includes(fieldType) && (
               <B3ControlCheckbox
                 {...field}
+                {...restProps}
                 errors={errors}
                 control={control}
                 getValues={getValues}
               />
             )}
             {['radio'].includes(fieldType) && (
-              <B3ControlRadioGroup {...field} errors={errors} control={control} />
+              <B3ControlRadioGroup {...field} {...restProps} errors={errors} control={control} />
             )}
             {['dropdown'].includes(fieldType) && (
-              <B3ControlSelect {...field} errors={errors} control={control} setValue={setValue} />
+              <B3ControlSelect
+                {...field}
+                {...restProps}
+                errors={errors}
+                control={control}
+                setValue={setValue}
+              />
             )}
             {['date'].includes(fieldType) && (
               <B3ControlPicker
                 {...field}
+                {...restProps}
                 errors={errors}
                 control={control}
                 setValue={setValue}
@@ -53,6 +74,7 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
             {['files'].includes(fieldType) && (
               <B3ControlFileUpload
                 {...field}
+                {...restProps}
                 errors={errors}
                 control={control}
                 setValue={setValue}
@@ -62,6 +84,7 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
             {['rectangle'].includes(fieldType) && (
               <B3ControlRectangle
                 {...field}
+                {...restProps}
                 errors={errors}
                 control={control}
                 setValue={setValue}
@@ -70,6 +93,7 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
             {['productRadio'].includes(fieldType) && (
               <B3ControlProductRadio
                 {...field}
+                {...restProps}
                 errors={errors}
                 control={control}
                 setValue={setValue}
@@ -78,6 +102,7 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
             {['swatch'].includes(fieldType) && (
               <B3ControlSwatchRadio
                 {...field}
+                {...restProps}
                 errors={errors}
                 control={control}
                 setValue={setValue}
@@ -86,6 +111,7 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
             {['roleAutocomplete'].includes(fieldType) && (
               <B3ControlAutocomplete
                 {...field}
+                {...restProps}
                 errors={errors}
                 control={control}
                 setValue={setValue}
@@ -94,11 +120,12 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
             )}
             {['multiInputText'].includes(fieldType) && (
               <B2BControlMultiTextField
-                {...props}
+                {...restProps}
                 {...field}
                 errors={errors}
                 control={control}
                 setValue={setValue}
+                setError={setError}
                 getValues={getValues}
               />
             )}
@@ -108,7 +135,7 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
     });
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={gridSpacing} {...restContainerProps}>
       {formFields && renderFormFields(formFields)}
     </Grid>
   );

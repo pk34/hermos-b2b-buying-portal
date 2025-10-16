@@ -1,9 +1,10 @@
 import { forwardRef, MouseEvent } from 'react';
-import { Button, ButtonProps, SxProps } from '@mui/material';
+import { Button, ButtonProps } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 
 interface CustomButtonProps extends ButtonProps {
   onClick?: (e?: MouseEvent<HTMLButtonElement> | any) => void;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
   customLabel?: string;
   children: React.ReactNode;
 }
