@@ -22,8 +22,8 @@ import B3Spin from './spin/B3Spin';
 interface B3DialogProps<T> {
   customActions?: () => ReactElement;
   isOpen: boolean;
-  leftStyleBtn?: { [key: string]: string };
-  rightStyleBtn?: { [key: string]: string };
+  leftStyleBtn?: SxProps<Theme>;
+  rightStyleBtn?: SxProps<Theme>;
   leftSizeBtn?: string;
   rightSizeBtn?: string;
   title?: string;
@@ -168,9 +168,7 @@ export default function B3Dialog<T>({
             <>
               {showLeftBtn && (
                 <CustomButton
-                  sx={{
-                    ...leftStyleBtn,
-                  }}
+                  sx={leftStyleBtn}
                   onClick={() => handleCloseClick('')}
                 >
                   {leftSizeBtn || b3Lang('global.dialog.cancel')}
@@ -179,9 +177,7 @@ export default function B3Dialog<T>({
 
               {showRightBtn && (
                 <CustomButton
-                  sx={{
-                    ...rightStyleBtn,
-                  }}
+                  sx={rightStyleBtn}
                   onClick={handleSaveClick}
                   autoFocus
                   disabled={disabledSaveBtn || loading}
