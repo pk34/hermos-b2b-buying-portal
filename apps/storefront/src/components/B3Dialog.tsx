@@ -41,6 +41,8 @@ interface B3DialogProps<T> {
   dialogContentSx?: SxProps<Theme>;
   dialogSx?: SxProps<Theme>;
   dialogWidth?: string;
+  fullScreenOnMobile?: boolean;
+  applyDialogWidthOnMobile?: boolean;
   restDialogParams?: Omit<DialogProps, 'open' | 'onClose'>;
 }
 
@@ -66,6 +68,8 @@ export default function B3Dialog<T>({
   fullWidth = false,
   disabledSaveBtn = false,
   dialogWidth = '',
+  fullScreenOnMobile = true,
+  applyDialogWidthOnMobile = false,
   restDialogParams,
 }: B3DialogProps<T>) {
   const container = useRef<HTMLInputElement | null>(null);
@@ -74,10 +78,16 @@ export default function B3Dialog<T>({
 
   const isAgenting = useAppSelector(({ b2bFeatures }) => b2bFeatures.masqueradeCompany.isAgenting);
 
+  const dialogPaperWidth = dialogWidth
+    ? isMobile && !applyDialogWidthOnMobile
+      ? '100%'
+      : dialogWidth
+    : '';
+
   const customStyle = dialogWidth
     ? {
         '& .MuiPaper-elevation': {
-          width: isMobile ? '100%' : dialogWidth,
+          ...(dialogPaperWidth ? { width: dialogPaperWidth } : {}),
         },
         ...dialogSx,
       }
@@ -110,7 +120,7 @@ export default function B3Dialog<T>({
         open={isOpen && Boolean(container.current)}
         container={container.current}
         onClose={(_: object, reason: string) => handleCloseClick(reason)}
-        fullScreen={isMobile}
+        fullScreen={fullScreenOnMobile ? isMobile : false}
         maxWidth={maxWidth}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"

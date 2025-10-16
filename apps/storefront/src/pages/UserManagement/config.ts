@@ -16,8 +16,9 @@ interface FilterProps {
 }
 
 interface UsersFilesProps {
-  [key: string]: string | boolean | number | Array<any> | boolean | undefined;
+  [key: string]: string | boolean | number | Array<unknown> | undefined | Record<string, unknown>;
   name: string;
+  sx?: Record<string, unknown>;
 }
 
 interface UserRoleProps {
@@ -52,6 +53,48 @@ const getUserRole = () => {
   return userRole;
 };
 
+const addEditUserFieldBaseSx = {
+  width: '100%',
+  '& .MuiFilledInput-root': {
+    height: '44px',
+    opacity: 1,
+    borderRadius: '5px',
+    backgroundColor: '#F7F7F7',
+    '&:before': {
+      borderBottomWidth: '2px',
+      borderBottomColor: '#000000',
+    },
+    '&:after': {
+      borderBottomWidth: '2px',
+      borderBottomColor: '#000000',
+    },
+    '&:hover': {
+      backgroundColor: '#F7F7F7',
+    },
+    '&.Mui-focused': {
+      backgroundColor: '#F7F7F7',
+    },
+  },
+  '& .MuiFilledInput-input': {
+    padding: '10px',
+    fontFamily: 'Lato',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+  },
+  '& .MuiInputLabel-root': {
+    fontFamily: 'Lato',
+    fontWeight: 600,
+    fontSize: '12px',
+    lineHeight: '16px',
+    color: '#000000',
+  },
+  '& .MuiInputLabel-root.Mui-focused': {
+    color: '#000000',
+  },
+};
+
 const getFilterMoreList = (b3Lang: LangFormatFunction) => {
   return [
     {
@@ -65,6 +108,7 @@ const getFilterMoreList = (b3Lang: LangFormatFunction) => {
       disabled: false,
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
   ] satisfies [unknown];
 };
@@ -86,6 +130,7 @@ const getUsersFiles = (type: string, b3Lang: LangFormatFunction, disabledUserRol
       default: '',
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
     {
       name: 'firstName',
@@ -93,19 +138,21 @@ const getUsersFiles = (type: string, b3Lang: LangFormatFunction, disabledUserRol
       required: true,
       default: '',
       fieldType: 'text',
-      xs: 6,
+      xs: 12,
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
     {
       name: 'lastName',
       label: b3Lang('userManagement.config.lastName'),
       required: true,
       fieldType: 'text',
-      xs: 6,
+      xs: 12,
       default: '',
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
     {
       name: 'phone',
@@ -116,6 +163,7 @@ const getUsersFiles = (type: string, b3Lang: LangFormatFunction, disabledUserRol
       default: '',
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
   ];
 
@@ -133,6 +181,6 @@ const emailError: EmailError = {
   6: 'global.emailValidate.usedSuperAdmin',
 };
 
-export { emailError, getFilterMoreList, getUserRole, getUsersFiles };
+export { addEditUserFieldBaseSx, emailError, getFilterMoreList, getUserRole, getUsersFiles };
 
 export type { FilterProps, UsersFilesProps, ExtraFieldsProps };

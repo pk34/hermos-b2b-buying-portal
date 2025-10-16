@@ -6,7 +6,7 @@ namespace Form {
     name: string;
     fieldType: string;
     xs: number & undefined;
-    [key: string]: string | number | Array<number | string>;
+    [key: string]: any;
   }
 
   export interface B3CustomFormProps {
