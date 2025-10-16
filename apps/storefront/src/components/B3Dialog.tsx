@@ -22,8 +22,8 @@ import B3Spin from './spin/B3Spin';
 interface B3DialogProps<T> {
   customActions?: () => ReactElement;
   isOpen: boolean;
-  leftStyleBtn?: { [key: string]: string };
-  rightStyleBtn?: { [key: string]: string };
+  leftStyleBtn?: SxProps<Theme>;
+  rightStyleBtn?: SxProps<Theme>;
   leftSizeBtn?: string;
   rightSizeBtn?: string;
   title?: string;
@@ -41,6 +41,8 @@ interface B3DialogProps<T> {
   dialogContentSx?: SxProps<Theme>;
   dialogSx?: SxProps<Theme>;
   dialogWidth?: string;
+  fullScreenOnMobile?: boolean;
+  applyDialogWidthOnMobile?: boolean;
   restDialogParams?: Omit<DialogProps, 'open' | 'onClose'>;
 }
 
@@ -66,6 +68,8 @@ export default function B3Dialog<T>({
   fullWidth = false,
   disabledSaveBtn = false,
   dialogWidth = '',
+  fullScreenOnMobile = true,
+  applyDialogWidthOnMobile = false,
   restDialogParams,
 }: B3DialogProps<T>) {
   const container = useRef<HTMLInputElement | null>(null);
@@ -74,16 +78,27 @@ export default function B3Dialog<T>({
 
   const isAgenting = useAppSelector(({ b2bFeatures }) => b2bFeatures.masqueradeCompany.isAgenting);
 
-  const customStyle = dialogWidth
+  const dialogPaperWidth = dialogWidth
+    ? isMobile && !applyDialogWidthOnMobile
+      ? '100%'
+      : dialogWidth
+    : '';
+
+  const dialogWidthStyles = dialogWidth
     ? {
-        '& .MuiPaper-elevation': {
-          width: isMobile ? '100%' : dialogWidth,
+        '& .MuiDialog-paper': {
+          ...(dialogPaperWidth
+            ? { width: dialogPaperWidth, maxWidth: dialogPaperWidth }
+            : {}),
         },
-        ...dialogSx,
       }
-    : {
-        ...dialogSx,
-      };
+    : null;
+
+  const customStyle: SxProps<Theme> = dialogWidthStyles
+    ? Array.isArray(dialogSx)
+      ? [...dialogSx, dialogWidthStyles]
+      : [dialogSx, dialogWidthStyles]
+    : dialogSx;
 
   const handleSaveClick = () => {
     if (handRightClick) {
@@ -110,7 +125,7 @@ export default function B3Dialog<T>({
         open={isOpen && Boolean(container.current)}
         container={container.current}
         onClose={(_: object, reason: string) => handleCloseClick(reason)}
-        fullScreen={isMobile}
+        fullScreen={fullScreenOnMobile ? isMobile : false}
         maxWidth={maxWidth}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
@@ -158,9 +173,7 @@ export default function B3Dialog<T>({
             <>
               {showLeftBtn && (
                 <CustomButton
-                  sx={{
-                    ...leftStyleBtn,
-                  }}
+                  sx={leftStyleBtn}
                   onClick={() => handleCloseClick('')}
                 >
                   {leftSizeBtn || b3Lang('global.dialog.cancel')}
@@ -169,14 +182,12 @@ export default function B3Dialog<T>({
 
               {showRightBtn && (
                 <CustomButton
-                  sx={{
-                    ...rightStyleBtn,
-                  }}
+                  sx={rightStyleBtn}
                   onClick={handleSaveClick}
                   autoFocus
                   disabled={disabledSaveBtn || loading}
                 >
-                  <B3Spin isSpinning={loading} tip="" size={16}>
+                  <B3Spin isSpinning={loading} tip="" size={16} isFlex={false}>
                     {rightSizeBtn || b3Lang('global.dialog.save')}
                   </B3Spin>
                 </CustomButton>

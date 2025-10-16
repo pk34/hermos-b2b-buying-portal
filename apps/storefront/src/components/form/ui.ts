@@ -1,4 +1,5 @@
 import { Control } from 'react-hook-form';
+import type { GridProps } from '@mui/material/Grid';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Form {
@@ -6,11 +7,12 @@ namespace Form {
     name: string;
     fieldType: string;
     xs: number & undefined;
-    [key: string]: string | number | Array<number | string>;
+    [key: string]: any;
   }
 
   export interface B3CustomFormProps {
     formFields?: {}[];
+    containerProps?: GridProps;
     [key: string]: any;
   }
 
