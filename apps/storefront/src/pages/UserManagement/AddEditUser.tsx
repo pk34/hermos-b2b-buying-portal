@@ -286,13 +286,18 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
       dialogWidth="396px"
       applyDialogWidthOnMobile
       fullScreenOnMobile={false}
+      maxWidth={false}
       dialogSx={{
-        '& .MuiPaper-elevation': {
+        '& .MuiDialog-container': {
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        '& .MuiDialog-paper': {
           borderRadius: '0px',
           backgroundColor: '#FFFFFF',
         },
         '& .MuiDialogTitle-root': {
-          fontFamily: 'Lato',
+          fontFamily: "'Lato', sans-serif",
           fontWeight: 600,
           fontSize: '24px',
           lineHeight: '28px',
@@ -314,6 +319,7 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
+        width: '100%',
       }}
       leftStyleBtn={{
         width: '150px',
@@ -325,11 +331,14 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         gap: '10px',
         color: '#000000',
         backgroundColor: '#FFFFFF',
-        fontFamily: 'Lato',
+        fontFamily: "'Lato', sans-serif",
         fontWeight: 600,
         fontSize: '16px',
         lineHeight: '24px',
-        textTransform: 'none',
+        textTransform: 'uppercase',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         '&:hover': {
           backgroundColor: '#FFFFFF',
         },
@@ -344,11 +353,14 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         color: '#FFFFFF',
         backgroundColor: '#0067A0',
         border: '1px solid #0067A0',
-        fontFamily: 'Lato',
+        fontFamily: "'Lato', sans-serif",
         fontWeight: 600,
         fontSize: '16px',
         lineHeight: '24px',
-        textTransform: 'none',
+        textTransform: 'uppercase',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         '&:hover': {
           backgroundColor: '#0067A0',
         },
@@ -356,31 +368,20 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
     >
       <Box
         sx={{
-          width: '369px',
+          width: '100%',
           display: 'flex',
           justifyContent: 'center',
-          '& .MuiGrid-container': {
-            margin: 0,
-            width: '100%',
-          },
-          '& .MuiGrid-item': {
-            padding: 0,
-            marginBottom: '10px',
-            flexBasis: '100%',
-            maxWidth: '100%',
-          },
-          '& .MuiGrid-item:last-of-type': {
-            marginBottom: 0,
-          },
         }}
       >
-        <B3CustomForm
-          formFields={usersFiles}
-          errors={errors}
-          control={control}
-          getValues={getValues}
-          setValue={setValue}
-        />
+        <Box sx={{ width: '100%', maxWidth: '369px' }}>
+          <B3CustomForm
+            formFields={usersFiles}
+            errors={errors}
+            control={control}
+            getValues={getValues}
+            setValue={setValue}
+          />
+        </Box>
       </Box>
     </B3Dialog>
   );

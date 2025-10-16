@@ -84,16 +84,21 @@ export default function B3Dialog<T>({
       : dialogWidth
     : '';
 
-  const customStyle = dialogWidth
+  const dialogWidthStyles = dialogWidth
     ? {
-        '& .MuiPaper-elevation': {
-          ...(dialogPaperWidth ? { width: dialogPaperWidth } : {}),
+        '& .MuiDialog-paper': {
+          ...(dialogPaperWidth
+            ? { width: dialogPaperWidth, maxWidth: dialogPaperWidth }
+            : {}),
         },
-        ...dialogSx,
       }
-    : {
-        ...dialogSx,
-      };
+    : null;
+
+  const customStyle: SxProps<Theme> = dialogWidthStyles
+    ? Array.isArray(dialogSx)
+      ? [...dialogSx, dialogWidthStyles]
+      : [dialogSx, dialogWidthStyles]
+    : dialogSx;
 
   const handleSaveClick = () => {
     if (handRightClick) {
