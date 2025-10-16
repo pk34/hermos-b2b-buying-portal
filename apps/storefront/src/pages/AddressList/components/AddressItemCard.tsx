@@ -29,20 +29,6 @@ const TagBox = styled('div')(({ marginBottom }: TagBoxProps) => ({
   },
 }));
 
-const StyledCard = styled(Card)(() => ({
-  width: '327px',
-  height: '194px',
-  borderWidth: '0.2px',
-  borderStyle: 'solid',
-  borderColor: 'transparent',
-  borderTop: '0.2px solid #000000',
-  borderRadius: '10px',
-  backgroundColor: '#FFF',
-  padding: '20px',
-  boxSizing: 'border-box',
-  boxShadow: 'none',
-}));
-
 const StyledText = styled(Typography)(() => ({
   fontFamily: 'Lato',
   fontWeight: 400,
@@ -77,7 +63,22 @@ export function AddressItemCard({
   const isDefaultBilling = addressInfo.isDefaultBilling === 1;
 
   return (
-    <StyledCard key={addressInfo.id}>
+    <Card
+      key={addressInfo.id}
+      sx={{
+        width: '327px',
+        height: '194px',
+        borderWidth: '0.2px',
+        borderStyle: 'solid',
+        borderColor: 'transparent',
+        borderTop: '0.2px solid #000000',
+        borderRadius: '10px',
+        backgroundColor: '#FFF',
+        padding: '20px',
+        boxSizing: 'border-box',
+        boxShadow: 'none',
+      }}
+    >
       <CardContent
         sx={{
           p: 0,
@@ -114,6 +115,6 @@ export function AddressItemCard({
         </Text>
         <Text>{addressInfo.phoneNumber}</Text>
       </CardContent>
-    </StyledCard>
+    </Card>
   );
 }
