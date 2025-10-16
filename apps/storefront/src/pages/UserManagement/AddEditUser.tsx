@@ -378,6 +378,9 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
             setValue={setValue}
             containerProps={{
               spacing: 2.5,
+              sx: {
+                mt: '0 !important',
+              },
             }}
           />
         </Box>

@@ -76,7 +76,7 @@ const addEditUserFieldBaseSx = {
     },
   },
   '& .MuiFilledInput-input': {
-    padding: '10px',
+    padding: '15px 10px 0 10px',
     fontFamily: "'Lato', sans-serif",
     fontWeight: 600,
     fontSize: '16px',
