@@ -1,15 +1,11 @@
 import { PropsWithChildren } from 'react';
 import styled from '@emotion/styled';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
-import { Theme, useTheme } from '@mui/material';
-import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { B3Tag } from '@/components';
-import CustomButton from '@/components/button/CustomButton';
 import { useB3Lang } from '@/lib/lang';
 
 import { AddressItemType } from '../../../types/address';
@@ -27,20 +23,36 @@ interface TagBoxProps {
 
 const TagBox = styled('div')(({ marginBottom }: TagBoxProps) => ({
   marginBottom,
+  marginLeft: '7px',
   '& > span:not(:last-child)': {
     marginRight: '4px',
   },
 }));
 
-interface FlexProps {
-  theme?: Theme;
-}
+const StyledCard = styled(Card)(() => ({
+  width: '327px',
+  height: '194px',
+  borderWidth: '0.2px',
+  borderStyle: 'solid',
+  borderColor: 'transparent',
+  borderTop: '0.2px solid #000000',
+  borderRadius: '10px',
+  backgroundColor: '#FFF',
+  padding: '20px',
+  boxSizing: 'border-box',
+  boxShadow: 'none',
+}));
 
-const Flex = styled('div')(({ theme }: FlexProps) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginTop: theme!.spacing(3),
+const StyledText = styled(Typography)(() => ({
+  fontFamily: 'Lato',
+  fontWeight: 400,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000',
+  marginLeft: '7px',
+  marginTop: '9px',
+  marginBottom: '9px',
+  display: 'block',
 }));
 
 function Tag({ children }: PropsWithChildren) {
@@ -52,41 +64,38 @@ function Tag({ children }: PropsWithChildren) {
 }
 
 function Text({ children }: PropsWithChildren) {
-  return <Typography variant="body1">{children}</Typography>;
+  return <StyledText>{children}</StyledText>;
 }
 
 export function AddressItemCard({
   item: addressInfo,
-  onEdit,
-  onDelete,
-  onSetDefault,
 }: OrderItemCardProps) {
   const theme = useTheme();
   const b3Lang = useB3Lang();
-  const hasPermission = Boolean(onEdit || onDelete || onSetDefault);
 
   const isDefaultShipping = addressInfo.isDefaultShipping === 1;
   const isDefaultBilling = addressInfo.isDefaultBilling === 1;
 
   return (
-    <Card key={addressInfo.id}>
+    <StyledCard key={addressInfo.id}>
       <CardContent
         sx={{
+          p: 0,
           color: '#313440',
           wordBreak: 'break-word',
         }}
       >
         {addressInfo.label && (
-          <Typography
-            variant="h5"
+          <StyledText
             sx={{
+              fontWeight: 400,
               marginBottom:
                 isDefaultShipping || isDefaultBilling ? theme.spacing(1) : theme.spacing(3),
               color: 'rgba(0, 0, 0, 0.87)',
             }}
           >
             {addressInfo.label}
-          </Typography>
+          </StyledText>
         )}
 
         <TagBox marginBottom={isDefaultShipping || isDefaultBilling ? theme.spacing(3) : 0}>
@@ -104,43 +113,7 @@ export function AddressItemCard({
           {addressInfo.city}, {addressInfo.state} {addressInfo.zipCode}, {addressInfo.country}
         </Text>
         <Text>{addressInfo.phoneNumber}</Text>
-
-        {hasPermission && (
-          <Flex>
-            {onSetDefault && (
-              <CustomButton
-                variant="text"
-                sx={{
-                  ml: '-8px',
-                }}
-                onClick={onSetDefault}
-              >
-                {b3Lang('addresses.addressItemCard.setAsDefault')}
-              </CustomButton>
-            )}
-            <Box
-              sx={{
-                flex: 1,
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '8px',
-              }}
-            >
-              {onEdit && (
-                <IconButton aria-label="edit" size="small" onClick={onEdit}>
-                  <EditIcon fontSize="inherit" />
-                </IconButton>
-              )}
-
-              {onDelete && (
-                <IconButton aria-label="delete" size="small" onClick={onDelete}>
-                  <DeleteIcon fontSize="inherit" />
-                </IconButton>
-              )}
-            </Box>
-          </Flex>
-        )}
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 }
