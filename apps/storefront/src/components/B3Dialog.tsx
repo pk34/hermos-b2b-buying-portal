@@ -187,7 +187,7 @@ export default function B3Dialog<T>({
                   autoFocus
                   disabled={disabledSaveBtn || loading}
                 >
-                  <B3Spin isSpinning={loading} tip="" size={16}>
+                  <B3Spin isSpinning={loading} tip="" size={16} isFlex={false}>
                     {rightSizeBtn || b3Lang('global.dialog.save')}
                   </B3Spin>
                 </CustomButton>
