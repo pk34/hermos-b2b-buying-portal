@@ -11,6 +11,14 @@ import B3Dialog from '../B3Dialog';
 import CustomButton from '../button/CustomButton';
 import { getContrastColor, getHoverColor } from '../outSideComponents/utils/b3CustomStyles';
 
+import {
+  filterModalClearActionSx,
+  filterModalDialogContentSx,
+  filterModalDialogSx,
+  filterModalLeftButtonSx,
+  filterModalRightButtonSx,
+} from './styles';
+
 import B3FilterPicker from './B3FilterPicker';
 import UserFilterIcon from './UserFilterIcon';
 
@@ -256,8 +264,8 @@ function B3FilterMore<T, Y>({
               aria-label="clear-edit"
               size="small"
               sx={{
-                marginLeft: '5px',
-                color: '#1976D2',
+                ...filterModalClearActionSx,
+                ml: '5px',
               }}
               onClick={handleClearBtn}
             >
@@ -274,10 +282,18 @@ function B3FilterMore<T, Y>({
         title={b3Lang('global.filter.title')}
         handleLeftClick={handleClose}
         handRightClick={handleSaveFilters}
+        isShowBordered={false}
+        dialogWidth="396px"
+        maxWidth={false}
+        fullScreenOnMobile={false}
+        dialogSx={filterModalDialogSx}
+        dialogContentSx={filterModalDialogContentSx}
+        leftStyleBtn={filterModalLeftButtonSx}
+        rightStyleBtn={filterModalRightButtonSx}
       >
         <Box
           sx={{
-            width: isMobile ? '100%' : '450px',
+            width: '100%',
           }}
         >
           <B3CustomForm
@@ -291,7 +307,9 @@ function B3FilterMore<T, Y>({
         </Box>
         <CustomButton
           sx={{
+            ...filterModalClearActionSx,
             mt: 1,
+            alignSelf: 'flex-start',
           }}
           onClick={handleClearFilters}
           size="small"

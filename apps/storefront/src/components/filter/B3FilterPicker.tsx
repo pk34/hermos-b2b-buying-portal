@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 import { distanceDay } from '@/utils';
 
 import { B3Picker } from '../ui';
+import { filterModalFieldBaseSx } from './styles';
 
 interface PickerProps {
   isEnabled: boolean;
@@ -101,6 +102,7 @@ function B3FilterPickers(
             value={startValue}
             label={startPicker?.label}
             variant="filled"
+            textFieldSx={filterModalFieldBaseSx}
           />
         </Box>
       )}
@@ -123,6 +125,7 @@ function B3FilterPickers(
             value={endValue}
             label={endPicker?.label}
             variant="filled"
+            textFieldSx={filterModalFieldBaseSx}
           />
         </Box>
       )}
