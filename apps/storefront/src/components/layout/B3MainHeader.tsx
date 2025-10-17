@@ -14,6 +14,8 @@ import { getContrastColor } from '../outSideComponents/utils/b3CustomStyles';
 
 import B3AccountInfo from './B3AccountInfo';
 import B3CompanyHierarchy from './B3CompanyHierarchy';
+import { SectionTitle } from '@/components';
+
 import B3StatusNotification from './B3StatusNotification';
 
 export default function MainHeader({ title }: { title: string }) {
@@ -159,23 +161,18 @@ export default function MainHeader({ title }: { title: string }) {
         </Box>
       </Box>
       {title && (
-        <Box
-          component="h3"
+        <SectionTitle
           sx={{
-            height: '40px',
-            m: '0',
-            fontSize: '34px',
-            fontWeight: 400,
-            lineHeight: '42px',
             display: 'flex',
-            alignItems: 'end',
+            alignItems: 'flex-end',
+            height: '40px',
             mb: '24px',
             mt: isMobile ? 0 : '24px',
             color: customColor,
           }}
         >
           {title}
-        </Box>
+        </SectionTitle>
       )}
       <B3StatusNotification title={title} />
     </Box>

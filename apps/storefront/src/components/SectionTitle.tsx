@@ -3,10 +3,11 @@ import { Typography, TypographyProps } from '@mui/material';
 
 import { SECTION_TITLE_SX } from '@/constants';
 
-const SectionTitle = forwardRef<HTMLSpanElement, TypographyProps>(
-  ({ sx, ...typographyProps }, ref) => (
+const SectionTitle = forwardRef<HTMLElement, TypographyProps>(
+  ({ component = 'h3', sx, ...typographyProps }, ref) => (
     <Typography
       ref={ref}
+      component={component}
       {...typographyProps}
       sx={{
         ...SECTION_TITLE_SX,
