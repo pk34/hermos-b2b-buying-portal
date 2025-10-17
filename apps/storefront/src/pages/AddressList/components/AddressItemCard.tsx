@@ -40,7 +40,7 @@ const TextBlock = styled('div')<TextBlockProps>(({ marginBottom }) => ({
   marginLeft: '7px',
 }));
 
-const StyledText = styled(Typography)(() => ({
+const textStyles = {
   fontFamily: 'Lato, sans-serif',
   fontWeight: 400,
   fontSize: '16px',
@@ -48,7 +48,7 @@ const StyledText = styled(Typography)(() => ({
   color: '#000',
   margin: 0,
   display: 'block',
-}));
+} as const;
 
 function Tag({ children }: PropsWithChildren) {
   return (
@@ -61,7 +61,9 @@ function Tag({ children }: PropsWithChildren) {
 function Text({ children }: PropsWithChildren) {
   return (
     <TextBlock>
-      <StyledText component="p">{children}</StyledText>
+      <Typography component="p" sx={textStyles}>
+        {children}
+      </Typography>
     </TextBlock>
   );
 }
@@ -105,15 +107,15 @@ export function AddressItemCard({
               isDefaultShipping || isDefaultBilling ? theme.spacing(1) : theme.spacing(3)
             }
           >
-            <StyledText
+            <Typography
               component="p"
               sx={{
-                fontWeight: 400,
+                ...textStyles,
                 color: 'rgba(0, 0, 0, 0.87)',
               }}
             >
               {addressInfo.label}
-            </StyledText>
+            </Typography>
           </TextBlock>
         )}
 
