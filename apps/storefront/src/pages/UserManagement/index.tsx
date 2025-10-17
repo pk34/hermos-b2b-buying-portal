@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import B3Dialog from '@/components/B3Dialog';
 import B3Filter from '@/components/filter/B3Filter';
 import B3Spin from '@/components/spin/B3Spin';
-import { useCardListColumn, useMobile, useTableRef } from '@/hooks';
+import { useCardListColumn, useTableRef } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { rolePermissionSelector, useAppSelector } from '@/store';
 import { CustomerRole } from '@/types';
@@ -44,8 +44,6 @@ function UserManagement() {
 
   const [userId, setUserId] = useState<string>();
   const b3Lang = useB3Lang();
-
-  const [isMobile] = useMobile();
 
   const isExtraLarge = useCardListColumn();
 
@@ -245,7 +243,7 @@ function UserManagement() {
             backgroundColor: '#0067A0',
             color: '#FFFFFF',
             textTransform: 'capitalize',
-            fontFamily: 'Lato',
+            fontFamily: "'Lato', sans-serif",
             fontWeight: 600,
             '&:hover': {
               backgroundColor: '#0067A0',
@@ -262,7 +260,7 @@ function UserManagement() {
             backgroundColor: '#FFFFFF',
             color: '#000000',
             textTransform: 'capitalize',
-            fontFamily: 'Lato',
+            fontFamily: "'Lato', sans-serif",
             fontWeight: 600,
             '&:hover': {
               backgroundColor: '#FFFFFF',
@@ -275,7 +273,7 @@ function UserManagement() {
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
-            fontFamily: 'Lato',
+            fontFamily: "'Lato', sans-serif",
             fontWeight: 600,
             fontSize: '16px',
             lineHeight: '24px',
@@ -298,7 +296,7 @@ function UserManagement() {
               maxHeight: 'calc(100vh - 32px)',
             },
             '& .MuiDialogTitle-root': {
-              fontFamily: 'Lato',
+              fontFamily: "'Lato', sans-serif",
               fontWeight: 600,
               fontSize: '24px',
               lineHeight: '28px',
