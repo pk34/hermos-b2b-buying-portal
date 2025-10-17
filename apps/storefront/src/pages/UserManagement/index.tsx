@@ -236,15 +236,100 @@ function UserManagement() {
           handRightClick={handleDeleteUserClick}
           row={userId}
           rightStyleBtn={{
-            color: '#D32F2F',
+            width: '150px',
+            height: '44px',
+            borderRadius: '5px',
+            padding: '10px',
+            gap: '10px',
+            border: '1px solid #0067A0',
+            backgroundColor: '#0067A0',
+            color: '#FFFFFF',
+            textTransform: 'capitalize',
+            fontFamily: 'Lato',
+            fontWeight: 600,
+            '&:hover': {
+              backgroundColor: '#0067A0',
+            },
+          }}
+          leftStyleBtn={{
+            width: '150px',
+            height: '44px',
+            opacity: 1,
+            borderRadius: '5px',
+            padding: '10px',
+            gap: '10px',
+            border: '1px solid #0067A0',
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
+            textTransform: 'capitalize',
+            fontFamily: 'Lato',
+            fontWeight: 600,
+            '&:hover': {
+              backgroundColor: '#FFFFFF',
+            },
           }}
           isShowBordered={false}
+          dialogContentSx={{
+            p: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            fontFamily: 'Lato',
+            fontWeight: 600,
+            fontSize: '16px',
+            lineHeight: '24px',
+            color: '#000000',
+          }}
+          dialogSx={{
+            '& .MuiDialog-container': {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            '& .MuiDialog-paper': {
+              backgroundColor: '#FFFFFF',
+              borderRadius: 0,
+              padding: '25px',
+              boxShadow: '0px 4px 22px 5px #0000001A',
+              width: '449px',
+              height: '212px',
+              maxWidth: 'calc(100vw - 32px)',
+              maxHeight: 'calc(100vh - 32px)',
+            },
+            '& .MuiDialogTitle-root': {
+              fontFamily: 'Lato',
+              fontWeight: 600,
+              fontSize: '24px',
+              lineHeight: '28px',
+              color: '#000000',
+              textAlign: 'left',
+              padding: 0,
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+            },
+            '& .MuiDialogContent-root': {
+              padding: 0,
+            },
+            '& .MuiDialogActions-root': {
+              borderTop: 'none',
+              justifyContent: 'center',
+              columnGap: '33px',
+              gap: '33px',
+              padding: 0,
+            },
+          }}
+          fullScreenOnMobile={false}
         >
           <Box
             sx={{
               display: 'flex',
-              width: isMobile ? '100%' : '450px',
+              width: '100%',
               height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
             }}
           >
             {b3Lang('userManagement.confirmDelete')}
