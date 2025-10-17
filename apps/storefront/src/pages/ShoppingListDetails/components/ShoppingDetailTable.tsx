@@ -18,7 +18,7 @@ import {
   TableRefreshConfig,
 } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
-import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
+import { PRODUCT_DEFAULT_IMAGE, SECTION_TITLE_SX } from '@/constants';
 import { useMobile, useSort } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { updateB2BShoppingListsItem, updateBcShoppingListsItem } from '@/shared/service/b2b';
@@ -709,11 +709,7 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
           margin: '0 0 1rem 0',
         }}
       >
-        <Typography
-          sx={{
-            fontSize: '24px',
-          }}
-        >
+        <Typography sx={{ ...SECTION_TITLE_SX }}>
           {b3Lang('shoppingList.table.totalProductCount', {
             quantity: shoppingListInfo?.products?.totalCount || 0,
           })}

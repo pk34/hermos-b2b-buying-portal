@@ -6,6 +6,7 @@ import trim from 'lodash-es/trim';
 import { B3CustomForm } from '@/components';
 import { useMobile } from '@/hooks';
 import { LangFormatFunction, useB3Lang } from '@/lib/lang';
+import { SECTION_TITLE_SX } from '@/constants';
 import { validateQuoteExtraFields } from '@/shared/service/b2b';
 import { isValidUserTypeSelector, useAppSelector } from '@/store';
 import { CustomerRole } from '@/types';
@@ -290,8 +291,7 @@ function ContactInfo(
         <Box key={data.title} width="100%">
           <Box
             sx={{
-              fontWeight: 400,
-              fontSize: '24px',
+              ...SECTION_TITLE_SX,
               height: '32px',
               mb: '20px',
               ...data?.style,

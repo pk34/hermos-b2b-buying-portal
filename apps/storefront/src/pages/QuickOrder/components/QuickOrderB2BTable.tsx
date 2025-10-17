@@ -4,7 +4,7 @@ import { Box, styled, TextField, Typography } from '@mui/material';
 import B3Spin from '@/components/spin/B3Spin';
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
-import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
+import { PRODUCT_DEFAULT_IMAGE, SECTION_TITLE_SX } from '@/constants';
 import { useMobile, useSort } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { getOrderedProducts, searchProducts } from '@/shared/service/b2b';
@@ -447,7 +447,7 @@ function QuickOrderTable({
       <StyleQuickOrderTable>
         <Typography
           sx={{
-            fontSize: '24px',
+            ...SECTION_TITLE_SX,
             height: '50px',
           }}
         >

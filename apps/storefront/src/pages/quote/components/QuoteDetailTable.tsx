@@ -3,7 +3,7 @@ import { Box, styled, Typography } from '@mui/material';
 
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
-import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
+import { PRODUCT_DEFAULT_IMAGE, SECTION_TITLE_SX } from '@/constants';
 import { useB3Lang } from '@/lib/lang';
 import { useAppSelector } from '@/store';
 import { currencyFormatConvert } from '@/utils';
@@ -377,11 +377,7 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
           margin: '0.5rem 0 1rem 0',
         }}
       >
-        <Typography
-          sx={{
-            fontSize: '24px',
-          }}
-        >
+        <Typography sx={{ ...SECTION_TITLE_SX }}>
           {b3Lang('quoteDetail.table.totalProducts', { total: total || 0 })}
         </Typography>
       </Box>

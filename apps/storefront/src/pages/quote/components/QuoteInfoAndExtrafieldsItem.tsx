@@ -2,6 +2,7 @@ import { useId } from 'react';
 import { Box, Typography } from '@mui/material';
 
 import { useB3Lang } from '@/lib/lang';
+import { SECTION_TITLE_SX } from '@/constants';
 import { QuoteInfoAndExtrafieldsItemProps } from '@/types/quotes';
 
 import { Base64 } from '../../../utils/b3Product/shared/config';
@@ -33,8 +34,7 @@ function QuoteInfoAndExtrafieldsItem({ status, quoteInfo }: QuoteInfoAndExtrafie
       <Typography
         id={titleId}
         sx={{
-          fontWeight: 400,
-          fontSize: '24px',
+          ...SECTION_TITLE_SX,
           height: '32px',
         }}
       >
