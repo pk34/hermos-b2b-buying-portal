@@ -53,6 +53,10 @@ type AccountFormField = Partial<Fields> & {
   InputProps?: FieldInputProps;
   muiTextFieldProps?: FieldMuiTextFieldProps;
   InputLabelProps?: FieldLabelProps;
+  labelName?: string;
+  labelSpacing?: string | number;
+  labelSx?: SxProps<Theme>;
+  labelColon?: boolean;
 };
 
 const appendSx = (
@@ -349,7 +353,7 @@ function AccountSetting() {
       maxWidth: '100%',
       height: '40px',
       borderRadius: '5px',
-      border: '0.2px solid #000000',
+      border: '0.2px solid #575757',
       padding: '0 !important',
       display: 'flex',
       alignItems: 'center',
@@ -372,18 +376,21 @@ function AccountSetting() {
       },
       '& fieldset': {
         borderWidth: '0.2px',
-        borderColor: '#000000',
+        borderColor: '#575757',
       },
       '&:hover fieldset': {
-        borderColor: '#000000',
+        borderColor: '#575757',
       },
       '&.Mui-focused fieldset': {
-        borderColor: '#000000',
+        borderColor: '#575757',
       },
       '&.Mui-disabled': {
-        borderColor: '#000000',
+        borderColor: '#575757',
         color: '#000000',
         backgroundColor: '#FFFFFF',
+        '& fieldset': {
+          borderColor: '#575757',
+        },
         '& .MuiInputBase-input': {
           color: '#000000',
           WebkitTextFillColor: '#000000',
@@ -407,7 +414,6 @@ function AccountSetting() {
 
       const existingInputProps: FieldInputProps = field.InputProps ?? {};
       const existingMuiTextFieldProps: FieldMuiTextFieldProps = field.muiTextFieldProps ?? {};
-      const existingLabelProps: FieldLabelProps = field.InputLabelProps ?? {};
       const existingTextFieldStyle = existingMuiTextFieldProps.style ?? {};
 
       const styledField: AccountFormField = {
@@ -437,10 +443,10 @@ function AccountSetting() {
             height: '40px',
           },
         },
-        InputLabelProps: {
-          ...existingLabelProps,
-          sx: appendSx(existingLabelProps.sx, labelStyles),
-        },
+        labelName: currentLabel,
+        labelSpacing: '10px',
+        labelSx: labelStyles,
+        labelColon: false,
       };
 
       return styledField;
