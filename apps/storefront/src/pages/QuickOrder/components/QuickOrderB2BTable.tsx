@@ -2,9 +2,10 @@ import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { Box, styled, TextField, Typography } from '@mui/material';
 
 import B3Spin from '@/components/spin/B3Spin';
+import { SectionTitle } from '@/components';
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
-import { PRODUCT_DEFAULT_IMAGE, SECTION_TITLE_SX } from '@/constants';
+import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
 import { useMobile, useSort } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { getOrderedProducts, searchProducts } from '@/shared/service/b2b';
@@ -445,14 +446,14 @@ function QuickOrderTable({
   return (
     <B3Spin isSpinning={isRequestLoading}>
       <StyleQuickOrderTable>
-        <Typography
+        <SectionTitle
+          component="h2"
           sx={{
-            ...SECTION_TITLE_SX,
             height: '50px',
           }}
         >
           {b3Lang('purchasedProducts.totalProducts', { total })}
-        </Typography>
+        </SectionTitle>
         <Box
           sx={{
             marginBottom: '5px',

@@ -5,7 +5,8 @@ import ceil from 'lodash-es/ceil';
 
 import { TableColumnItem } from '@/components/table/B3Table';
 import PaginationTable from '@/components/table/PaginationTable';
-import { PRODUCT_DEFAULT_IMAGE, SECTION_TITLE_SX } from '@/constants';
+import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
+import { SectionTitle } from '@/components';
 import { useFeatureFlags } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import {
@@ -475,9 +476,9 @@ function QuoteTable(props: ShoppingDetailTableProps) {
           margin: '0.5rem 0 1rem',
         }}
       >
-        <Typography sx={{ ...SECTION_TITLE_SX }}>
+        <SectionTitle component="h2">
           {b3Lang('quoteDraft.quoteTable.totalProducts', { total: total || 0 })}
-        </Typography>
+        </SectionTitle>
       </Box>
 
       <PaginationTable
