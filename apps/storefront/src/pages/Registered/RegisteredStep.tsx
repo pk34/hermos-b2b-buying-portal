@@ -2,6 +2,7 @@ import { ReactNode, useContext, useMemo } from 'react';
 import { Box, Step, StepLabel, Stepper, useTheme } from '@mui/material';
 
 import { getContrastColor } from '@/components/outSideComponents/utils/b3CustomStyles';
+import { SectionTitle } from '@/components';
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 
@@ -47,21 +48,19 @@ export default function RegisteredStep(props: RegisteredStepProps) {
         padding: '0 0.8rem 1rem 0.8rem',
       }}
     >
-      <Box
-        component="h3"
+      <SectionTitle
         sx={{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
           pt: 2,
-          fontSize: '24px',
-          fontWeight: '400',
+          fontWeight: 400,
           margin: '0.5rem 0',
           color: customColor,
         }}
       >
         {pageTitle}
-      </Box>
+      </SectionTitle>
       {!submitSuccess && (
         <Stepper
           activeStep={activeStep}

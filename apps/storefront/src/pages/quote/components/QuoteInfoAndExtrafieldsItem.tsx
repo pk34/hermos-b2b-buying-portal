@@ -2,6 +2,7 @@ import { useId } from 'react';
 import { Box, Typography } from '@mui/material';
 
 import { useB3Lang } from '@/lib/lang';
+import { SectionTitle } from '@/components';
 import { QuoteInfoAndExtrafieldsItemProps } from '@/types/quotes';
 
 import { Base64 } from '../../../utils/b3Product/shared/config';
@@ -30,16 +31,15 @@ function QuoteInfoAndExtrafieldsItem({ status, quoteInfo }: QuoteInfoAndExtrafie
         width: '100%',
       }}
     >
-      <Typography
+      <SectionTitle
         id={titleId}
+        component="h2"
         sx={{
-          fontWeight: 400,
-          fontSize: '24px',
           height: '32px',
         }}
       >
         {b3Lang('quoteDraft.quoteInfo.title')}
-      </Typography>
+      </SectionTitle>
       <Box
         sx={{
           p: '15px 0',
