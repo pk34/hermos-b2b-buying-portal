@@ -65,6 +65,15 @@ export const TRANSLATION_SHOPPING_LIST_BTN_VARIABLE = 'global.customStyles.shopp
 
 export const BROWSER_LANG = navigator.language.substring(0, 2);
 
+export const SECTION_TITLE_SX = {
+  fontFamily: '"Lato", sans-serif',
+  fontWeight: 600,
+  fontSize: '24px',
+  lineHeight: '28px',
+  color: '#0067A0',
+  marginLeft: '31px',
+} as const;
+
 const {
   setting: { platform, cart_url: cartUrl },
 } = window.B3;
