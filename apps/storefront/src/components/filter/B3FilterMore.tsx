@@ -1,6 +1,5 @@
 import { BaseSyntheticEvent, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FilterList as FilterListIcon } from '@mui/icons-material';
 import { Badge, Box, Button, IconButton, useTheme } from '@mui/material';
 
 import { useMobile } from '@/hooks';
@@ -13,6 +12,7 @@ import CustomButton from '../button/CustomButton';
 import { getContrastColor, getHoverColor } from '../outSideComponents/utils/b3CustomStyles';
 
 import B3FilterPicker from './B3FilterPicker';
+import UserFilterIcon from './UserFilterIcon';
 
 const includesFilterType = ['roleAutocomplete'];
 
@@ -223,7 +223,7 @@ function B3FilterMore<T, Y>({
                   },
                 }}
               >
-                <FilterListIcon />
+                <UserFilterIcon />
               </IconButton>
             )}
             {isFiltering && (
@@ -246,7 +246,7 @@ function B3FilterMore<T, Y>({
                     },
                   }}
                 >
-                  <FilterListIcon />
+                  <UserFilterIcon />
                 </Badge>
               </IconButton>
             )}
