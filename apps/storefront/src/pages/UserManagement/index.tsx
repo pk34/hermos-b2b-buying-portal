@@ -82,7 +82,7 @@ function UserManagement() {
         backgroundColor: '#0067A0',
         color: '#FFFFFF',
         fontFamily: "'Lato', sans-serif",
-        fontWeight: 600,
+        fontWeight: '600',
         fontSize: '16px',
         lineHeight: '24px',
         textAlign: 'center',
