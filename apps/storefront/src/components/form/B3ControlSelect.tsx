@@ -22,6 +22,7 @@ export default function B3ControlSelect({ control, errors, ...rest }: Form.B3UIP
     size = 'small',
     disabled = false,
     extraPadding,
+    sx = {},
   } = rest;
   const id = useId();
   const b3Lang = useB3Lang();
@@ -57,11 +58,12 @@ export default function B3ControlSelect({ control, errors, ...rest }: Form.B3UIP
   return ['dropdown'].includes(fieldType) ? (
     <FormControl
       variant="filled"
-      style={{
+      disabled={disabled}
+      sx={{
         width: '100%',
         color: muiSelectProps?.disabled ? 'rgba(0, 0, 0, 0.38)' : 'rgba(0, 0, 0, 0.6)',
+        ...sx,
       }}
-      disabled={disabled}
     >
       {label && (
         <InputLabel

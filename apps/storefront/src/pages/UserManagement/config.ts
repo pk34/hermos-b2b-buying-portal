@@ -1,3 +1,4 @@
+import { filterModalFieldBaseSx } from '@/components/filter/styles';
 import { LangFormatFunction } from '@/lib/lang';
 
 interface ExtraFieldsProps {
@@ -53,47 +54,7 @@ const getUserRole = () => {
   return userRole;
 };
 
-const addEditUserFieldBaseSx = {
-  width: '100%',
-  '& .MuiFilledInput-root': {
-    height: '44px',
-    opacity: 1,
-    borderRadius: '5px',
-    backgroundColor: '#F7F7F7',
-    '&:before': {
-      borderBottomWidth: '2px',
-      borderBottomColor: '#000000',
-    },
-    '&:after': {
-      borderBottomWidth: '2px',
-      borderBottomColor: '#000000',
-    },
-    '&:hover': {
-      backgroundColor: '#F7F7F7',
-    },
-    '&.Mui-focused': {
-      backgroundColor: '#F7F7F7',
-    },
-  },
-  '& .MuiFilledInput-input': {
-    padding: '15px 10px 0 10px',
-    fontFamily: "'Lato', sans-serif",
-    fontWeight: 600,
-    fontSize: '16px',
-    lineHeight: '24px',
-    color: '#000000',
-  },
-  '& .MuiInputLabel-root': {
-    fontFamily: "'Lato', sans-serif",
-    fontWeight: 600,
-    fontSize: '12px',
-    lineHeight: '16px',
-    color: '#000000',
-  },
-  '& .MuiInputLabel-root.Mui-focused': {
-    color: '#000000',
-  },
-};
+const addEditUserFieldBaseSx = filterModalFieldBaseSx;
 
 const getFilterMoreList = (b3Lang: LangFormatFunction) => {
   return [

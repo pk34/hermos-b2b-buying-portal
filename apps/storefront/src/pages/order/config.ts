@@ -1,3 +1,4 @@
+import { filterModalFieldBaseSx } from '@/components/filter/styles';
 import { CustomerRole } from '@/types';
 import { OrderStatusType } from '@/types/gql/graphql';
 
@@ -51,14 +52,15 @@ export const getFilterMoreData = (
       required: false,
       default: '',
       fieldType: 'text',
-      xs: 12,
-      variant: 'filled',
-      size: 'small',
-      idLang: 'orders.company',
-    },
-    {
-      name: 'orderStatus',
-      label: 'Order status',
+    xs: 12,
+    variant: 'filled',
+    size: 'small',
+    idLang: 'orders.company',
+    sx: filterModalFieldBaseSx,
+  },
+  {
+    name: 'orderStatus',
+    label: 'Order status',
       required: false,
       default: '',
       fieldType: 'dropdown',
@@ -67,14 +69,15 @@ export const getFilterMoreData = (
         label: 'customLabel',
         value: 'customLabel',
       },
-      xs: 12,
-      variant: 'filled',
-      size: 'small',
-      idLang: 'orders.orderStatus',
-    },
-    {
-      name: 'PlacedBy',
-      label: 'Placed by',
+    xs: 12,
+    variant: 'filled',
+    size: 'small',
+    idLang: 'orders.orderStatus',
+    sx: filterModalFieldBaseSx,
+  },
+  {
+    name: 'PlacedBy',
+    label: 'Placed by',
       required: false,
       default: '',
       fieldType: 'dropdown',
@@ -83,12 +86,13 @@ export const getFilterMoreData = (
         label: 'createdBy',
         value: 'createdBy',
       },
-      xs: 12,
-      variant: 'filled',
-      size: 'small',
-      idLang: 'orders.placedBy',
-    },
-  ];
+    xs: 12,
+    variant: 'filled',
+    size: 'small',
+    idLang: 'orders.placedBy',
+    sx: filterModalFieldBaseSx,
+  },
+];
 
   const filterCondition = isB2BUser && !(Number(role) === 3 && !isAgenting);
   const filterCurrentMoreList = filterMoreList.filter((item) => {
