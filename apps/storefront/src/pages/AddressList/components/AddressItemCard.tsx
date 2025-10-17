@@ -21,7 +21,7 @@ interface TagBoxProps {
   marginBottom: number | string;
 }
 
-const TagBox = styled('div')(({ marginBottom }: TagBoxProps) => ({
+const TagBox = styled('div')<TagBoxProps>(({ marginBottom }) => ({
   marginBottom,
   marginLeft: '7px',
   '& > span:not(:last-child)': {
@@ -29,15 +29,24 @@ const TagBox = styled('div')(({ marginBottom }: TagBoxProps) => ({
   },
 }));
 
+interface TextBlockProps {
+  marginBottom?: number | string;
+}
+
+const TextBlock = styled('div')<TextBlockProps>(({ marginBottom }) => ({
+  marginTop: '9px',
+  marginRight: 0,
+  marginBottom: marginBottom ?? '9px',
+  marginLeft: '7px',
+}));
+
 const StyledText = styled(Typography)(() => ({
-  fontFamily: 'Lato',
+  fontFamily: 'Lato, sans-serif',
   fontWeight: 400,
   fontSize: '16px',
   lineHeight: '24px',
   color: '#000',
-  marginLeft: '7px',
-  marginTop: '9px',
-  marginBottom: '9px',
+  margin: 0,
   display: 'block',
 }));
 
@@ -50,7 +59,11 @@ function Tag({ children }: PropsWithChildren) {
 }
 
 function Text({ children }: PropsWithChildren) {
-  return <StyledText>{children}</StyledText>;
+  return (
+    <TextBlock>
+      <StyledText component="p">{children}</StyledText>
+    </TextBlock>
+  );
 }
 
 export function AddressItemCard({
@@ -87,16 +100,21 @@ export function AddressItemCard({
         }}
       >
         {addressInfo.label && (
-          <StyledText
-            sx={{
-              fontWeight: 400,
-              marginBottom:
-                isDefaultShipping || isDefaultBilling ? theme.spacing(1) : theme.spacing(3),
-              color: 'rgba(0, 0, 0, 0.87)',
-            }}
+          <TextBlock
+            marginBottom={
+              isDefaultShipping || isDefaultBilling ? theme.spacing(1) : theme.spacing(3)
+            }
           >
-            {addressInfo.label}
-          </StyledText>
+            <StyledText
+              component="p"
+              sx={{
+                fontWeight: 400,
+                color: 'rgba(0, 0, 0, 0.87)',
+              }}
+            >
+              {addressInfo.label}
+            </StyledText>
+          </TextBlock>
         )}
 
         <TagBox marginBottom={isDefaultShipping || isDefaultBilling ? theme.spacing(3) : 0}>
