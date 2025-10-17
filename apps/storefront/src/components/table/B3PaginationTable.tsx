@@ -1,6 +1,7 @@
 import {
   FC,
   ReactElement,
+  ReactNode,
   Ref,
   useCallback,
   useEffect,
@@ -82,6 +83,7 @@ interface B3PaginationTableProps<GetRequestListParams, Row extends object> {
   orderBy?: string;
   pageType?: string;
   isAutoRefresh?: boolean;
+  customRenderFooter?: ReactNode;
 }
 
 function PaginationTable<GetRequestListParams, Row extends object>(
@@ -119,6 +121,7 @@ function PaginationTable<GetRequestListParams, Row extends object>(
     orderBy = '',
     pageType = '',
     isAutoRefresh = true,
+    customRenderFooter,
   }: B3PaginationTableProps<GetRequestListParams, Row>,
   ref?: Ref<unknown>,
 ) {
@@ -420,6 +423,7 @@ function PaginationTable<GetRequestListParams, Row extends object>(
       sortDirection={sortDirection}
       sortByFn={sortByFn}
       orderBy={orderBy}
+      customRenderFooter={customRenderFooter}
     />
   );
 }
