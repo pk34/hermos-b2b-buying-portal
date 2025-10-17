@@ -15,6 +15,7 @@ import {
   filterModalClearActionSx,
   filterModalDialogContentSx,
   filterModalDialogSx,
+  filterModalFormGridContainerProps,
   filterModalLeftButtonSx,
   filterModalRightButtonSx,
 } from './styles';
@@ -302,6 +303,7 @@ function B3FilterMore<T, Y>({
             control={control}
             getValues={getValues}
             setValue={setValue}
+            containerProps={filterModalFormGridContainerProps}
           />
           <B3FilterPicker ref={pickerRef} startPicker={startPicker} endPicker={endPicker} />
         </Box>

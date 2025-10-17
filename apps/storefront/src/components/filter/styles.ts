@@ -148,3 +148,9 @@ export const filterModalClearActionSx = {
     backgroundColor: 'transparent',
   },
 } as const;
+
+export const filterModalFormGridContainerProps = {
+  sx: {
+    marginTop: 0,
+  },
+} as const;
