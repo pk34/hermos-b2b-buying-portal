@@ -55,20 +55,24 @@ function B3FilterSearch({
         display: 'flex',
         alignItems: 'center',
         gap: '10px',
-        width: w,
-        maxWidth: w,
+        width: typeof w === 'number' ? `${w}px` : w,
+        minWidth: typeof w === 'number' ? `${w}px` : w,
+        maxWidth: typeof w === 'number' ? `${w}px` : w,
+        flexShrink: 0,
         border: 'none',
         boxShadow: 'none',
-        height: h,
+        height: typeof h === 'number' ? `${h}px` : h,
+        minHeight: typeof h === 'number' ? `${h}px` : h,
         borderRadius: '5px',
         borderBottom: '2px solid #000000',
         backgroundColor: searchBGColor,
+        boxSizing: 'border-box',
       }}
     >
       <Box
         component="svg"
         width="20"
-        height="22"
+        height="20"
         viewBox="0 0 20 22"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -84,6 +88,7 @@ function B3FilterSearch({
       <InputBase
         sx={{
           flex: 1,
+          width: '100%',
           display: 'flex',
           alignItems: 'center',
           fontFamily: 'Poppins',
