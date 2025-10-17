@@ -168,7 +168,8 @@ export default function MainHeader({ title }: { title: string }) {
             height: '40px',
             mb: '24px',
             mt: isMobile ? 0 : '24px',
-            color: customColor,
+            ml: 0,
+            color: '#0067A0',
           }}
         >
           {title}
