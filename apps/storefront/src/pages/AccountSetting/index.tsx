@@ -245,9 +245,13 @@ function AccountSetting() {
     data: CustomFieldItems,
     accountInfoFields: Partial<Fields>[],
   ) => {
-    const userExtraFields = accountInfoFields.filter((item) => item.custom && item.groupId === 1);
+    const userExtraFields = accountInfoFields.filter(
+      (item): item is Partial<Fields> & { name: string } =>
+        Boolean(item.custom && item.groupId === 1 && item.name),
+    );
+
     return userExtraFields.map((item) => ({
-      fieldName: deCodeField(item?.name || ''),
+      fieldName: deCodeField(item.name),
       fieldValue: data[item.name],
     }));
   };
