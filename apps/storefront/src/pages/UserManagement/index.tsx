@@ -70,6 +70,24 @@ function UserManagement() {
     return {
       isEnabled: isEnableBtnPermissions && isCreatePermission,
       customLabel: b3Lang('userManagement.addUser'),
+      customButtonStyle: {
+        width: '213px',
+        height: '44px',
+        borderRadius: '5px',
+        p: '10px',
+        gap: '10px',
+        textTransform: 'capitalize',
+        backgroundColor: '#0067A0',
+        color: '#FFFFFF',
+        fontFamily: "'Lato', sans-serif",
+        fontWeight: '600',
+        fontSize: '16px',
+        lineHeight: '24px',
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        ml: '38px',
+      },
+      placeNextToFilterIcon: true,
     };
 
     // ignore b3Lang due it's function that doesn't not depend on any reactive value
