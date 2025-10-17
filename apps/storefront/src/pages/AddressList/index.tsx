@@ -274,6 +274,59 @@ function Address() {
           itemXs={isExtraLarge ? 3 : 4}
           requestLoading={setIsRequestLoading}
           tableKey="id"
+          customRenderFooter={
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '674px',
+                height: '60px',
+                borderRadius: '5px',
+                padding: '10px',
+                mt: '21px',
+                backgroundColor: '#E6E6E6',
+              }}
+            >
+              <Box
+                component="span"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <svg
+                  width="20"
+                  height="22"
+                  viewBox="0 0 20 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M18 11.0005C18 15.4525 14.4183 19.0616 10 19.0616C5.58172 19.0616 2 15.4525 2 11.0005C2 6.54851 5.58172 2.93945 10 2.93945C14.4183 2.93945 18 6.54851 18 11.0005ZM11 15.031C11 15.5875 10.5523 16.0387 10 16.0387C9.44772 16.0387 9 15.5875 9 15.031C9 14.4745 9.44772 14.0234 10 14.0234C10.5523 14.0234 11 14.4745 11 15.031ZM10 5.96235C9.44772 5.96235 9 6.41348 9 6.96998V11.0005C9 11.557 9.44772 12.0081 10 12.0081C10.5523 12.0081 11 11.557 11 11.0005V6.96998C11 6.41348 10.5523 5.96235 10 5.96235Z"
+                    fill="#FF8E3E"
+                  />
+                </svg>
+              </Box>
+              <Box
+                component="p"
+                sx={{
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  color: '#FF8E3E',
+                  ml: '5px',
+                }}
+              >
+                Necesitas agregar o modificar una dirección contacta a tu vendedor o escríbenos a
+                {' '}
+                ayuda@hermos.com
+              </Box>
+            </Box>
+          }
           renderItem={(row) => (
             <AddressItemCard
               key={row.id}
@@ -284,57 +337,6 @@ function Address() {
             />
           )}
         />
-
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            width: '674px',
-            height: '60px',
-            borderRadius: '5px',
-            padding: '10px',
-            mt: '21px',
-            backgroundColor: '#E6E6E6',
-          }}
-        >
-          <Box
-            component="span"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <svg
-              width="20"
-              height="22"
-              viewBox="0 0 20 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M18 11.0005C18 15.4525 14.4183 19.0616 10 19.0616C5.58172 19.0616 2 15.4525 2 11.0005C2 6.54851 5.58172 2.93945 10 2.93945C14.4183 2.93945 18 6.54851 18 11.0005ZM11 15.031C11 15.5875 10.5523 16.0387 10 16.0387C9.44772 16.0387 9 15.5875 9 15.031C9 14.4745 9.44772 14.0234 10 14.0234C10.5523 14.0234 11 14.4745 11 15.031ZM10 5.96235C9.44772 5.96235 9 6.41348 9 6.96998V11.0005C9 11.557 9.44772 12.0081 10 12.0081C10.5523 12.0081 11 11.557 11 11.0005V6.96998C11 6.41348 10.5523 5.96235 10 5.96235Z"
-                fill="#FF8E3E"
-              />
-            </svg>
-          </Box>
-          <Box
-            component="p"
-            sx={{
-              fontFamily: 'Lato',
-              fontWeight: 600,
-              fontSize: '14px',
-              lineHeight: '20px',
-              color: '#FF8E3E',
-              ml: '5px',
-            }}
-          >
-            Necesitas agregar o modificar una dirección contacta a tu vendedor o escríbenos a
-            ayuda@hermos.com
-          </Box>
-        </Box>
 
         <B3AddressForm
           updateAddressList={updateAddressList}
