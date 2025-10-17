@@ -33,6 +33,28 @@ import { getAccountSettingsFields, getPasswordModifiedFields } from './config';
 import { UpgradeBanner } from './UpgradeBanner';
 import { b2bSubmitDataProcessing, bcSubmitDataProcessing, initB2BInfo, initBcInfo } from './utils';
 
+type FieldInputProps = {
+  sx?: SxProps<Theme>;
+  [key: string]: unknown;
+};
+
+type FieldMuiTextFieldProps = {
+  style?: CSSProperties;
+  [key: string]: unknown;
+};
+
+type FieldLabelProps = {
+  sx?: SxProps<Theme>;
+  [key: string]: unknown;
+};
+
+type AccountFormField = Partial<Fields> & {
+  sx?: SxProps<Theme>;
+  InputProps?: FieldInputProps;
+  muiTextFieldProps?: FieldMuiTextFieldProps;
+  InputLabelProps?: FieldLabelProps;
+};
+
 const appendSx = (
   existing: SxProps<Theme> | undefined,
   addition: SxProps<Theme>,
@@ -42,10 +64,10 @@ const appendSx = (
   }
 
   if (Array.isArray(existing)) {
-    return [...existing, addition];
+    return [...existing, addition] as SxProps<Theme>;
   }
 
-  return [existing, addition];
+  return [existing, addition] as SxProps<Theme>;
 };
 
 function useData() {
@@ -221,12 +243,10 @@ function AccountSetting() {
 
   const handleGetUserExtraFields = (
     data: CustomFieldItems,
-    accountInfoFormFields: Partial<Fields>[],
+    accountInfoFields: Partial<Fields>[],
   ) => {
-    const userExtraFields = accountInfoFormFields.filter(
-      (item: CustomFieldItems) => item.custom && item.groupId === 1,
-    );
-    return userExtraFields.map((item: CustomFieldItems) => ({
+    const userExtraFields = accountInfoFields.filter((item) => item.custom && item.groupId === 1);
+    return userExtraFields.map((item) => ({
       fieldName: deCodeField(item?.name || ''),
       fieldValue: data[item.name],
     }));
@@ -378,17 +398,18 @@ function AccountSetting() {
     };
 
     return accountInfoFormFields.map((item) => {
-      const currentLabel = fieldTranslations[item.fieldId ?? ''] ?? item.label;
+      const field = item as AccountFormField;
+      const currentLabel = fieldTranslations[field.fieldId ?? ''] ?? field.label;
 
-      const existingInputProps = item.InputProps || {};
-      const existingMuiTextFieldProps = item.muiTextFieldProps || {};
-      const existingTextFieldStyle = (existingMuiTextFieldProps as { style?: CSSProperties })
-        .style;
+      const existingInputProps: FieldInputProps = field.InputProps ?? {};
+      const existingMuiTextFieldProps: FieldMuiTextFieldProps = field.muiTextFieldProps ?? {};
+      const existingLabelProps: FieldLabelProps = field.InputLabelProps ?? {};
+      const existingTextFieldStyle = existingMuiTextFieldProps.style ?? {};
 
-      return {
-        ...item,
+      const styledField: AccountFormField = {
+        ...field,
         label: currentLabel,
-        sx: appendSx(item.sx as SxProps<Theme> | undefined, {
+        sx: appendSx(field.sx, {
           width: accountFieldWidth,
           maxWidth: '100%',
           mb: '10px',
@@ -396,7 +417,7 @@ function AccountSetting() {
         InputProps: {
           ...existingInputProps,
           disableUnderline: true,
-          sx: appendSx(existingInputProps.sx as SxProps<Theme> | undefined, inputRootStyles),
+          sx: appendSx(existingInputProps.sx, inputRootStyles),
         },
         muiTextFieldProps: {
           ...existingMuiTextFieldProps,
@@ -413,13 +434,12 @@ function AccountSetting() {
           },
         },
         InputLabelProps: {
-          ...(item.InputLabelProps || {}),
-          sx: appendSx(
-            item.InputLabelProps?.sx as SxProps<Theme> | undefined,
-            labelStyles,
-          ),
+          ...existingLabelProps,
+          sx: appendSx(existingLabelProps.sx, labelStyles),
         },
       };
+
+      return styledField;
     });
   }, [accountInfoFormFields, b3Lang, isMobile]);
 
