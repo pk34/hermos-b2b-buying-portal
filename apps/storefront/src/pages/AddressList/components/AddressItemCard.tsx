@@ -83,15 +83,12 @@ export function AddressItemCard({
       sx={{
         width: '327px',
         height: '194px',
-        borderWidth: '0.2px',
-        borderStyle: 'solid',
-        borderColor: 'transparent',
-        borderTop: '0.2px solid #000000',
+        border: '0.2px solid #000000',
         borderRadius: '10px',
         backgroundColor: '#FFF',
         padding: '20px',
         boxSizing: 'border-box',
-        boxShadow: 'none',
+        boxShadow: '0px 4px 22px 5px #0000001A',
       }}
     >
       <CardContent
