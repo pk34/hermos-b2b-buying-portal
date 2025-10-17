@@ -56,6 +56,13 @@ export const filterModalDialogSx = {
   '& .MuiDialog-paper': {
     borderRadius: '0px',
     backgroundColor: '#FFFFFF',
+    marginTop: 0,
+    marginBottom: 0,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  '& .MuiDialogContent-root': {
+    marginTop: 0,
   },
   '& .MuiDialogTitle-root': {
     fontFamily: "'Lato', sans-serif",
