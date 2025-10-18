@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 
 import B3Filter from '@/components/filter/B3Filter';
+import { filterModalFieldBaseSx } from '@/components/filter/styles';
 import B3Spin from '@/components/spin/B3Spin';
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
@@ -106,6 +107,7 @@ function useData() {
       xs: 12,
       variant: 'filled',
       size: 'small',
+      sx: filterModalFieldBaseSx,
     },
   ];
 
@@ -138,6 +140,7 @@ function useData() {
         xs: 12,
         variant: 'filled',
         size: 'small',
+        sx: filterModalFieldBaseSx,
       },
       {
         name: 'salesRep',
@@ -153,6 +156,7 @@ function useData() {
         xs: 12,
         variant: 'filled',
         size: 'small',
+        sx: filterModalFieldBaseSx,
       },
     ];
   };

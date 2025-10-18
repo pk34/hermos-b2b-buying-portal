@@ -1,3 +1,5 @@
+import { filterModalFieldBaseSx } from '@/components/filter/styles';
+
 // NORMAL:   ;  DETAIL:  ; CHECKOUT:  ;
 const InvoiceListType = {
   NORMAL: 'normal',
@@ -41,6 +43,7 @@ export const filterFormConfig = [
     variant: 'filled',
     size: 'small',
     options: invoiceStatus,
+    sx: filterModalFieldBaseSx,
   },
 ];
 

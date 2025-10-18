@@ -1,5 +1,6 @@
 import { useContext, useRef, useState } from 'react';
 import { Box, TextField } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -17,6 +18,7 @@ interface B3PickerProps {
   disableOpenPicker?: boolean;
   formatInput?: string;
   size?: 'small' | 'medium' | undefined;
+  textFieldSx?: SxProps<Theme>;
 }
 
 export default function B3Picker({
@@ -27,6 +29,7 @@ export default function B3Picker({
   disableOpenPicker = true,
   formatInput = 'YYYY-MM-DD',
   size = 'small',
+  textFieldSx,
 }: B3PickerProps) {
   const pickerRef = useRef<HTMLInputElement | null>(null);
   const container = useRef<HTMLInputElement | null>(null);
@@ -78,6 +81,7 @@ export default function B3Picker({
                 openPickerClick();
               }}
               variant={variant}
+              sx={textFieldSx}
             />
           )}
         />

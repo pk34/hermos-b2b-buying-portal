@@ -197,6 +197,7 @@ export default function B3ControlAutocomplete({ control, errors, ...rest }: Form
       sx={{
         width: '100%',
         color: formControlColor,
+        ...sx,
       }}
       disabled={disabled}
     >
@@ -222,7 +223,6 @@ export default function B3ControlAutocomplete({ control, errors, ...rest }: Form
             size={size}
             sx={{
               ...extraPadding,
-              ...sx,
             }}
             renderInput={(params) => (
               <TextField
