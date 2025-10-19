@@ -370,6 +370,9 @@ function AccountSetting() {
         color: '#000000',
         boxSizing: 'border-box',
       },
+      '& .MuiInputBase-root:before, & .MuiInputBase-root:after': {
+        borderBottom: '0 !important',
+      },
       '& .MuiInputBase-input': {
         padding: '10px',
         fontFamily: "'Lato', sans-serif",
