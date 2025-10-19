@@ -1,6 +1,7 @@
 import { KeyboardEvent, WheelEvent } from 'react';
 import { Controller } from 'react-hook-form';
 import { Box, TextField } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 import debounce from 'lodash-es/debounce';
 
 import { useB3Lang } from '@/lib/lang';
@@ -27,13 +28,16 @@ export default function B3ControlTextField({ control, errors, ...rest }: Form.B3
     muiTextFieldProps,
     disabled,
     labelName,
+    labelSpacing = '8px' as string | number,
+    labelSx = {} as SxProps<Theme>,
+    labelColon = true,
     size,
     readOnly,
     allowArrow = false,
     sx = {},
     isTip = false,
     tipText = '',
-    extraPadding,
+    extraPadding = {} as Record<string, string>,
     fieldId,
     isEnterTrigger,
     handleEnterClick,
@@ -61,10 +65,12 @@ export default function B3ControlTextField({ control, errors, ...rest }: Form.B3
     control,
   };
 
+  const textFieldLabel = labelName ? undefined : label;
+
   const textField = {
     type: fieldType,
     name,
-    label,
+    label: textFieldLabel,
     rows,
     disabled,
     multiline: fieldType === 'multiline',
@@ -120,16 +126,19 @@ export default function B3ControlTextField({ control, errors, ...rest }: Form.B3
   const newExtraPadding =
     fieldId === 'field_state' && extraPadding.paddingTop === '0px' ? {} : extraPadding;
 
+  const labelDisplay = labelName
+    ? (labelColon ? `${labelName} :` : labelName)
+    : undefined;
+
+  const computedLabelSx: SxProps<Theme> = {
+    mb: labelSpacing,
+    ...labelSx,
+  };
+
   return ['text', 'number', 'password', 'multiline'].includes(fieldType) ? (
     <>
-      {labelName && (
-        <Box
-          sx={{
-            mb: 1,
-          }}
-        >
-          {`${labelName} :`}
-        </Box>
+      {labelDisplay && (
+        <Box sx={computedLabelSx}>{labelDisplay}</Box>
       )}
       <Controller
         key={fieldsProps.name}

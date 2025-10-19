@@ -11,6 +11,7 @@ export interface MsgsProps {
     label: string;
     onClick: () => void;
   };
+  customType?: string;
 }
 export interface TipMessagesProps {
   msgs?: Array<MsgsProps> | [];
