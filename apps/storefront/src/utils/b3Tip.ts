@@ -8,6 +8,7 @@ interface ToastOptions {
     onClick: () => void;
   };
   description?: string;
+  customType?: string;
 }
 
 const getLocalHandler = (variant: AlertTip) => {
@@ -20,6 +21,7 @@ const getLocalHandler = (variant: AlertTip) => {
         action: options?.action,
         time: 5000,
         description: options?.description,
+        customType: options?.customType,
       },
     ];
 
@@ -52,6 +54,7 @@ const getGlobalHandler = (variant: AlertTip) => {
         action: options?.action,
         time: 5000,
         description: options?.description,
+        customType: options?.customType,
       },
     ];
 
