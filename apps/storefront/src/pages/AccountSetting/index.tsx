@@ -351,20 +351,25 @@ function AccountSetting() {
     const inputRootStyles: SxProps<Theme> = {
       width: accountFieldWidth,
       maxWidth: '100%',
-      height: '40px',
-      borderRadius: '5px',
-      border: '0.2px solid #575757',
-      padding: '0 !important',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '10px',
-      backgroundColor: '#FFFFFF',
-      fontFamily: "'Lato', sans-serif",
-      fontWeight: 400,
-      fontSize: '16px',
-      lineHeight: '24px',
-      verticalAlign: 'middle',
-      color: '#000000',
+      mb: '10px',
+      '& .MuiInputBase-root': {
+        width: '100%',
+        height: '40px',
+        borderRadius: '5px',
+        border: '0.2px solid #575757',
+        padding: '0 !important',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        backgroundColor: '#FFFFFF',
+        fontFamily: "'Lato', sans-serif",
+        fontWeight: 400,
+        fontSize: '16px',
+        lineHeight: '24px',
+        verticalAlign: 'middle',
+        color: '#000000',
+        boxSizing: 'border-box',
+      },
       '& .MuiInputBase-input': {
         padding: '10px',
         fontFamily: "'Lato', sans-serif",
@@ -373,28 +378,25 @@ function AccountSetting() {
         lineHeight: '24px',
         verticalAlign: 'middle',
         color: '#000000',
+        height: '100%',
+        boxSizing: 'border-box',
       },
-      '& fieldset': {
-        borderWidth: '0.2px',
+      '& .MuiInputBase-root:hover': {
         borderColor: '#575757',
-      },
-      '&:hover fieldset': {
-        borderColor: '#575757',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#575757',
-      },
-      '&.Mui-disabled': {
-        borderColor: '#575757',
-        color: '#000000',
         backgroundColor: '#FFFFFF',
-        '& fieldset': {
-          borderColor: '#575757',
-        },
-        '& .MuiInputBase-input': {
-          color: '#000000',
-          WebkitTextFillColor: '#000000',
-        },
+      },
+      '& .MuiInputBase-root.Mui-focused': {
+        borderColor: '#575757',
+        backgroundColor: '#FFFFFF',
+      },
+      '& .MuiInputBase-root.Mui-disabled': {
+        borderColor: '#575757',
+        backgroundColor: '#FFFFFF',
+        color: '#000000',
+      },
+      '& .MuiInputBase-root.Mui-disabled .MuiInputBase-input': {
+        color: '#000000',
+        WebkitTextFillColor: '#000000',
       },
     };
 
@@ -419,15 +421,10 @@ function AccountSetting() {
       const styledField: AccountFormField = {
         ...field,
         label: currentLabel,
-        sx: appendSx(field.sx, {
-          width: accountFieldWidth,
-          maxWidth: '100%',
-          mb: '10px',
-        }),
+        sx: appendSx(field.sx, inputRootStyles),
         InputProps: {
           ...existingInputProps,
           disableUnderline: true,
-          sx: appendSx(existingInputProps.sx, inputRootStyles),
         },
         muiTextFieldProps: {
           ...existingMuiTextFieldProps,
