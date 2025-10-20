@@ -10,21 +10,21 @@ interface OrderStatusProps {
   text?: string;
 }
 
-const StatusTag = styled(B3Tag)(() => ({
-  width: '166px',
-  height: '34px',
-  borderRadius: '20px',
-  padding: '10px',
-  boxSizing: 'border-box' as const,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontFamily: 'Lato, sans-serif',
-  fontWeight: 600,
-  fontSize: '16px',
-  lineHeight: '24px',
-  textAlign: 'center',
-}));
+const StatusTag = styled(B3Tag)`
+  width: 166px;
+  height: 34px;
+  border-radius: 20px;
+  padding: 10px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+`;
 
 export default function OrderStatus(props: OrderStatusProps) {
   const { code, text } = props;
