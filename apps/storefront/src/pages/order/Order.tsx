@@ -56,6 +56,7 @@ interface ListItem {
   createdAt: string;
   companyName: string;
   companyInfo?: CompanyInfoProps;
+  currencyCode?: string;
 }
 
 interface SearchChangeProps {
@@ -122,6 +123,27 @@ interface OrderBy {
 
 const getOrderBy = ({ key, dir }: OrderBy) => {
   return dir === 'desc' ? `-${sortKeys[key]}` : sortKeys[key];
+};
+
+const getCurrencyDisplay = (currencyCode?: string, money?: string) => {
+  if (currencyCode) {
+    return currencyCode;
+  }
+
+  if (!money || typeof money !== 'string') {
+    return '–';
+  }
+
+  try {
+    const parsedMoney = JSON.parse(JSON.parse(money)) as {
+      currency_code?: string;
+      currency_token?: string;
+    };
+
+    return parsedMoney.currency_code || parsedMoney.currency_token || '–';
+  } catch {
+    return '–';
+  }
 };
 
 function Order({ isCompanyOrder = false }: OrderProps) {
@@ -262,19 +284,10 @@ function Order({ isCompanyOrder = false }: OrderProps) {
       render: ({ orderId }) => orderId,
     },
     {
-      key: 'companyName',
-      title: b3Lang('orders.company'),
-      width: '10%',
-      isSortable: false,
-      render: ({ companyInfo }) => {
-        return <Box>{companyInfo?.companyName || '–'}</Box>;
-      },
-    },
-    {
       key: 'poNumber',
       title: b3Lang('orders.poReference'),
       render: ({ poNumber }) => <Box>{poNumber || '–'}</Box>,
-      width: '10%',
+      width: '12%',
       isSortable: true,
     },
     {
@@ -285,7 +298,7 @@ function Order({ isCompanyOrder = false }: OrderProps) {
           ? ordersCurrencyFormat(JSON.parse(JSON.parse(money)), totalIncTax)
           : currencyFormat(totalIncTax),
       align: 'right',
-      width: '8%',
+      width: '10%',
       isSortable: true,
     },
     {
@@ -298,17 +311,24 @@ function Order({ isCompanyOrder = false }: OrderProps) {
       isSortable: true,
     },
     {
+      key: 'currencyCode',
+      title: b3Lang('orders.currency'),
+      render: ({ currencyCode, money }) => <Box>{getCurrencyDisplay(currencyCode, money)}</Box>,
+      width: '10%',
+      isSortable: false,
+    },
+    {
       key: 'placedBy',
       title: b3Lang('orders.placedBy'),
       render: ({ firstName, lastName }) => `${firstName} ${lastName}`,
-      width: '10%',
+      width: '12%',
       isSortable: true,
     },
     {
       key: 'createdAt',
       title: b3Lang('orders.createdOn'),
       render: ({ createdAt }) => `${displayFormat(Number(createdAt))}`,
-      width: '10%',
+      width: '12%',
       isSortable: true,
     },
   ] as const satisfies TableColumnItem<ListItem>[];
@@ -316,7 +336,6 @@ function Order({ isCompanyOrder = false }: OrderProps) {
   const getColumnItems = (): TableColumnItem<ListItem>[] => {
     const getNewColumnItems = columnAllItems.filter((item) => {
       const { key } = item;
-      if (!isB2BUser && key === 'companyName') return false;
       if ((!isB2BUser || (Number(role) === 3 && !isAgenting)) && key === 'placedBy') return false;
 
       if (key === 'placedBy' && !(Number(role) === 3 && !isAgenting) && !isCompanyOrder) {
