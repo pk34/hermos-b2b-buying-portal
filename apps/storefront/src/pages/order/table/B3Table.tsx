@@ -219,7 +219,7 @@ export function B3Table<Row extends OrderIdRow>({
                     <TableCell
                       key={column.title}
                       width={column.width}
-                      align={column.align ?? 'left'}
+                      align="left"
                       sortDirection={column.key === orderBy ? sortDirection : false}
                       data-testid={column.key ? `tableHead-${column.key}` : ''}
                       sx={{
@@ -229,6 +229,7 @@ export function B3Table<Row extends OrderIdRow>({
                         lineHeight: '24px',
                         color: '#000000',
                         borderBottom: 'none',
+                        textAlign: 'left',
                       }}
                     >
                       {column.isSortable ? (
