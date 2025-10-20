@@ -64,6 +64,8 @@ function Row<Row extends OrderIdRow>({ columnItems, node, onClickRow }: RowProps
       onClick={onClickRow}
       sx={{
         cursor: 'pointer',
+        borderTop: '1px solid #000000',
+        borderBottom: 'none',
       }}
       data-testid="tableBody-Row"
     >
@@ -78,7 +80,7 @@ function Row<Row extends OrderIdRow>({ columnItems, node, onClickRow }: RowProps
             fontSize: '16px',
             lineHeight: '24px',
             color: '#000000',
-            border: '1px solid #000000',
+            borderBottom: 'none',
           }}
         >
           {column.render(node)}
@@ -226,7 +228,7 @@ export function B3Table<Row extends OrderIdRow>({
                         fontSize: '16px',
                         lineHeight: '24px',
                         color: '#000000',
-                        border: '1px solid #000000',
+                        borderBottom: 'none',
                       }}
                     >
                       {column.isSortable ? (
