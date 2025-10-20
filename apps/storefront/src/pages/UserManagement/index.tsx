@@ -71,10 +71,10 @@ function UserManagement() {
       isEnabled: isEnableBtnPermissions && isCreatePermission,
       customLabel: b3Lang('userManagement.addUser'),
       customButtonStyle: {
-        width: '213px',
         height: '44px',
         borderRadius: '5px',
-        p: '10px',
+        py: '10px',
+        px: '24px',
         gap: '10px',
         textTransform: 'capitalize',
         backgroundColor: '#0067A0',
@@ -86,6 +86,11 @@ function UserManagement() {
         textAlign: 'center',
         verticalAlign: 'middle',
         ml: '38px',
+        whiteSpace: 'nowrap',
+        '&:hover': {
+          backgroundColor: '#00965E',
+          color: '#FFFFFF',
+        },
       },
       placeNextToFilterIcon: true,
     };
