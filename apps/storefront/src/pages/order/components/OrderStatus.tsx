@@ -15,15 +15,14 @@ const StatusTag = styled(B3Tag)(() => ({
   height: '34px',
   borderRadius: '20px',
   padding: '10px',
-  boxSizing: 'border-box',
+  boxSizing: 'border-box' as const,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  fontFamily: "'Lato', sans-serif",
+  fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
   fontSize: '16px',
   lineHeight: '24px',
-  color: '#000000 !important',
   textAlign: 'center',
 }));
 
@@ -33,8 +32,10 @@ export default function OrderStatus(props: OrderStatusProps) {
   const status = getOrderStatus(code);
 
   return status.name ? (
-    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-      <StatusTag color={status.color}>{text || status.name}</StatusTag>
+    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <StatusTag color={status.color} textColor="#000000">
+        {text || status.name}
+      </StatusTag>
     </Box>
   ) : null;
 }
