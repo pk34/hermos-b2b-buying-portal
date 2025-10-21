@@ -339,6 +339,7 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         textAlign: 'center',
         '&:hover': {
           backgroundColor: '#FFFFFF',
+          borderColor: '#00965E',
         },
       }}
       rightStyleBtn={{
@@ -358,7 +359,8 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         display: 'block',
         textAlign: 'center',
         '&:hover': {
-          backgroundColor: '#0067A0',
+          backgroundColor: '#00965E',
+          borderColor: '#00965E',
         },
       }}
     >

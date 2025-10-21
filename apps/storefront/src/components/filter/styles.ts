@@ -110,6 +110,7 @@ export const filterModalLeftButtonSx = {
   textAlign: 'center',
   '&:hover': {
     backgroundColor: '#FFFFFF',
+    borderColor: '#00965E',
   },
 } as const;
 
@@ -130,7 +131,8 @@ export const filterModalRightButtonSx = {
   display: 'block',
   textAlign: 'center',
   '&:hover': {
-    backgroundColor: '#0067A0',
+    backgroundColor: '#00965E',
+    borderColor: '#00965E',
   },
 } as const;
 
