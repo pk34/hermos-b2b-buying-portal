@@ -72,6 +72,7 @@ function UserManagement() {
       customLabel: b3Lang('userManagement.addUser'),
       customButtonStyle: {
         height: '44px',
+        minWidth: 'auto',
         borderRadius: '5px',
         py: '10px',
         px: '24px',
