@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 
 import useMobile from '@/hooks/useMobile';
 
@@ -44,7 +45,7 @@ type DeepPartial<T> = {
 interface CustomButtonProps {
   isEnabled: boolean;
   customLabel: string;
-  customButtonStyle?: { [key: string]: string };
+  customButtonStyle?: SxProps<Theme>;
   placeNextToFilterIcon?: boolean;
 }
 

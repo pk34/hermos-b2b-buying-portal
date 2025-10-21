@@ -140,6 +140,7 @@
   "orders.poReference": "PO / Reference",
   "orders.grandTotal": "Grand total",
   "orders.orderStatus": "Order status",
+  "orders.currency": "Currency",
   "orders.placedBy": "Placed by",
   "orders.createdOn": "Created on",
   "orders.company": "Company",

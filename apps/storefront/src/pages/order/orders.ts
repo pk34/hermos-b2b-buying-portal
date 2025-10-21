@@ -8,6 +8,7 @@ export type CustomerOrderNode = {
     createdAt: number;
     totalIncTax?: number;
     money?: string;
+    currencyCode?: string;
     poNumber?: string;
     status: string;
     companyName?: string;
@@ -31,6 +32,7 @@ export type CompanyOrderNode = {
     createdAt: number;
     totalIncTax?: number;
     money?: string;
+    currencyCode?: string;
     poNumber?: string;
     status: string;
     firstName?: string;
@@ -73,6 +75,7 @@ query ${fn === 'allOrders' ? 'GetAllOrders' : 'GetCustomerOrders'} {
         createdAt,
         totalIncTax,
         money,
+        currencyCode,
         poNumber,
         status,
         firstName,
