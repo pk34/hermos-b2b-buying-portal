@@ -351,7 +351,7 @@ function AccountSetting() {
     const inputRootStyles: SxProps<Theme> = {
       width: accountFieldWidth,
       maxWidth: '100%',
-      mb: '10px',
+      mb: 0,
       '& .MuiInputBase-root': {
         width: '100%',
         height: '40px',
@@ -473,6 +473,11 @@ function AccountSetting() {
             control={control}
             getValues={getValues}
             setValue={setValue}
+            containerProps={{
+              spacing: 0,
+              columnSpacing: isMobile ? 0 : 2,
+              rowSpacing: '14px',
+            }}
           />
 
           <CustomButton
@@ -497,6 +502,9 @@ function AccountSetting() {
               alignItems: 'center',
               justifyContent: 'center',
               visibility: isVisible ? 'visible' : 'hidden',
+              '&:hover': {
+                backgroundColor: '#00965E',
+              },
             }}
             onClick={handleAddUserClick}
             variant="contained"
