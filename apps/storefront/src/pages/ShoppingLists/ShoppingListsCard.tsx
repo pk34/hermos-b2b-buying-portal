@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { SVGProps } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import type { CSSObject } from '@emotion/react';
@@ -74,66 +75,83 @@ const ActionsContainer = styled(Box)(() => ({
 const StyledIconButton = styled(IconButton)(() => ({
   padding: 0,
   borderRadius: 0,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minWidth: 0,
   '&:hover': {
     backgroundColor: 'transparent',
   },
 }));
 
-const EditIconSvg = () => (
-  <Box
-    component="svg"
-    width="24"
-    height="25"
+const iconWrapperStyles = {
+  display: 'block',
+} as const;
+
+const EditIconSvg = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    width={24}
+    height={25}
     viewBox="0 0 24 25"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    style={iconWrapperStyles}
+    aria-hidden
+    focusable="false"
+    {...props}
   >
     <path
       d="M11 5.03871H6C4.89543 5.03871 4 5.94097 4 7.05398V18.1379C4 19.251 4.89543 20.1532 6 20.1532H17C18.1046 20.1532 19 19.251 19 18.1379V13.0998M17.5858 3.6137C18.3668 2.82668 19.6332 2.82668 20.4142 3.6137C21.1953 4.40071 21.1953 5.6767 20.4142 6.46371L11.8284 15.115H9L9 12.265L17.5858 3.6137Z"
       stroke="#0067A0"
-      strokeWidth="2"
+      strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-  </Box>
+  </svg>
 );
 
-const CopyIconSvg = () => (
-  <Box
-    component="svg"
-    width="24"
-    height="24"
+const CopyIconSvg = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    width={24}
+    height={24}
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    style={iconWrapperStyles}
+    aria-hidden
+    focusable="false"
+    {...props}
   >
     <path
       d="M8 5H6C4.89543 5 4 5.89543 4 7V19C4 20.1046 4.89543 21 6 21H16C17.1046 21 18 20.1046 18 19V18M8 5C8 6.10457 8.89543 7 10 7H12C13.1046 7 14 6.10457 14 5M8 5C8 3.89543 8.89543 3 10 3H12C13.1046 3 14 3.89543 14 5M14 5H16C17.1046 5 18 5.89543 18 7V10M20 14H10M10 14L13 11M10 14L13 17"
       stroke="#00965E"
-      strokeWidth="2"
+      strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-  </Box>
+  </svg>
 );
 
-const DeleteIconSvg = () => (
-  <Box
-    component="svg"
-    width="24"
-    height="25"
+const DeleteIconSvg = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    width={24}
+    height={25}
     viewBox="0 0 24 25"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    style={iconWrapperStyles}
+    aria-hidden
+    focusable="false"
+    {...props}
   >
     <path
       d="M19 7.05397L18.1327 19.2892C18.0579 20.3438 17.187 21.1608 16.1378 21.1608H7.86224C6.81296 21.1608 5.94208 20.3438 5.86732 19.2892L5 7.05397M10 11.0845V17.1303M14 11.0845V17.1303M15 7.05397V4.03107C15 3.47457 14.5523 3.02344 14 3.02344H10C9.44772 3.02344 9 3.47457 9 4.03107V7.05397M4 7.05397H20"
       stroke="#F70000"
-      strokeWidth="2"
+      strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-  </Box>
+  </svg>
 );
 
 function ShoppingListsCard(props: OrderItemCardProps) {
