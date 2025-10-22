@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
@@ -26,15 +26,19 @@ interface OrderItemCardProps {
   isB2BUser: boolean;
 }
 
-const Title = styled(Typography)(() => ({
-  fontFamily: 'Lato, sans-serif',
-  fontWeight: 600,
-  fontSize: '24px',
-  lineHeight: '28px',
-  color: '#000000',
-  width: '100%',
-  overflowWrap: 'break-word',
-}));
+const Title = styled(Typography)(() => {
+  const styles: CSSProperties = {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '24px',
+    lineHeight: '28px',
+    color: '#000000',
+    width: '100%',
+    overflowWrap: 'break-word',
+  };
+
+  return styles;
+});
 
 const InfoRow = styled(Box)(() => ({
   display: 'flex',
