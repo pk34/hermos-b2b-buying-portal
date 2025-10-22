@@ -27,19 +27,19 @@ interface OrderItemCardProps {
 }
 
 const Title = styled(Typography)(() => ({
-  fontFamily: "'Lato', sans-serif",
+  fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
   fontSize: '24px',
   lineHeight: '28px',
   color: '#000000',
   width: '100%',
-  wordBreak: 'break-word',
+  overflowWrap: 'break-word',
 }));
 
 const InfoRow = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-  flexWrap: 'wrap',
+  flexWrap: 'wrap' as const,
   gap: '8px',
   marginBottom: '8px',
   '&:last-of-type': {
@@ -47,8 +47,8 @@ const InfoRow = styled(Box)(() => ({
   },
 }));
 
-const InfoText = styled(Typography)(() => ({
-  fontFamily: "'Lato', sans-serif",
+const InfoText = styled('span')(() => ({
+  fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
   fontSize: '16px',
   lineHeight: '24px',
@@ -238,21 +238,19 @@ function ShoppingListsCard(props: OrderItemCardProps) {
             )}
           {isB2BUser && (
             <InfoRow>
-              <InfoText component="span">
-                {b3Lang('shoppingLists.card.createdBy')}
-              </InfoText>
-              <InfoText component="span">
+              <InfoText>{b3Lang('shoppingLists.card.createdBy')}</InfoText>
+              <InfoText>
                 {shoppingList.customerInfo.firstName} {shoppingList.customerInfo.lastName}
               </InfoText>
             </InfoRow>
           )}
           <InfoRow>
-            <InfoText component="span">{b3Lang('shoppingLists.card.products')}</InfoText>
-            <InfoText component="span">{shoppingList.products.totalCount}</InfoText>
+            <InfoText>{b3Lang('shoppingLists.card.products')}</InfoText>
+            <InfoText>{shoppingList.products.totalCount}</InfoText>
           </InfoRow>
           <InfoRow>
-            <InfoText component="span">{b3Lang('shoppingLists.card.lastActivity')}</InfoText>
-            <InfoText component="span">{`${displayFormat(shoppingList.updatedAt)}`}</InfoText>
+            <InfoText>{b3Lang('shoppingLists.card.lastActivity')}</InfoText>
+            <InfoText>{`${displayFormat(shoppingList.updatedAt)}`}</InfoText>
           </InfoRow>
         </Box>
         <ActionsRow>
