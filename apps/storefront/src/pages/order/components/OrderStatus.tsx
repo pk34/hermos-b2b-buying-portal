@@ -1,5 +1,7 @@
 import { Box } from '@mui/material';
 import styled from '@emotion/styled';
+import type { CSSObject } from '@emotion/react';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 import { B3Tag } from '@/components';
 
@@ -17,8 +19,10 @@ interface StatusTagProps {
   variant?: OrderStatusVariant;
 }
 
-const StatusTag = styled(B3Tag)<StatusTagProps>(({ variant = 'default' }) => {
-  const baseStyles = {
+const StatusTag = styled(B3Tag, {
+  shouldForwardProp: (prop) => prop !== 'variant',
+})<StatusTagProps>(({ variant = 'default' }): CSSObject => {
+  const baseStyles: CSSObject = {
     boxSizing: 'border-box',
     display: 'inline-flex',
     alignItems: 'center',
@@ -27,7 +31,7 @@ const StatusTag = styled(B3Tag)<StatusTagProps>(({ variant = 'default' }) => {
     fontWeight: 600,
     fontSize: '16px',
     lineHeight: '24px',
-    textAlign: 'center' as const,
+    textAlign: 'center',
     borderRadius: '20px',
     padding: '10px',
     height: '34px',
@@ -64,10 +68,18 @@ export default function OrderStatus(props: OrderStatusProps) {
     return null;
   }
 
-  const containerStyles =
+  const containerStyles: SxProps<Theme> =
     variant === 'default'
-      ? { width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }
-      : { display: 'flex', alignItems: 'center' };
+      ? {
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }
+      : {
+          display: 'flex',
+          alignItems: 'center',
+        };
 
   const textColor = variant === 'default' ? '#000000' : '#FFFFFF';
 

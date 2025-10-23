@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import styled from '@emotion/styled';
+import type { CSSObject } from '@emotion/react';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
 import { B3Table, TableColumnItem } from '@/components/table/B3Table';
@@ -12,7 +13,7 @@ import OrderStatus from '../../order/components/OrderStatus';
 import { orderStatusTranslationVariables } from '../../order/shared/getOrderStatus';
 import { OrderDetailsContext } from '../context/OrderDetailsContext';
 
-const HistoryListContainer = styled('div')(() => ({
+const HistoryListContainer = styled('div')((): CSSObject => ({
   '& > .MuiPaper-root': {
     boxShadow: 'none',
   },
@@ -82,7 +83,7 @@ export default function OrderHistory({ variant = 'default' }: OrderHistoryProps)
       title: b3Lang('orderDetail.history.dateHeader'),
       style: {
         fontFamily: 'Lato, sans-serif',
-        fontWeight: 600,
+        fontWeight: '600',
         fontSize: '16px',
         lineHeight: '24px',
         color: '#000000',
@@ -98,7 +99,7 @@ export default function OrderHistory({ variant = 'default' }: OrderHistoryProps)
             color: '#000000',
           }}
         >
-          {displayExtendedFormat(item.createdAt)}
+          {String(displayExtendedFormat(item.createdAt))}
         </Typography>
       ),
     },
@@ -107,7 +108,7 @@ export default function OrderHistory({ variant = 'default' }: OrderHistoryProps)
       title: b3Lang('orderDetail.history.statusHeader'),
       style: {
         fontFamily: 'Lato, sans-serif',
-        fontWeight: 600,
+        fontWeight: '600',
         fontSize: '16px',
         lineHeight: '24px',
         color: '#000000',

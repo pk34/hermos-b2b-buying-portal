@@ -1,5 +1,6 @@
 import { useContext, useMemo } from 'react';
 import styled from '@emotion/styled';
+import type { CSSObject } from '@emotion/react';
 import { Box } from '@mui/material';
 
 import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
@@ -13,7 +14,9 @@ import OrderHistory from './OrderHistory';
 
 import { MoneyFormat, OrderProductItem, OrderShippingsItem } from '../../../types';
 
-const CardContainer = styled(Box)<{ isMobile: boolean }>(({ isMobile }) => ({
+const CardContainer = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>(({ isMobile }): CSSObject => ({
   width: isMobile ? '100%' : '662px',
   minHeight: isMobile ? 'auto' : '526px',
   borderWidth: '0px 0.3px 0.3px 0px',
@@ -26,7 +29,7 @@ const CardContainer = styled(Box)<{ isMobile: boolean }>(({ isMobile }) => ({
   flexDirection: 'column',
 }));
 
-const TitleLine = styled('div')(() => ({
+const TitleLine = styled('div')((): CSSObject => ({
   fontFamily: 'Lato, sans-serif',
   fontWeight: 400,
   fontSize: '20px',
@@ -34,7 +37,7 @@ const TitleLine = styled('div')(() => ({
   color: '#000000',
 }));
 
-const InfoText = styled('div')(() => ({
+const InfoText = styled('div')((): CSSObject => ({
   fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
   fontSize: '16px',
@@ -43,7 +46,7 @@ const InfoText = styled('div')(() => ({
   marginTop: '5px',
 }));
 
-const StatusText = styled('div')(() => ({
+const StatusText = styled('div')((): CSSObject => ({
   fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
   fontSize: '16px',
@@ -52,7 +55,7 @@ const StatusText = styled('div')(() => ({
   marginTop: '5px',
 }));
 
-const Divider = styled('hr')(() => ({
+const Divider = styled('hr')((): CSSObject => ({
   width: '100%',
   borderWidth: '0.5px',
   borderStyle: 'solid',
@@ -61,17 +64,17 @@ const Divider = styled('hr')(() => ({
   marginBottom: '5px',
 }));
 
-const ProductsTableContainer = styled('div')(() => ({
+const ProductsTableContainer = styled('div')((): CSSObject => ({
   marginTop: '20px',
   overflowX: 'auto',
 }));
 
-const StyledTable = styled('table')(() => ({
+const StyledTable = styled('table')((): CSSObject => ({
   width: '100%',
   borderCollapse: 'collapse',
 }));
 
-const HeaderCell = styled('th')<{ align?: 'left' | 'right' }>(({ align = 'left' }) => ({
+const HeaderCell = styled('th')<{ align?: 'left' | 'right' }>(({ align = 'left' }): CSSObject => ({
   fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
   fontSize: '16px',
@@ -81,7 +84,7 @@ const HeaderCell = styled('th')<{ align?: 'left' | 'right' }>(({ align = 'left' 
   padding: '8px 0',
 }));
 
-const TableRow = styled('tr')(() => ({
+const TableRow = styled('tr')((): CSSObject => ({
   borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
 
   '&:last-of-type': {
@@ -89,7 +92,7 @@ const TableRow = styled('tr')(() => ({
   },
 }));
 
-const BodyCell = styled('td')<{ align?: 'left' | 'right' }>(({ align = 'left' }) => ({
+const BodyCell = styled('td')<{ align?: 'left' | 'right' }>(({ align = 'left' }): CSSObject => ({
   fontFamily: 'Lato, sans-serif',
   fontWeight: 400,
   fontSize: '16px',
@@ -100,12 +103,12 @@ const BodyCell = styled('td')<{ align?: 'left' | 'right' }>(({ align = 'left' })
   verticalAlign: 'top',
 }));
 
-const ProductInfo = styled('div')(() => ({
+const ProductInfo = styled('div')((): CSSObject => ({
   display: 'flex',
   gap: '16px',
 }));
 
-const ProductImage = styled('img')(() => ({
+const ProductImage = styled('img')((): CSSObject => ({
   maxWidth: '85px',
   maxHeight: '85px',
   borderRadius: '4px',
@@ -113,13 +116,13 @@ const ProductImage = styled('img')(() => ({
   alignSelf: 'flex-start',
 }));
 
-const ProductDetails = styled('div')(() => ({
+const ProductDetails = styled('div')((): CSSObject => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '4px',
 }));
 
-const ProductName = styled('span')(() => ({
+const ProductName = styled('span')((): CSSObject => ({
   fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
   fontSize: '16px',
@@ -127,7 +130,7 @@ const ProductName = styled('span')(() => ({
   color: '#000000',
 }));
 
-const ProductMeta = styled('span')(() => ({
+const ProductMeta = styled('span')((): CSSObject => ({
   fontFamily: 'Lato, sans-serif',
   fontWeight: 400,
   fontSize: '16px',
@@ -135,7 +138,7 @@ const ProductMeta = styled('span')(() => ({
   color: '#000000',
 }));
 
-const HistoryWrapper = styled('div')(() => ({
+const HistoryWrapper = styled('div')((): CSSObject => ({
   marginTop: '30px',
 }));
 

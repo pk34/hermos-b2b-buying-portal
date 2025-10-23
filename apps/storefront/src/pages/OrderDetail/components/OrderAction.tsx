@@ -1,7 +1,9 @@
 import { Fragment, ReactNode, useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
+import type { CSSObject } from '@emotion/react';
 import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import throttle from 'lodash-es/throttle';
 
 import CustomButton from '@/components/button/CustomButton';
@@ -25,7 +27,7 @@ import { OrderDetailsContext, OrderDetailsState } from '../context/OrderDetailsC
 
 import OrderDialog from './OrderDialog';
 
-const OrderActionContainer = styled('div')(() => ({
+const OrderActionContainer = styled('div')((): CSSObject => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
@@ -35,18 +37,22 @@ interface StyledCardActionsProps {
   isShowButtons: boolean;
 }
 
-const StyledCardActions = styled('div')<StyledCardActionsProps>(({ isShowButtons }) => ({
+const StyledCardActions = styled('div', {
+  shouldForwardProp: (prop) => prop !== 'isShowButtons',
+})<StyledCardActionsProps>(({ isShowButtons }): CSSObject => ({
   display: isShowButtons ? 'flex' : 'none',
   flexWrap: 'wrap',
   gap: '10px',
-  padding: isShowButtons ? '0 10px 10px' : 0,
+  padding: isShowButtons ? '0 10px 10px' : '0',
 }));
 
 interface ItemContainerProps {
   nameKey: string;
 }
 
-const ItemContainer = styled('div')((props: ItemContainerProps) => ({
+const ItemContainer = styled('div', {
+  shouldForwardProp: (prop) => prop !== 'nameKey',
+})<ItemContainerProps>(({ nameKey }): CSSObject => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'flex-start',
@@ -55,7 +61,7 @@ const ItemContainer = styled('div')((props: ItemContainerProps) => ({
   fontSize: '16px',
   lineHeight: '24px',
   color: '#000000',
-  marginBottom: props.nameKey === 'grandTotal' ? '0' : '12px',
+  marginBottom: nameKey === 'grandTotal' ? '0' : '12px',
 
   '& p': {
     margin: 0,
@@ -74,7 +80,7 @@ const ItemContainer = styled('div')((props: ItemContainerProps) => ({
   },
 }));
 
-const PaymentItemContainer = styled('div')(() => ({
+const PaymentItemContainer = styled('div')((): CSSObject => ({
   fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
   fontSize: '16px',
@@ -84,13 +90,13 @@ const PaymentItemContainer = styled('div')(() => ({
   wordBreak: 'break-word',
 }));
 
-const CARD_DIMENSIONS: Record<string, { minHeight: number }> = {
-  'order-summary': { minHeight: 400 },
-  payment: { minHeight: 367 },
-  'order-comments': { minHeight: 367 },
+const CARD_DIMENSIONS: Record<string, { minHeight: string }> = {
+  'order-summary': { minHeight: '400px' },
+  payment: { minHeight: '367px' },
+  'order-comments': { minHeight: '367px' },
 };
 
-const getCardStyles = (key: string, isMobile: boolean) => ({
+const getCardStyles = (key: string, isMobile: boolean): SxProps<Theme> => ({
   borderWidth: '0px 0.3px 0.3px 0px',
   borderStyle: 'solid',
   borderColor: '#000000',
@@ -103,93 +109,101 @@ const getCardStyles = (key: string, isMobile: boolean) => ({
   minHeight: isMobile ? 'auto' : CARD_DIMENSIONS[key]?.minHeight || 'auto',
 });
 
-const getButtonStyles = (name: string) => {
+const reorderButtonStyles: SxProps<Theme> = {
+  width: '128px',
+  height: '40px',
+  borderRadius: '5px',
+  padding: '10px',
+  backgroundColor: '#0067A0',
+  color: '#FFFFFF',
+  textTransform: 'capitalize',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  verticalAlign: 'middle',
+  textAlign: 'center',
+  '&:hover': {
+    backgroundColor: '#00965E',
+  },
+};
+
+const shoppingListButtonStyles: SxProps<Theme> = {
+  width: '258px',
+  height: '44px',
+  borderRadius: '5px',
+  padding: '10px',
+  border: '1px solid #0067A0',
+  backgroundColor: '#FFFFFF',
+  color: '#0067A0',
+  textTransform: 'capitalize',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '10px',
+  verticalAlign: 'middle',
+  textAlign: 'center',
+  '&:hover': {
+    borderColor: '#00965E',
+    color: '#00965E',
+    backgroundColor: '#FFFFFF',
+  },
+};
+
+const invoiceButtonStyles: SxProps<Theme> = {
+  width: '218px',
+  height: '44px',
+  borderRadius: '5px',
+  padding: '10px',
+  border: '1px solid #0067A0',
+  backgroundColor: '#FFFFFF',
+  color: '#0067A0',
+  textTransform: 'capitalize',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  verticalAlign: 'middle',
+  textAlign: 'center',
+  '&:hover': {
+    borderColor: '#00965E',
+    color: '#00965E',
+    backgroundColor: '#FFFFFF',
+  },
+};
+
+const defaultButtonStyles: SxProps<Theme> = {
+  textTransform: 'capitalize',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+};
+
+const getButtonStyles = (name: string): SxProps<Theme> => {
   if (name === 'reOrder') {
-    return {
-      width: '128px',
-      height: '40px',
-      borderRadius: '5px',
-      padding: '10px',
-      backgroundColor: '#0067A0',
-      color: '#FFFFFF',
-      textTransform: 'capitalize',
-      fontFamily: 'Lato, sans-serif',
-      fontWeight: 600,
-      fontSize: '16px',
-      lineHeight: '24px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      verticalAlign: 'middle',
-      textAlign: 'center',
-      '&:hover': {
-        backgroundColor: '#00965E',
-      },
-    };
+    return reorderButtonStyles;
   }
 
   if (name === 'shoppingList') {
-    return {
-      width: '258px',
-      height: '44px',
-      borderRadius: '5px',
-      padding: '10px',
-      border: '1px solid #0067A0',
-      backgroundColor: '#FFFFFF',
-      color: '#0067A0',
-      textTransform: 'capitalize',
-      fontFamily: 'Lato, sans-serif',
-      fontWeight: 600,
-      fontSize: '16px',
-      lineHeight: '24px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '10px',
-      verticalAlign: 'middle',
-      textAlign: 'center',
-      '&:hover': {
-        borderColor: '#00965E',
-        color: '#00965E',
-        backgroundColor: '#FFFFFF',
-      },
-    };
+    return shoppingListButtonStyles;
   }
 
   if (name === 'viewInvoice' || name === 'printInvoice') {
-    return {
-      width: '218px',
-      height: '44px',
-      borderRadius: '5px',
-      padding: '10px',
-      border: '1px solid #0067A0',
-      backgroundColor: '#FFFFFF',
-      color: '#0067A0',
-      textTransform: 'capitalize',
-      fontFamily: 'Lato, sans-serif',
-      fontWeight: 600,
-      fontSize: '16px',
-      lineHeight: '24px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      verticalAlign: 'middle',
-      textAlign: 'center',
-      '&:hover': {
-        borderColor: '#00965E',
-        color: '#00965E',
-        backgroundColor: '#FFFFFF',
-      },
-    };
+    return invoiceButtonStyles;
   }
 
-  return {
-    textTransform: 'capitalize',
-    fontFamily: 'Lato, sans-serif',
-    fontWeight: 600,
-    fontSize: '16px',
-    lineHeight: '24px',
-  };
+  return defaultButtonStyles;
 };
 
 interface Infos {
