@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ArrowBackIosNew, InfoOutlined } from '@mui/icons-material';
+import { useLocation, useParams } from 'react-router-dom';
+import { InfoOutlined } from '@mui/icons-material';
 import { Box, Grid, Stack, Typography } from '@mui/material';
 
-import { b3HexToRgb, getContrastColor } from '@/components/outSideComponents/utils/b3CustomStyles';
+import { getContrastColor } from '@/components/outSideComponents/utils/b3CustomStyles';
 import B3Spin from '@/components/spin/B3Spin';
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
@@ -25,17 +25,7 @@ import { orderStatusTranslationVariables } from '../order/shared/getOrderStatus'
 
 import { OrderDetailsContext, OrderDetailsProvider } from './context/OrderDetailsContext';
 import convertB2BOrderDetails from './shared/B2BOrderData';
-import {
-  DetailPagination,
-  OrderAction,
-  OrderBilling,
-  OrderHistory,
-  OrderShipping,
-} from './components';
-
-interface LocationState {
-  isCompanyOrder: boolean;
-}
+import { DetailPagination, OrderAction, OrderBilling, OrderShipping } from './components';
 
 function OrderDetail() {
   const isB2BUser = useAppSelector(isB2BUserSelector);
@@ -55,8 +45,6 @@ function OrderDetail() {
 
   const params = useParams();
 
-  const navigate = useNavigate();
-
   const b3Lang = useB3Lang();
 
   const {
@@ -66,7 +54,6 @@ function OrderDetail() {
 
   const {
     state: {
-      poNumber,
       status = '',
       customStatus,
       orderSummary,
@@ -97,10 +84,6 @@ function OrderDetail() {
   useEffect(() => {
     setOrderId(params.id || '');
   }, [params]);
-
-  const goToOrders = () => {
-    navigate((location.state as LocationState).isCompanyOrder ? '/company-orders' : '/orders');
-  };
 
   useEffect(() => {
     if (orderId) {
@@ -227,38 +210,6 @@ function OrderDetail() {
           flex: 1,
         }}
       >
-        <Box
-          sx={{
-            marginBottom: '10px',
-            width: 'fit-content',
-          }}
-        >
-          <Box
-            sx={{
-              color: 'primary.main',
-              cursor: 'pointer',
-              fontSize: '14px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            onClick={goToOrders}
-          >
-            {location.state !== null ? (
-              <>
-                <ArrowBackIosNew
-                  sx={{
-                    fontSize: '13px',
-                    margin: '0 8px',
-                  }}
-                />
-                <span>{b3Lang('orderDetail.backToOrders')}</span>
-              </>
-            ) : (
-              ''
-            )}
-          </Box>
-        </Box>
-
         <Grid container spacing={2}>
           <Grid
             item
@@ -271,17 +222,22 @@ function OrderDetail() {
             }}
           >
             <Typography
-              variant="h4"
+              component="h1"
               sx={{
-                color: b3HexToRgb(customColor, 0.87) || '#263238',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '24px',
+                lineHeight: '28px',
+                color: '#0067A0',
               }}
             >
               {b3Lang('orderDetail.orderId', { orderId })}
-              {b3Lang('orderDetail.purchaseOrderNumber', {
-                purchaseOrderNumber: poNumber ?? '',
-              })}
             </Typography>
-            <OrderStatus code={status} text={getOrderStatusLabel(status)} />
+            <OrderStatus
+              code={status}
+              text={getOrderStatusLabel(status)}
+              variant="orderDetailHeader"
+            />
           </Grid>
           <Grid
             container
@@ -349,7 +305,7 @@ function OrderDetail() {
                     flexBasis: '100%',
                   }
                 : {
-                    flexBasis: '690px',
+                    flexBasis: '662px',
                     flexGrow: 1,
                   }
             }
@@ -358,7 +314,6 @@ function OrderDetail() {
               <OrderShipping isCurrentCompany={isCurrentCompany} />
               {/* Digital Order Display */}
               {!!digitalProducts?.length && <OrderBilling isCurrentCompany={isCurrentCompany} />}
-              <OrderHistory />
             </Stack>
           </Grid>
           <Grid
@@ -369,7 +324,7 @@ function OrderDetail() {
                     flexBasis: '100%',
                   }
                 : {
-                    flexBasis: '340px',
+                    flexBasis: '362px',
                   }
             }
           >

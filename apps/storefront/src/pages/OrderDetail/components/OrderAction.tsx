@@ -5,6 +5,7 @@ import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
 import throttle from 'lodash-es/throttle';
 
 import CustomButton from '@/components/button/CustomButton';
+import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import HierarchyDialog from '@/pages/CompanyHierarchy/components/HierarchyDialog';
 import { GlobalContext } from '@/shared/global';
@@ -24,21 +25,21 @@ import { OrderDetailsContext, OrderDetailsState } from '../context/OrderDetailsC
 
 import OrderDialog from './OrderDialog';
 
-const OrderActionContainer = styled('div')(() => ({}));
+const OrderActionContainer = styled('div')(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '20px',
+}));
 
 interface StyledCardActionsProps {
   isShowButtons: boolean;
 }
 
-const StyledCardActions = styled('div')<StyledCardActionsProps>((props) => ({
+const StyledCardActions = styled('div')<StyledCardActionsProps>(({ isShowButtons }) => ({
+  display: isShowButtons ? 'flex' : 'none',
   flexWrap: 'wrap',
-  padding: props.isShowButtons ? '0 1rem 1rem 1rem' : 0,
-
-  '& button': {
-    marginLeft: '0',
-    marginRight: '8px',
-    margin: '8px 8px 0 0',
-  },
+  gap: '10px',
+  padding: isShowButtons ? '0 10px 10px' : 0,
 }));
 
 interface ItemContainerProps {
@@ -48,20 +49,148 @@ interface ItemContainerProps {
 const ItemContainer = styled('div')((props: ItemContainerProps) => ({
   display: 'flex',
   justifyContent: 'space-between',
-  fontWeight: props.nameKey === 'grandTotal' ? 700 : 400,
+  alignItems: 'flex-start',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+  marginBottom: props.nameKey === 'grandTotal' ? '0' : '12px',
 
   '& p': {
-    marginTop: 0,
-    marginBottom: props.nameKey === 'grandTotal' ? '0' : '12px',
-    lineHeight: 1,
+    margin: 0,
+    lineHeight: '24px',
+    wordBreak: 'break-word',
+  },
+
+  '& p:first-of-type': {
+    maxWidth: '40%',
+    textAlign: 'left',
+  },
+
+  '& p:last-of-type': {
+    maxWidth: '55%',
+    textAlign: 'right',
   },
 }));
 
 const PaymentItemContainer = styled('div')(() => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  fontWeight: 400,
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+  marginBottom: '8px',
+  wordBreak: 'break-word',
 }));
+
+const CARD_DIMENSIONS: Record<string, { minHeight: number }> = {
+  'order-summary': { minHeight: 400 },
+  payment: { minHeight: 367 },
+  'order-comments': { minHeight: 367 },
+};
+
+const getCardStyles = (key: string, isMobile: boolean) => ({
+  borderWidth: '0px 0.3px 0.3px 0px',
+  borderStyle: 'solid',
+  borderColor: '#000000',
+  boxShadow: 'none',
+  borderRadius: 0,
+  backgroundColor: '#FFFFFF',
+  display: 'flex',
+  flexDirection: 'column',
+  width: isMobile ? '100%' : '362px',
+  minHeight: isMobile ? 'auto' : CARD_DIMENSIONS[key]?.minHeight || 'auto',
+});
+
+const getButtonStyles = (name: string) => {
+  if (name === 'reOrder') {
+    return {
+      width: '128px',
+      height: '40px',
+      borderRadius: '5px',
+      padding: '10px',
+      backgroundColor: '#0067A0',
+      color: '#FFFFFF',
+      textTransform: 'capitalize',
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 600,
+      fontSize: '16px',
+      lineHeight: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      verticalAlign: 'middle',
+      textAlign: 'center',
+      '&:hover': {
+        backgroundColor: '#00965E',
+      },
+    };
+  }
+
+  if (name === 'shoppingList') {
+    return {
+      width: '258px',
+      height: '44px',
+      borderRadius: '5px',
+      padding: '10px',
+      border: '1px solid #0067A0',
+      backgroundColor: '#FFFFFF',
+      color: '#0067A0',
+      textTransform: 'capitalize',
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 600,
+      fontSize: '16px',
+      lineHeight: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '10px',
+      verticalAlign: 'middle',
+      textAlign: 'center',
+      '&:hover': {
+        borderColor: '#00965E',
+        color: '#00965E',
+        backgroundColor: '#FFFFFF',
+      },
+    };
+  }
+
+  if (name === 'viewInvoice' || name === 'printInvoice') {
+    return {
+      width: '218px',
+      height: '44px',
+      borderRadius: '5px',
+      padding: '10px',
+      border: '1px solid #0067A0',
+      backgroundColor: '#FFFFFF',
+      color: '#0067A0',
+      textTransform: 'capitalize',
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 600,
+      fontSize: '16px',
+      lineHeight: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      verticalAlign: 'middle',
+      textAlign: 'center',
+      '&:hover': {
+        borderColor: '#00965E',
+        color: '#00965E',
+        backgroundColor: '#FFFFFF',
+      },
+    };
+  }
+
+  return {
+    textTransform: 'capitalize',
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+  };
+};
 
 interface Infos {
   info: {
@@ -145,12 +274,14 @@ function OrderCard(props: OrderCardProps) {
   ];
 
   const navigate = useNavigate();
+  const [isMobile] = useMobile();
 
   const [openSwitchCompany, setOpenSwitchCompany] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [type, setType] = useState<string>('');
   const [currentDialogData, setCurrentDialogData] = useState<DialogData>();
   const isShowButtons = buttons.filter((btn) => btn.isCanShow).length > 0;
+  const cardStyles = getCardStyles(itemKey, isMobile);
 
   let infoKey: string[] = [];
   let infoValue: string[] = [];
@@ -195,12 +326,12 @@ function OrderCard(props: OrderCardProps) {
     }
   };
 
-  let showedInformation: ReactNode[] | string = infoValue?.map((value: string) => (
+  let showedInformation: ReactNode | ReactNode[] = infoValue?.map((value: string) => (
     <PaymentItemContainer key={value}>{value}</PaymentItemContainer>
   ));
 
   if (typeof infos === 'string') {
-    showedInformation = infos;
+    showedInformation = <PaymentItemContainer>{infos}</PaymentItemContainer>;
   } else if (infos?.money) {
     const symbol = infos?.symbol || {};
     showedInformation = infoKey?.map((key: string, index: number) => (
@@ -208,8 +339,8 @@ function OrderCard(props: OrderCardProps) {
         {symbol[key] === 'grandTotal' && (
           <Divider
             sx={{
-              marginBottom: '1rem',
-              marginTop: '0.5rem',
+              marginBottom: '15px',
+              marginTop: '15px',
             }}
           />
         )}
@@ -235,25 +366,49 @@ function OrderCard(props: OrderCardProps) {
   }
 
   return (
-    <Card
-      sx={{
-        marginBottom: '1rem',
-      }}
-    >
-      <Box
+    <Card sx={cardStyles}>
+      <Box sx={{ padding: '10px 10px 0 10px' }}>
+        <Typography
+          sx={{
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: '24px',
+            lineHeight: '28px',
+            color: '#000000',
+          }}
+        >
+          {header}
+        </Typography>
+        {subtitle && (
+          <Typography
+            sx={{
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '16px',
+              lineHeight: '24px',
+              color: '#000000',
+              marginTop: '5px',
+            }}
+          >
+            {subtitle}
+          </Typography>
+        )}
+      </Box>
+      <CardContent
         sx={{
-          padding: '1rem 1rem 0 1rem',
+          padding: '10px',
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
-        <Typography variant="h5">{header}</Typography>
-        {subtitle && <div>{subtitle}</div>}
-      </Box>
-      <CardContent>
         <Box
           sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
             '& #item-name-key': {
-              maxWidth: '70%',
-              wordBreak: 'break-word',
+              maxWidth: '45%',
             },
           }}
         >
@@ -270,6 +425,7 @@ function OrderCard(props: OrderCardProps) {
                   key={button.key}
                   name={button.name}
                   variant={button.variant}
+                  sx={getButtonStyles(button.name)}
                   onClick={throttle(() => {
                     handleOpenDialog(button.name);
                   }, 2000)}
@@ -338,8 +494,8 @@ export default function OrderAction(props: OrderActionProps) {
 
   const {
     money,
-    orderSummary: { createAt, name, priceData, priceSymbol } = {},
-    payment: { billingAddress, paymentMethod, dateCreateAt } = {},
+    orderSummary: { createAt, priceData, priceSymbol } = {},
+    payment: { billingAddress, paymentMethod } = {},
     orderComments = '',
     products,
     orderId,
@@ -449,7 +605,7 @@ export default function OrderAction(props: OrderActionProps) {
       value: b3Lang('orderDetail.reorder'),
       key: 'Re-Order',
       name: 'reOrder',
-      variant: 'outlined',
+      variant: 'contained',
       isCanShow: isB2BUser ? purchasabilityPermission : true,
     },
     {
@@ -474,17 +630,12 @@ export default function OrderAction(props: OrderActionProps) {
   ];
 
   const invoiceBtnPermissions = Number(ipStatus) !== 0 || createdEmail === emailAddress;
+  const purchasedAtLabel = createAt ? b3Lang('orderDetail.purchasedAtLabel', { date: displayFormat(createAt, true) }) : '';
   const orderData: OrderData[] = [
     {
-      header: b3Lang('orderDetail.summary'),
+      header: b3Lang('orderDetail.resumeTitle'),
       key: 'order-summary',
-      subtitle:
-        dateCreateAt && name
-          ? b3Lang('orderDetail.purchaseDetails', {
-              name,
-              updatedAt: displayFormat(Number(dateCreateAt)),
-            })
-          : '',
+      subtitle: purchasedAtLabel,
       buttons,
       infos: {
         money,
