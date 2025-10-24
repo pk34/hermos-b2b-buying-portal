@@ -15,21 +15,21 @@ interface QuoteStatusObj {
   };
 }
 
-const StatusTag = styled(B3Tag)(() => ({
-  boxSizing: 'border-box',
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontFamily: 'Lato, sans-serif',
-  fontWeight: 600,
-  fontSize: '16px',
-  lineHeight: '24px',
-  textAlign: 'center',
-  borderRadius: '20px',
-  padding: '10px',
-  height: '34px',
-  minWidth: '166px',
-}));
+const StatusTag = styled(B3Tag)`
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 20px;
+  padding: 10px;
+  height: 34px;
+  min-width: 166px;
+`;
 
 const quoteStatus: QuoteStatusObj = {
   '0': {

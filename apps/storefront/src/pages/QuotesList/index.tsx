@@ -23,17 +23,9 @@ import QuoteStatus from '../quote/components/QuoteStatus';
 import { addPrice } from '../quote/shared/config';
 
 import { QuoteItemCard } from './QuoteItemCard';
+import type { QuoteListItem } from './QuoteItemCard';
 
-interface ListItem {
-  [key: string]: string | number | Object | null | undefined;
-  status: string;
-  quoteNumber: string;
-  quoteTitle?: string;
-  grandTotal?: string | number;
-  createdAt?: number | string;
-  expiredAt?: number | string;
-  currency?: CurrencyProps | null;
-}
+type ListItem = QuoteListItem;
 
 interface FilterSearchProps {
   first: number;
