@@ -284,9 +284,10 @@ function B3FilterMore<T, Y>({
         handleLeftClick={handleClose}
         handRightClick={handleSaveFilters}
         isShowBordered={false}
-        dialogWidth="396px"
+        dialogWidth="min(396px, 95vw)"
         maxWidth={false}
         fullScreenOnMobile={false}
+        applyDialogWidthOnMobile
         dialogSx={filterModalDialogSx}
         dialogContentSx={filterModalDialogContentSx}
         leftStyleBtn={filterModalLeftButtonSx}

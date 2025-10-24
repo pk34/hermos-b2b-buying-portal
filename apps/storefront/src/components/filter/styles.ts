@@ -60,6 +60,10 @@ export const filterModalDialogSx = {
     marginBottom: 0,
     marginLeft: 'auto',
     marginRight: 'auto',
+    '@media (max-width: 600px)': {
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
   },
   '& .MuiDialogContent-root': {
     marginTop: 0,
@@ -80,6 +84,12 @@ export const filterModalDialogSx = {
     display: 'flex',
     justifyContent: 'center',
     gap: '16px',
+    '@media (max-width: 600px)': {
+      flexDirection: 'column-reverse',
+      gap: '20px',
+      alignItems: 'center',
+      padding: '16px 0 24px',
+    },
   },
 } as const;
 
@@ -112,6 +122,9 @@ export const filterModalLeftButtonSx = {
     backgroundColor: '#FFFFFF',
     borderColor: '#00965E',
   },
+  '@media (max-width: 600px)': {
+    width: '90%',
+  },
 } as const;
 
 export const filterModalRightButtonSx = {
@@ -133,6 +146,9 @@ export const filterModalRightButtonSx = {
   '&:hover': {
     backgroundColor: '#00965E',
     borderColor: '#00965E',
+  },
+  '@media (max-width: 600px)': {
+    width: '90%',
   },
 } as const;
 
