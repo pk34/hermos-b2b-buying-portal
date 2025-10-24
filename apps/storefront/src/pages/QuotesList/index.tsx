@@ -60,7 +60,6 @@ const defaultSortKey = 'quoteNumber';
 
 const sortKeys = {
   quoteNumber: 'quoteNumber',
-  grandTotal: 'grandTotal',
   status: 'status',
   createdAt: 'createdAt',
   expiredAt: 'expiredAt',
@@ -257,7 +256,8 @@ const useColumnList = (): Array<TableColumnItem<ListItem>> => {
         style: {
           textAlign: 'right',
         },
-        isSortable: true,
+        // The quotes API does not expose a grand total orderBy option, so keep this column unsortable.
+        isSortable: false,
       },
       {
         key: 'status',
