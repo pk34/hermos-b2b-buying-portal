@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { visuallyHidden } from '@mui/utils';
 
 import B3Filter from '@/components/filter/B3Filter';
 import { filterModalFieldBaseSx } from '@/components/filter/styles';
@@ -24,9 +25,14 @@ import { addPrice } from '../quote/shared/config';
 import { QuoteItemCard } from './QuoteItemCard';
 
 interface ListItem {
-  [key: string]: string | Object;
+  [key: string]: string | number | Object | null | undefined;
   status: string;
   quoteNumber: string;
+  quoteTitle?: string;
+  grandTotal?: string | number;
+  createdAt?: number | string;
+  expiredAt?: number | string;
+  currency?: CurrencyProps | null;
 }
 
 interface FilterSearchProps {
@@ -62,13 +68,49 @@ const defaultSortKey = 'quoteNumber';
 
 const sortKeys = {
   quoteNumber: 'quoteNumber',
-  quoteTitle: 'quoteTitle',
-  salesRep: 'salesRep',
-  createdBy: 'createdBy',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  expiredAt: 'expiredAt',
+  grandTotal: 'grandTotal',
   status: 'status',
+  createdAt: 'createdAt',
+  expiredAt: 'expiredAt',
+};
+
+const quotesTableStyles = {
+  '& .MuiPaper-root': {
+    boxShadow: 'none',
+    border: 'none',
+  },
+  '& .MuiTableHead-root .MuiTableCell-head': {
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 700,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    borderBottom: 'none',
+  },
+  '& .MuiTableHead-root .MuiTableCell-head .MuiTableSortLabel-root': {
+    color: '#000000',
+    '&.Mui-active': {
+      color: '#000000',
+    },
+    '&:hover': {
+      color: '#000000',
+    },
+    '& .MuiTableSortLabel-icon': {
+      color: '#000000 !important',
+    },
+  },
+  '& .MuiTableBody-root .MuiTableCell-body': {
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    borderBottom: 'none',
+  },
+  '& .MuiTableBody-root .MuiTableRow-root': {
+    borderTop: '1px solid #000000',
+    borderBottom: 'none',
+  },
 };
 
 function useData() {
@@ -187,22 +229,48 @@ const useColumnList = (): Array<TableColumnItem<ListItem>> => {
       {
         key: 'quoteNumber',
         title: b3Lang('quotes.quoteNumber'),
+        render: (item: ListItem) => (
+          <>
+            {item.quoteNumber}
+            {item.quoteTitle ? (
+              <Box component="span" sx={visuallyHidden}>
+                {item.quoteTitle}
+              </Box>
+            ) : null}
+          </>
+        ),
         isSortable: true,
       },
       {
-        key: 'quoteTitle',
-        title: b3Lang('quotes.title'),
+        key: 'grandTotal',
+        title: b3Lang('quotes.grandTotal'),
+        render: (item: ListItem) => {
+          const { grandTotal, currency } = item;
+          if (grandTotal === undefined || grandTotal === null) {
+            return '—';
+          }
+
+          const numericGrandTotal = Number(grandTotal);
+          if (Number.isNaN(numericGrandTotal)) {
+            return String(grandTotal);
+          }
+
+          const newCurrency = currency as CurrencyProps;
+          return currencyFormatConvert(numericGrandTotal, {
+            currency: newCurrency,
+            isConversionRate: false,
+            useCurrentCurrency: !!currency,
+          });
+        },
+        style: {
+          textAlign: 'right',
+        },
         isSortable: true,
       },
       {
-        key: 'salesRep',
-        title: b3Lang('quotes.salesRep'),
-        render: (item: ListItem) => `${item.salesRep || item.salesRepEmail}`,
-        isSortable: true,
-      },
-      {
-        key: 'createdBy',
-        title: b3Lang('quotes.createdBy'),
+        key: 'status',
+        title: b3Lang('quotes.quoteStatus'),
+        render: (item: ListItem) => <QuoteStatus code={item.status} />,
         isSortable: true,
       },
       {
@@ -213,13 +281,6 @@ const useColumnList = (): Array<TableColumnItem<ListItem>> => {
         isSortable: true,
       },
       {
-        key: 'updatedAt',
-        title: b3Lang('quotes.lastUpdate'),
-        render: (item: ListItem) =>
-          `${Number(item.status) !== 0 ? displayFormat(Number(item.updatedAt)) : item.updatedAt}`,
-        isSortable: true,
-      },
-      {
         key: 'expiredAt',
         title: b3Lang('quotes.expirationDate'),
         render: (item: ListItem) =>
@@ -227,26 +288,14 @@ const useColumnList = (): Array<TableColumnItem<ListItem>> => {
         isSortable: true,
       },
       {
-        key: 'totalAmount',
-        title: b3Lang('quotes.subtotal'),
+        key: 'currency',
+        title: b3Lang('orders.currency'),
         render: (item: ListItem) => {
-          const { totalAmount, currency } = item;
-          const newCurrency = currency as CurrencyProps;
-          return currencyFormatConvert(Number(totalAmount), {
-            currency: newCurrency,
-            isConversionRate: false,
-            useCurrentCurrency: !!currency,
-          });
+          const { currency } = item;
+          const currentCurrency = currency as CurrencyProps | undefined;
+
+          return currentCurrency?.currencyCode || '—';
         },
-        style: {
-          textAlign: 'right',
-        },
-      },
-      {
-        key: 'status',
-        title: b3Lang('quotes.status'),
-        render: (item: ListItem) => <QuoteStatus code={item.status} />,
-        isSortable: true,
       },
     ],
     [b3Lang],
@@ -327,15 +376,13 @@ function QuotesList() {
         const quoteDraft = {
           node: {
             quoteNumber: '—',
-            quoteTitle: '—',
             createdAt: '—',
-            salesRepEmail: '—',
             createdBy: `${customer.firstName} ${customer.lastName}`,
-            updatedAt: '—',
             expiredAt: '—',
-            totalAmount: summaryPrice?.grandTotal,
+            grandTotal: `${summaryPrice?.grandTotal ?? 0}`,
             status: 0,
             taxTotal: summaryPrice?.tax,
+            currency: undefined,
           },
         };
 
@@ -411,26 +458,29 @@ function QuotesList() {
           handleChange={handleChange}
           handleFilterChange={handleFilterChange}
         />
-        <B3PaginationTable
-          columnItems={columns}
-          rowsPerPageOptions={[10, 20, 30]}
-          getRequestList={fetchList}
-          searchParams={filterData}
-          isCustomRender={false}
-          requestLoading={setIsRequestLoading}
-          tableKey="quoteNumber"
-          sortDirection={order}
-          orderBy={orderBy}
-          sortByFn={handleSetOrderBy}
-          labelRowsPerPage={
-            isMobile ? b3Lang('quotes.cardsPerPage') : b3Lang('quotes.quotesPerPage')
-          }
-          renderItem={(row) => <QuoteItemCard item={row} goToDetail={goToDetail} />}
-          onClickRow={(row) => {
-            goToDetail(row, Number(row.status));
-          }}
-          hover
-        />
+        <Box sx={quotesTableStyles}>
+          <B3PaginationTable
+            columnItems={columns}
+            rowsPerPageOptions={[10, 20, 30]}
+            getRequestList={fetchList}
+            searchParams={filterData}
+            isCustomRender={false}
+            requestLoading={setIsRequestLoading}
+            tableKey="quoteNumber"
+            sortDirection={order}
+            orderBy={orderBy}
+            sortByFn={handleSetOrderBy}
+            labelRowsPerPage={
+              isMobile ? b3Lang('quotes.cardsPerPage') : b3Lang('quotes.quotesPerPage')
+            }
+            renderItem={(row) => <QuoteItemCard item={row} goToDetail={goToDetail} />}
+            onClickRow={(row) => {
+              goToDetail(row, Number(row.status));
+            }}
+            hover
+            showBorder={false}
+          />
+        </Box>
       </Box>
     </B3Spin>
   );
