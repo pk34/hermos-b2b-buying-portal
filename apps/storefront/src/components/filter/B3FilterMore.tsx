@@ -205,7 +205,7 @@ function B3FilterMore<T, Y>({
   return (
     <Box
       sx={{
-        ml: 3,
+        ml: isMobile ? 0 : 3,
         cursor: 'pointer',
       }}
     >
@@ -227,8 +227,8 @@ function B3FilterMore<T, Y>({
                     backgroundColor: getHoverColor('#FFFFFF', 0.1),
                   },
                   '& svg': {
-                    width: '32px',
-                    height: '32px',
+                    width: '24px',
+                    height: '24px',
                   },
                 }}
               >
@@ -243,6 +243,10 @@ function B3FilterMore<T, Y>({
                   color: customColor,
                   ':hover': {
                     backgroundColor: getHoverColor('#FFFFFF', 0.1),
+                  },
+                  '& svg': {
+                    width: '24px',
+                    height: '24px',
                   },
                 }}
               >

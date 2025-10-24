@@ -209,7 +209,7 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
               justifyContent: 'space-between',
             }}
           >
-            <B3FilterSearch handleChange={handleSearchChange} w="90%" searchValue={searchValue} />
+            <B3FilterSearch handleChange={handleSearchChange} w="85%" searchValue={searchValue} />
             <B3FilterMore
               startPicker={startPicker}
               endPicker={endPicker}
