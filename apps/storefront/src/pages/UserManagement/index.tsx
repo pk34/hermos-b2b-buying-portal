@@ -8,7 +8,6 @@ import { useCardListColumn, useTableRef } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { rolePermissionSelector, useAppSelector } from '@/store';
 import { CustomerRole } from '@/types';
-import { snackbar } from '@/utils';
 import { verifyCreatePermission } from '@/utils/b3CheckPermissions';
 import { b2bPermissionsMap } from '@/utils/b3CheckPermissions/config';
 
@@ -41,6 +40,7 @@ function UserManagement() {
   const [isRequestLoading, setIsRequestLoading] = useState<boolean>(false);
 
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+  const [deleteSuccessOpen, setDeleteSuccessOpen] = useState<boolean>(false);
 
   const [userId, setUserId] = useState<string>();
   const b3Lang = useB3Lang();
@@ -184,12 +184,17 @@ function UserManagement() {
   };
 
   const handleDelete: Delete = (id) => {
+    setDeleteSuccessOpen(false);
     setUserId(id);
     setDeleteOpen(true);
   };
 
   const handleCancelClick = () => {
     setDeleteOpen(false);
+  };
+
+  const handleCloseDeleteSuccessModal = () => {
+    setDeleteSuccessOpen(false);
   };
 
   const handleDeleteUserClick = async (userId?: string) => {
@@ -204,7 +209,7 @@ function UserManagement() {
         userId,
         companyId: selectCompanyHierarchyId || companyId,
       });
-      snackbar.success(b3Lang('userManagement.deleteUserSuccessfully'));
+      setDeleteSuccessOpen(true);
     } finally {
       setIsRequestLoading(false);
       initSearchList();
@@ -270,7 +275,8 @@ function UserManagement() {
             fontFamily: "'Lato', sans-serif",
             fontWeight: 600,
             '&:hover': {
-              backgroundColor: '#0067A0',
+              backgroundColor: '#00965E',
+              borderColor: '#00965E',
             },
           }}
           leftStyleBtn={{
@@ -288,6 +294,7 @@ function UserManagement() {
             fontWeight: 600,
             '&:hover': {
               backgroundColor: '#FFFFFF',
+              borderColor: '#00965E',
             },
           }}
           isShowBordered={false}
@@ -355,6 +362,102 @@ function UserManagement() {
             }}
           >
             {b3Lang('userManagement.confirmDelete')}
+          </Box>
+        </B3Dialog>
+        <B3Dialog
+          isOpen={deleteSuccessOpen}
+          title={b3Lang('userManagement.deleteUserSuccessTitle')}
+          showLeftBtn={false}
+          rightSizeBtn={b3Lang('userManagement.deleteUserSuccessContinue')}
+          handleLeftClick={handleCloseDeleteSuccessModal}
+          handRightClick={handleCloseDeleteSuccessModal}
+          rightStyleBtn={{
+            width: '150px',
+            height: '44px',
+            borderRadius: '5px',
+            padding: '10px',
+            border: '1px solid #0067A0',
+            backgroundColor: '#0067A0',
+            color: '#FFFFFF',
+            textTransform: 'capitalize',
+            fontFamily: "'Lato', sans-serif",
+            fontWeight: 600,
+            '&:hover': {
+              backgroundColor: '#00965E',
+              borderColor: '#00965E',
+            },
+          }}
+          isShowBordered={false}
+          dialogContentSx={{
+            p: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+          }}
+          dialogSx={{
+            '& .MuiDialog-container': {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            '& .MuiDialog-paper': {
+              backgroundColor: '#FFFFFF',
+              borderRadius: 0,
+              padding: '25px',
+              boxShadow: '0px 4px 22px 5px #0000001A',
+              width: '449px',
+              height: '212px',
+              maxWidth: 'calc(100vw - 32px)',
+              maxHeight: 'calc(100vh - 32px)',
+            },
+            '& .MuiDialogTitle-root': {
+              fontFamily: "'Lato', sans-serif",
+              fontWeight: 600,
+              fontSize: '24px',
+              lineHeight: '28px',
+              color: '#000000',
+              textAlign: 'center',
+              padding: 0,
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            '& .MuiDialogContent-root': {
+              padding: 0,
+            },
+            '& .MuiDialogActions-root': {
+              borderTop: 'none',
+              justifyContent: 'center',
+              padding: 0,
+            },
+          }}
+          fullScreenOnMobile={false}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              height: '100%',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                fontFamily: "'Lato', sans-serif",
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#000000',
+              }}
+            >
+              {b3Lang('userManagement.deleteUserSuccessMessage')}
+            </Box>
           </Box>
         </B3Dialog>
       </Box>

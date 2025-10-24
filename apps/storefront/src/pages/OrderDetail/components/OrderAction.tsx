@@ -1,10 +1,13 @@
 import { Fragment, ReactNode, useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
+import type { CSSObject } from '@emotion/react';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import throttle from 'lodash-es/throttle';
 
 import CustomButton from '@/components/button/CustomButton';
+import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import HierarchyDialog from '@/pages/CompanyHierarchy/components/HierarchyDialog';
 import { GlobalContext } from '@/shared/global';
@@ -24,44 +27,188 @@ import { OrderDetailsContext, OrderDetailsState } from '../context/OrderDetailsC
 
 import OrderDialog from './OrderDialog';
 
-const OrderActionContainer = styled('div')(() => ({}));
+const OrderActionContainer = styled('div')((): CSSObject => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0px',
+}));
 
 interface StyledCardActionsProps {
   isShowButtons: boolean;
+  topSpacing?: string;
 }
 
-const StyledCardActions = styled('div')<StyledCardActionsProps>((props) => ({
+const StyledCardActions = styled('div', {
+  shouldForwardProp: (prop) => prop !== 'isShowButtons' && prop !== 'topSpacing',
+})<StyledCardActionsProps>(({ isShowButtons, topSpacing }): CSSObject => ({
+  display: isShowButtons ? 'flex' : 'none',
   flexWrap: 'wrap',
-  padding: props.isShowButtons ? '0 1rem 1rem 1rem' : 0,
-
-  '& button': {
-    marginLeft: '0',
-    marginRight: '8px',
-    margin: '8px 8px 0 0',
-  },
+  gap: '10px',
+  padding: isShowButtons ? '0 10px 10px' : '0',
+  marginTop: topSpacing ?? '0',
 }));
 
-interface ItemContainerProps {
-  nameKey: string;
-}
+const CardBody = styled('div')((): CSSObject => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+}));
 
-const ItemContainer = styled('div')((props: ItemContainerProps) => ({
+const ItemContainer = styled('div')((): CSSObject => ({
   display: 'flex',
   justifyContent: 'space-between',
-  fontWeight: props.nameKey === 'grandTotal' ? 700 : 400,
+  alignItems: 'flex-start',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+  marginBottom: '0px',
 
   '& p': {
-    marginTop: 0,
-    marginBottom: props.nameKey === 'grandTotal' ? '0' : '12px',
-    lineHeight: 1,
+    margin: 0,
+    lineHeight: '24px',
+    wordBreak: 'break-word',
+  },
+
+  '& p:first-of-type': {
+    maxWidth: '55%',
+    textAlign: 'left',
+  },
+
+  '& p:last-of-type': {
+    maxWidth: '45%',
+    textAlign: 'right',
   },
 }));
 
-const PaymentItemContainer = styled('div')(() => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  fontWeight: 400,
+const PaymentItemContainer = styled('div')((): CSSObject => ({
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+  marginBottom: '0px',
+  wordBreak: 'break-word',
 }));
+
+const CARD_DIMENSIONS: Record<string, { minHeight: string }> = {
+  'order-summary': { minHeight: '400px' },
+};
+
+const getCardStyles = (key: string, isMobile: boolean): SxProps<Theme> => ({
+  borderWidth: '0px 0.3px 0.3px 0px',
+  borderStyle: 'solid',
+  borderColor: '#000000',
+  boxShadow: 'none',
+  borderRadius: 0,
+  backgroundColor: '#FFFFFF',
+  display: 'flex',
+  flexDirection: 'column',
+  width: isMobile ? '100%' : '362px',
+  ...(isMobile
+    ? {}
+    : CARD_DIMENSIONS[key]?.minHeight
+    ? { minHeight: CARD_DIMENSIONS[key].minHeight }
+    : {}),
+});
+
+const reorderButtonStyles: SxProps<Theme> = {
+  width: '128px',
+  height: '40px',
+  borderRadius: '5px',
+  padding: '10px',
+  backgroundColor: '#0067A0',
+  color: '#FFFFFF',
+  textTransform: 'capitalize',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  verticalAlign: 'middle',
+  textAlign: 'center',
+  '&:hover': {
+    backgroundColor: '#00965E',
+  },
+};
+
+const shoppingListButtonStyles: SxProps<Theme> = {
+  width: '100%',
+  height: '44px',
+  borderRadius: '5px',
+  padding: '10px',
+  border: '1px solid #0067A0',
+  backgroundColor: '#FFFFFF',
+  color: '#000000',
+  textTransform: 'capitalize',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '10px',
+  verticalAlign: 'middle',
+  textAlign: 'center',
+  '&:hover': {
+    borderColor: '#00965E',
+    color: '#000000',
+    backgroundColor: '#FFFFFF',
+  },
+};
+
+const invoiceButtonStyles: SxProps<Theme> = {
+  width: '218px',
+  height: '44px',
+  borderRadius: '5px',
+  padding: '10px',
+  border: '1px solid #0067A0',
+  backgroundColor: '#FFFFFF',
+  color: '#000000',
+  textTransform: 'capitalize',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  verticalAlign: 'middle',
+  textAlign: 'center',
+  '&:hover': {
+    borderColor: '#00965E',
+    color: '#000000',
+    backgroundColor: '#FFFFFF',
+  },
+};
+
+const defaultButtonStyles: SxProps<Theme> = {
+  textTransform: 'capitalize',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+};
+
+const getButtonStyles = (name: string): SxProps<Theme> => {
+  if (name === 'reOrder') {
+    return reorderButtonStyles;
+  }
+
+  if (name === 'shoppingList') {
+    return shoppingListButtonStyles;
+  }
+
+  if (name === 'viewInvoice' || name === 'printInvoice') {
+    return invoiceButtonStyles;
+  }
+
+  return defaultButtonStyles;
+};
 
 interface Infos {
   info: {
@@ -145,12 +292,27 @@ function OrderCard(props: OrderCardProps) {
   ];
 
   const navigate = useNavigate();
+  const [isMobile] = useMobile();
 
   const [openSwitchCompany, setOpenSwitchCompany] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [type, setType] = useState<string>('');
   const [currentDialogData, setCurrentDialogData] = useState<DialogData>();
   const isShowButtons = buttons.filter((btn) => btn.isCanShow).length > 0;
+  const cardStyles = getCardStyles(itemKey, isMobile);
+  const actionsTopSpacing = (() => {
+    if (!isShowButtons) return '0px';
+
+    if (itemKey === 'order-summary') {
+      return '30px';
+    }
+
+    if (itemKey === 'payment') {
+      return '15px';
+    }
+
+    return '0px';
+  })();
 
   let infoKey: string[] = [];
   let infoValue: string[] = [];
@@ -195,26 +357,17 @@ function OrderCard(props: OrderCardProps) {
     }
   };
 
-  let showedInformation: ReactNode[] | string = infoValue?.map((value: string) => (
+  let showedInformation: ReactNode | ReactNode[] = infoValue?.map((value: string) => (
     <PaymentItemContainer key={value}>{value}</PaymentItemContainer>
   ));
 
   if (typeof infos === 'string') {
-    showedInformation = infos;
+    showedInformation = <PaymentItemContainer>{infos}</PaymentItemContainer>;
   } else if (infos?.money) {
     const symbol = infos?.symbol || {};
     showedInformation = infoKey?.map((key: string, index: number) => (
       <Fragment key={key}>
-        {symbol[key] === 'grandTotal' && (
-          <Divider
-            sx={{
-              marginBottom: '1rem',
-              marginTop: '0.5rem',
-            }}
-          />
-        )}
-
-        <ItemContainer key={key} nameKey={symbol[key]} aria-label={key} role="group">
+        <ItemContainer key={key} aria-label={key} role="group">
           <p id="item-name-key">{key}</p>{' '}
           {displayAsNegativeNumber.includes(symbol[key]) ? (
             <p>
@@ -235,51 +388,78 @@ function OrderCard(props: OrderCardProps) {
   }
 
   return (
-    <Card
-      sx={{
-        marginBottom: '1rem',
-      }}
-    >
-      <Box
-        sx={{
-          padding: '1rem 1rem 0 1rem',
-        }}
-      >
-        <Typography variant="h5">{header}</Typography>
-        {subtitle && <div>{subtitle}</div>}
-      </Box>
-      <CardContent>
-        <Box
+    <Card sx={cardStyles}>
+      <Box sx={{ padding: '10px 10px 0 10px' }}>
+        <Typography
           sx={{
-            '& #item-name-key': {
-              maxWidth: '70%',
-              wordBreak: 'break-word',
-            },
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: '24px',
+            lineHeight: '28px',
+            color: '#000000',
           }}
         >
-          {showedInformation}
-        </Box>
-      </CardContent>
-      <StyledCardActions isShowButtons={isShowButtons}>
-        {buttons &&
-          buttons.map((button: Buttons) => (
-            <Fragment key={button.key}>
-              {button.isCanShow && (
-                <CustomButton
-                  value={button.value}
-                  key={button.key}
-                  name={button.name}
-                  variant={button.variant}
-                  onClick={throttle(() => {
-                    handleOpenDialog(button.name);
-                  }, 2000)}
-                >
-                  {button.value}
-                </CustomButton>
-              )}
-            </Fragment>
-          ))}
-      </StyledCardActions>
+          {header}
+        </Typography>
+        {subtitle && (
+          <Typography
+            sx={{
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '16px',
+              lineHeight: '24px',
+              color: '#000000',
+              marginTop: '5px',
+            }}
+          >
+            {subtitle}
+          </Typography>
+        )}
+      </Box>
+      <CardBody>
+        <CardContent
+          sx={{
+            padding: isShowButtons ? '10px 10px 0 10px' : '10px',
+            flexGrow: isShowButtons ? 0 : 1,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0px',
+              '& #item-name-key': {
+                maxWidth: '55%',
+              },
+            }}
+          >
+            {showedInformation}
+          </Box>
+        </CardContent>
+        <StyledCardActions isShowButtons={isShowButtons} topSpacing={actionsTopSpacing}>
+          {buttons &&
+            buttons.map((button: Buttons) => (
+              <Fragment key={button.key}>
+                {button.isCanShow && (
+                  <CustomButton
+                    value={button.value}
+                    key={button.key}
+                    name={button.name}
+                    variant={button.variant}
+                    sx={getButtonStyles(button.name)}
+                    onClick={throttle(() => {
+                      handleOpenDialog(button.name);
+                    }, 2000)}
+                  >
+                    {button.value}
+                  </CustomButton>
+                )}
+              </Fragment>
+            ))}
+        </StyledCardActions>
+      </CardBody>
 
       <OrderDialog
         open={open}
@@ -338,8 +518,8 @@ export default function OrderAction(props: OrderActionProps) {
 
   const {
     money,
-    orderSummary: { createAt, name, priceData, priceSymbol } = {},
-    payment: { billingAddress, paymentMethod, dateCreateAt } = {},
+    orderSummary: { createAt, priceData, priceSymbol } = {},
+    payment: { billingAddress, paymentMethod } = {},
     orderComments = '',
     products,
     orderId,
@@ -449,7 +629,7 @@ export default function OrderAction(props: OrderActionProps) {
       value: b3Lang('orderDetail.reorder'),
       key: 'Re-Order',
       name: 'reOrder',
-      variant: 'outlined',
+      variant: 'contained',
       isCanShow: isB2BUser ? purchasabilityPermission : true,
     },
     {
@@ -474,17 +654,12 @@ export default function OrderAction(props: OrderActionProps) {
   ];
 
   const invoiceBtnPermissions = Number(ipStatus) !== 0 || createdEmail === emailAddress;
+  const purchasedAtLabel = createAt ? b3Lang('orderDetail.purchasedAtLabel', { date: displayFormat(createAt, true) }) : '';
   const orderData: OrderData[] = [
     {
-      header: b3Lang('orderDetail.summary'),
+      header: b3Lang('orderDetail.resumeTitle'),
       key: 'order-summary',
-      subtitle:
-        dateCreateAt && name
-          ? b3Lang('orderDetail.purchaseDetails', {
-              name,
-              updatedAt: displayFormat(Number(dateCreateAt)),
-            })
-          : '',
+      subtitle: purchasedAtLabel,
       buttons,
       infos: {
         money,

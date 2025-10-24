@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
-import { DataUsageRounded } from '@mui/icons-material';
-
 import { useB3Lang } from '@/lib/lang';
+import B3NoDataIcon from '@/components/icons/B3NoDataIcon';
 
 interface B3NoDataProps {
   isLoading: boolean;
@@ -26,7 +25,7 @@ export default function B3NoData({ isLoading }: B3NoDataProps) {
   const b3Lang = useB3Lang();
   return (
     <NoDataContainer>
-      {!isLoading && <DataUsageRounded fontSize="large" />}
+      {!isLoading && <B3NoDataIcon />}
       <NoDataText>{isLoading ? '' : b3Lang('global.table.noData')}</NoDataText>
     </NoDataContainer>
   );

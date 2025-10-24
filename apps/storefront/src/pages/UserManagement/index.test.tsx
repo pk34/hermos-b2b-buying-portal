@@ -659,9 +659,20 @@ describe.each([
 
       await waitFor(() => expect(modal).not.toBeInTheDocument());
 
-      const alert = await screen.findByRole('alert');
+      const successModal = await screen.findByRole('dialog', { name: 'Success' });
 
-      expect(within(alert).getByText('User deleted successfully')).toBeInTheDocument();
+      expect(
+        within(successModal).getByRole('heading', { name: 'Success' }),
+      ).toBeInTheDocument();
+      expect(
+        within(successModal).getByText('The user has been deleted successfully.'),
+      ).toBeInTheDocument();
+
+      await userEvent.click(within(successModal).getByRole('button', { name: 'Continue' }));
+
+      await waitFor(() =>
+        expect(screen.queryByRole('dialog', { name: 'Success' })).not.toBeInTheDocument(),
+      );
       expect(screen.queryByRole('heading', { name: 'Troy McClure' })).not.toBeInTheDocument();
 
       expect(deleteUserVariablesSpy).toHaveBeenCalledWith({ userId: 993994, companyId: 776775 });
