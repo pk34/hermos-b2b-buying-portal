@@ -12,13 +12,16 @@ const NoDataContainer = styled('div')(() => ({
   backgroundColor: '#fff',
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center',
-  color: '#aaa',
-  fontSize: '18px',
+  alignItems: 'center'
 }));
 
 const NoDataText = styled('span')(() => ({
   marginLeft: '10px',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '30px',
+  lineHeight: '38px',
+  color: '#000000',
 }));
 
 export default function B3NoData({ isLoading }: B3NoDataProps) {
