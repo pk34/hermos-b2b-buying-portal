@@ -135,7 +135,7 @@ export default function OrderHistory({ variant = 'default' }: OrderHistoryProps)
             fontSize: '24px',
             lineHeight: '28px',
             color: '#000000',
-            marginBottom: '10px',
+            marginBottom: '0px',
           }}
         >
           {b3Lang('orderDetail.history.title')}

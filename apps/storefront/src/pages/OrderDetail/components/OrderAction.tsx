@@ -30,7 +30,7 @@ import OrderDialog from './OrderDialog';
 const OrderActionContainer = styled('div')((): CSSObject => ({
   display: 'flex',
   flexDirection: 'column',
-  gap: '20px',
+  gap: '0px',
 }));
 
 interface StyledCardActionsProps {
@@ -86,14 +86,12 @@ const PaymentItemContainer = styled('div')((): CSSObject => ({
   fontSize: '16px',
   lineHeight: '24px',
   color: '#000000',
-  marginBottom: '8px',
+  marginBottom: '0px',
   wordBreak: 'break-word',
 }));
 
 const CARD_DIMENSIONS: Record<string, { minHeight: string }> = {
   'order-summary': { minHeight: '400px' },
-  payment: { minHeight: '367px' },
-  'order-comments': { minHeight: '367px' },
 };
 
 const getCardStyles = (key: string, isMobile: boolean): SxProps<Theme> => ({
@@ -106,7 +104,11 @@ const getCardStyles = (key: string, isMobile: boolean): SxProps<Theme> => ({
   display: 'flex',
   flexDirection: 'column',
   width: isMobile ? '100%' : '362px',
-  minHeight: isMobile ? 'auto' : CARD_DIMENSIONS[key]?.minHeight || 'auto',
+  ...(isMobile
+    ? {}
+    : CARD_DIMENSIONS[key]?.minHeight
+    ? { minHeight: CARD_DIMENSIONS[key].minHeight }
+    : {}),
 });
 
 const reorderButtonStyles: SxProps<Theme> = {
@@ -138,7 +140,7 @@ const shoppingListButtonStyles: SxProps<Theme> = {
   padding: '10px',
   border: '1px solid #0067A0',
   backgroundColor: '#FFFFFF',
-  color: '#0067A0',
+  color: '#000000',
   textTransform: 'capitalize',
   fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
@@ -152,7 +154,7 @@ const shoppingListButtonStyles: SxProps<Theme> = {
   textAlign: 'center',
   '&:hover': {
     borderColor: '#00965E',
-    color: '#00965E',
+    color: '#000000',
     backgroundColor: '#FFFFFF',
   },
 };
@@ -164,7 +166,7 @@ const invoiceButtonStyles: SxProps<Theme> = {
   padding: '10px',
   border: '1px solid #0067A0',
   backgroundColor: '#FFFFFF',
-  color: '#0067A0',
+  color: '#000000',
   textTransform: 'capitalize',
   fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
@@ -177,7 +179,7 @@ const invoiceButtonStyles: SxProps<Theme> = {
   textAlign: 'center',
   '&:hover': {
     borderColor: '#00965E',
-    color: '#00965E',
+    color: '#000000',
     backgroundColor: '#FFFFFF',
   },
 };
@@ -420,7 +422,7 @@ function OrderCard(props: OrderCardProps) {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
+            gap: '0px',
             '& #item-name-key': {
               maxWidth: '45%',
             },

@@ -61,7 +61,7 @@ const Divider = styled('hr')((): CSSObject => ({
   borderStyle: 'solid',
   borderColor: '#000000',
   marginTop: '20px',
-  marginBottom: '5px',
+  marginBottom: '0px',
 }));
 
 const ProductsTableContainer = styled('div')((): CSSObject => ({
@@ -74,15 +74,18 @@ const StyledTable = styled('table')((): CSSObject => ({
   borderCollapse: 'collapse',
 }));
 
-const HeaderCell = styled('th')<{ align?: 'left' | 'right' }>(({ align = 'left' }): CSSObject => ({
-  fontFamily: 'Lato, sans-serif',
-  fontWeight: 600,
-  fontSize: '16px',
-  lineHeight: '24px',
-  color: '#000000',
-  textAlign: align,
-  padding: '8px 0',
-}));
+const HeaderCell = styled('th')<{ align?: 'left' | 'right'; width?: string }>(
+  ({ align = 'left', width }): CSSObject => ({
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    textAlign: align,
+    padding: '8px 0',
+    width,
+  }),
+);
 
 const TableRow = styled('tr')((): CSSObject => ({
   borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
@@ -92,20 +95,24 @@ const TableRow = styled('tr')((): CSSObject => ({
   },
 }));
 
-const BodyCell = styled('td')<{ align?: 'left' | 'right' }>(({ align = 'left' }): CSSObject => ({
-  fontFamily: 'Lato, sans-serif',
-  fontWeight: 400,
-  fontSize: '16px',
-  lineHeight: '24px',
-  color: '#000000',
-  textAlign: align,
-  padding: '12px 0',
-  verticalAlign: 'top',
-}));
+const BodyCell = styled('td')<{ align?: 'left' | 'right'; width?: string }>(
+  ({ align = 'left', width }): CSSObject => ({
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    textAlign: align,
+    padding: '12px 0',
+    verticalAlign: 'top',
+    width,
+  }),
+);
 
 const ProductInfo = styled('div')((): CSSObject => ({
   display: 'flex',
   gap: '16px',
+  width: '100%',
 }));
 
 const ProductImage = styled('img')((): CSSObject => ({
@@ -234,9 +241,7 @@ export default function OrderShipping({ isCurrentCompany: _isCurrentCompany }: O
   }, [money, orderSummary]);
 
   const paymentMethod = payment?.paymentMethod;
-  const paymentLabel = paymentMethod
-    ? b3Lang('orderDetail.paymentMethodLabel', { paymentMethod })
-    : '';
+  const paymentLabel = paymentMethod ? `${paymentMethod}` : '';
   const totalLabel = grandTotal ? b3Lang('orderDetail.totalLabel', { total: grandTotal }) : '';
 
   const hasProducts = products.length > 0;
@@ -247,9 +252,7 @@ export default function OrderShipping({ isCurrentCompany: _isCurrentCompany }: O
   const statusKey = isFullyShipped
     ? 'orderDetail.shippingStatus.shipped'
     : 'orderDetail.shippingStatus.notShippedYet';
-  const statusText = hasProducts
-    ? b3Lang('orderDetail.shippingStatus.label', { status: b3Lang(statusKey) })
-    : '';
+  const statusText = hasProducts ? b3Lang(statusKey) : '';
 
   const productList = products;
 
@@ -317,10 +320,16 @@ function ProductsTable({ products, money, showInclusiveTaxPrice }: ProductsTable
       <StyledTable>
         <thead>
           <tr>
-            <HeaderCell>{b3Lang('global.searchProduct.product')}</HeaderCell>
-            <HeaderCell align="right">{b3Lang('global.searchProduct.price')}</HeaderCell>
-            <HeaderCell align="right">{b3Lang('global.searchProduct.qty')}</HeaderCell>
-            <HeaderCell align="right">{b3Lang('global.searchProduct.total')}</HeaderCell>
+            <HeaderCell width="40%">{b3Lang('global.searchProduct.product')}</HeaderCell>
+            <HeaderCell width="20%" align="right">
+              {b3Lang('global.searchProduct.price')}
+            </HeaderCell>
+            <HeaderCell width="20%" align="right">
+              {b3Lang('global.searchProduct.qty')}
+            </HeaderCell>
+            <HeaderCell width="20%" align="right">
+              {b3Lang('global.searchProduct.total')}
+            </HeaderCell>
           </tr>
         </thead>
         <tbody>
@@ -337,7 +346,7 @@ function ProductsTable({ products, money, showInclusiveTaxPrice }: ProductsTable
 
             return (
               <TableRow key={product.id}>
-                <BodyCell>
+                <BodyCell width="40%">
                   <ProductInfo>
                     <ProductImage src={product.imageUrl || PRODUCT_DEFAULT_IMAGE} alt={product.name} />
                     <ProductDetails>
@@ -351,9 +360,15 @@ function ProductsTable({ products, money, showInclusiveTaxPrice }: ProductsTable
                     </ProductDetails>
                   </ProductInfo>
                 </BodyCell>
-                <BodyCell align="right">{unitPrice}</BodyCell>
-                <BodyCell align="right">{product.quantity}</BodyCell>
-                <BodyCell align="right">{totalPrice}</BodyCell>
+                <BodyCell width="20%" align="right">
+                  {unitPrice}
+                </BodyCell>
+                <BodyCell width="20%" align="right">
+                  {product.quantity}
+                </BodyCell>
+                <BodyCell width="20%" align="right">
+                  {totalPrice}
+                </BodyCell>
               </TableRow>
             );
           })}
