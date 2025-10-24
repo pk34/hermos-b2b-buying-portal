@@ -130,7 +130,7 @@ export default function B3Layout({ children }: { children: ReactNode }) {
             <B3Logo />
             <Box
               sx={{
-                pt: '24px',
+                mt: '32px',
               }}
             >
               <B3Nav />
