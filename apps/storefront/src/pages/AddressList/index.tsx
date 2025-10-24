@@ -277,12 +277,14 @@ function Address() {
           customRenderFooter={
             <Box
               sx={{
-                display: 'flex',
+                display: 'grid',
+                gridTemplateColumns: { xs: 'auto 1fr', md: 'auto 1fr' },
                 alignItems: 'center',
-                width: '674px',
-                height: '60px',
+                columnGap: { xs: '12px', md: '5px' },
+                width: { xs: '100%', md: '674px' },
+                minHeight: { xs: '60px', md: '60px' },
                 borderRadius: '5px',
-                padding: '10px',
+                padding: { xs: '10px 16px', md: '10px' },
                 mt: '21px',
                 backgroundColor: '#E6E6E6',
               }}
@@ -318,7 +320,7 @@ function Address() {
                   fontSize: '14px',
                   lineHeight: '20px',
                   color: '#FF8E3E',
-                  ml: '5px',
+                  textAlign: { xs: 'center', md: 'left' },
                 }}
               >
                 Necesitas agregar o modificar una dirección contacta a tu vendedor o escríbenos a

@@ -81,8 +81,8 @@ export function AddressItemCard({
     <Card
       key={addressInfo.id}
       sx={{
-        width: '327px',
-        height: '194px',
+        width: { xs: '100%', md: '327px' },
+        height: { xs: 'auto', md: '194px' },
         border: '0.2px solid #000000',
         borderRadius: '10px',
         backgroundColor: '#FFF',
