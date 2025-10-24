@@ -2,7 +2,7 @@ import { Fragment, ReactNode, useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import type { CSSObject } from '@emotion/react';
-import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import throttle from 'lodash-es/throttle';
 
@@ -35,24 +35,20 @@ const OrderActionContainer = styled('div')((): CSSObject => ({
 
 interface StyledCardActionsProps {
   isShowButtons: boolean;
+  addTopSpacing?: boolean;
 }
 
 const StyledCardActions = styled('div', {
-  shouldForwardProp: (prop) => prop !== 'isShowButtons',
-})<StyledCardActionsProps>(({ isShowButtons }): CSSObject => ({
+  shouldForwardProp: (prop) => prop !== 'isShowButtons' && prop !== 'addTopSpacing',
+})<StyledCardActionsProps>(({ isShowButtons, addTopSpacing }): CSSObject => ({
   display: isShowButtons ? 'flex' : 'none',
   flexWrap: 'wrap',
   gap: '10px',
   padding: isShowButtons ? '0 10px 10px' : '0',
+  marginTop: addTopSpacing ? '15px' : '0',
 }));
 
-interface ItemContainerProps {
-  nameKey: string;
-}
-
-const ItemContainer = styled('div', {
-  shouldForwardProp: (prop) => prop !== 'nameKey',
-})<ItemContainerProps>(({ nameKey }): CSSObject => ({
+const ItemContainer = styled('div')((): CSSObject => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'flex-start',
@@ -61,7 +57,7 @@ const ItemContainer = styled('div', {
   fontSize: '16px',
   lineHeight: '24px',
   color: '#000000',
-  marginBottom: nameKey === 'grandTotal' ? '0' : '12px',
+  marginBottom: '0px',
 
   '& p': {
     margin: 0,
@@ -70,12 +66,12 @@ const ItemContainer = styled('div', {
   },
 
   '& p:first-of-type': {
-    maxWidth: '40%',
+    maxWidth: '55%',
     textAlign: 'left',
   },
 
   '& p:last-of-type': {
-    maxWidth: '55%',
+    maxWidth: '45%',
     textAlign: 'right',
   },
 }));
@@ -352,16 +348,7 @@ function OrderCard(props: OrderCardProps) {
     const symbol = infos?.symbol || {};
     showedInformation = infoKey?.map((key: string, index: number) => (
       <Fragment key={key}>
-        {symbol[key] === 'grandTotal' && (
-          <Divider
-            sx={{
-              marginBottom: '15px',
-              marginTop: '15px',
-            }}
-          />
-        )}
-
-        <ItemContainer key={key} nameKey={symbol[key]} aria-label={key} role="group">
+        <ItemContainer key={key} aria-label={key} role="group">
           <p id="item-name-key">{key}</p>{' '}
           {displayAsNegativeNumber.includes(symbol[key]) ? (
             <p>
@@ -424,14 +411,14 @@ function OrderCard(props: OrderCardProps) {
             flexDirection: 'column',
             gap: '0px',
             '& #item-name-key': {
-              maxWidth: '45%',
+              maxWidth: '55%',
             },
           }}
         >
           {showedInformation}
         </Box>
       </CardContent>
-      <StyledCardActions isShowButtons={isShowButtons}>
+      <StyledCardActions isShowButtons={isShowButtons} addTopSpacing={itemKey === 'payment'}>
         {buttons &&
           buttons.map((button: Buttons) => (
             <Fragment key={button.key}>
