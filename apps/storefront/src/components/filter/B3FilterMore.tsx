@@ -205,7 +205,7 @@ function B3FilterMore<T, Y>({
   return (
     <Box
       sx={{
-        ml: 3,
+        ml: isMobile ? 0 : 3,
         cursor: 'pointer',
       }}
     >
