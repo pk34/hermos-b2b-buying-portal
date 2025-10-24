@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { Close, Dehaze, ShoppingBagOutlined } from '@mui/icons-material';
 import { Badge, Box, IconButton, Typography } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
@@ -56,6 +56,25 @@ export default function B3MobileLayout({ children, title, titleSx }: B3MobileLay
   const customColor = getContrastColor(backgroundColor);
 
   const userName = [firstName, lastName].filter(Boolean).join(' ') || '';
+
+  const headingSx = useMemo<SxProps<Theme>>(() => {
+    const baseTitleSx: SxProps<Theme> = {
+      p: 0,
+      m: 0,
+      mb: '6vw',
+      fontSize: '34px',
+      fontWeight: '400',
+      color: customColor || '#263238',
+    };
+
+    const additionalSx: SxProps<Theme>[] = Array.isArray(titleSx)
+      ? titleSx
+      : titleSx
+        ? [titleSx]
+        : [];
+
+    return [baseTitleSx, ...additionalSx];
+  }, [customColor, titleSx]);
 
   return (
     <Box
@@ -128,20 +147,7 @@ export default function B3MobileLayout({ children, title, titleSx }: B3MobileLay
         </Box>
       </Box>
 
-      <Box
-        component="h1"
-        sx={[
-          {
-            p: 0,
-            m: 0,
-            mb: '6vw',
-            fontSize: '34px',
-            fontWeight: '400',
-            color: customColor || '#263238',
-          },
-          titleSx,
-        ]}
-      >
+      <Box component="h1" sx={headingSx}>
         {title}
       </Box>
       <CompanyCredit />
