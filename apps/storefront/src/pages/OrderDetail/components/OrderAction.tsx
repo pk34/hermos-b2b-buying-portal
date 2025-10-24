@@ -35,17 +35,23 @@ const OrderActionContainer = styled('div')((): CSSObject => ({
 
 interface StyledCardActionsProps {
   isShowButtons: boolean;
-  addTopSpacing?: boolean;
+  topSpacing?: string;
 }
 
 const StyledCardActions = styled('div', {
-  shouldForwardProp: (prop) => prop !== 'isShowButtons' && prop !== 'addTopSpacing',
-})<StyledCardActionsProps>(({ isShowButtons, addTopSpacing }): CSSObject => ({
+  shouldForwardProp: (prop) => prop !== 'isShowButtons' && prop !== 'topSpacing',
+})<StyledCardActionsProps>(({ isShowButtons, topSpacing }): CSSObject => ({
   display: isShowButtons ? 'flex' : 'none',
   flexWrap: 'wrap',
   gap: '10px',
   padding: isShowButtons ? '0 10px 10px' : '0',
-  marginTop: addTopSpacing ? '15px' : '0',
+  marginTop: topSpacing ?? '0',
+}));
+
+const CardBody = styled('div')((): CSSObject => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
 }));
 
 const ItemContainer = styled('div')((): CSSObject => ({
@@ -130,7 +136,7 @@ const reorderButtonStyles: SxProps<Theme> = {
 };
 
 const shoppingListButtonStyles: SxProps<Theme> = {
-  width: '258px',
+  width: '100%',
   height: '44px',
   borderRadius: '5px',
   padding: '10px',
@@ -294,6 +300,19 @@ function OrderCard(props: OrderCardProps) {
   const [currentDialogData, setCurrentDialogData] = useState<DialogData>();
   const isShowButtons = buttons.filter((btn) => btn.isCanShow).length > 0;
   const cardStyles = getCardStyles(itemKey, isMobile);
+  const actionsTopSpacing = (() => {
+    if (!isShowButtons) return '0px';
+
+    if (itemKey === 'order-summary') {
+      return '30px';
+    }
+
+    if (itemKey === 'payment') {
+      return '15px';
+    }
+
+    return '0px';
+  })();
 
   let infoKey: string[] = [];
   let infoValue: string[] = [];
@@ -397,48 +416,50 @@ function OrderCard(props: OrderCardProps) {
           </Typography>
         )}
       </Box>
-      <CardContent
-        sx={{
-          padding: '10px',
-          flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Box
+      <CardBody>
+        <CardContent
           sx={{
+            padding: isShowButtons ? '10px 10px 0 10px' : '10px',
+            flexGrow: isShowButtons ? 0 : 1,
             display: 'flex',
             flexDirection: 'column',
-            gap: '0px',
-            '& #item-name-key': {
-              maxWidth: '55%',
-            },
           }}
         >
-          {showedInformation}
-        </Box>
-      </CardContent>
-      <StyledCardActions isShowButtons={isShowButtons} addTopSpacing={itemKey === 'payment'}>
-        {buttons &&
-          buttons.map((button: Buttons) => (
-            <Fragment key={button.key}>
-              {button.isCanShow && (
-                <CustomButton
-                  value={button.value}
-                  key={button.key}
-                  name={button.name}
-                  variant={button.variant}
-                  sx={getButtonStyles(button.name)}
-                  onClick={throttle(() => {
-                    handleOpenDialog(button.name);
-                  }, 2000)}
-                >
-                  {button.value}
-                </CustomButton>
-              )}
-            </Fragment>
-          ))}
-      </StyledCardActions>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0px',
+              '& #item-name-key': {
+                maxWidth: '55%',
+              },
+            }}
+          >
+            {showedInformation}
+          </Box>
+        </CardContent>
+        <StyledCardActions isShowButtons={isShowButtons} topSpacing={actionsTopSpacing}>
+          {buttons &&
+            buttons.map((button: Buttons) => (
+              <Fragment key={button.key}>
+                {button.isCanShow && (
+                  <CustomButton
+                    value={button.value}
+                    key={button.key}
+                    name={button.name}
+                    variant={button.variant}
+                    sx={getButtonStyles(button.name)}
+                    onClick={throttle(() => {
+                      handleOpenDialog(button.name);
+                    }, 2000)}
+                  >
+                    {button.value}
+                  </CustomButton>
+                )}
+              </Fragment>
+            ))}
+        </StyledCardActions>
+      </CardBody>
 
       <OrderDialog
         open={open}
