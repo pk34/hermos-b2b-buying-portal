@@ -77,6 +77,8 @@ const buildQuotesListBCWith = builder<QuotesListBC>(() => {
   return { data: { customerQuotes: { totalCount, edges } } };
 });
 
+const QUOTE_NUMBER_MANY_SOCKS = '123456789';
+
 type QuoteItem = QuoteInfoState['draftQuoteList'][number];
 
 const productSearchItem = builder<QuoteItem['node']['productsSearch']>(() => ({
@@ -191,30 +193,31 @@ describe('when the user is a B2B customer', () => {
     const table = await screen.findByRole('table');
 
     expect(within(table).getByRole('columnheader', { name: 'Quote #' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Title' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Sales rep' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Created by' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Date created' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Last update' })).toBeInTheDocument();
+    expect(within(table).getByRole('columnheader', { name: 'Grand total' })).toBeInTheDocument();
+    expect(within(table).getByRole('columnheader', { name: 'Quote status' })).toBeInTheDocument();
+    expect(within(table).getByRole('columnheader', { name: 'Creation date' })).toBeInTheDocument();
     expect(
       within(table).getByRole('columnheader', { name: 'Expiration date' }),
     ).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Subtotal' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Status' })).toBeInTheDocument();
+    expect(within(table).getByRole('columnheader', { name: 'Currency' })).toBeInTheDocument();
   });
 
   it('displays a table with values for each key attribute of a quote', async () => {
     const manySocks = buildQuoteEdgeWith({
       node: {
-        quoteNumber: '123456789',
-        quoteTitle: 'Many Socks',
-        salesRep: 'Fred Salesman',
-        createdBy: 'Sam Shopper',
+        quoteNumber: QUOTE_NUMBER_MANY_SOCKS,
+        grandTotal: '101.99',
         createdAt: getUnixTime(new Date('1 January 2025')),
-        updatedAt: getUnixTime(new Date('2 February 2025')),
         expiredAt: getUnixTime(new Date('3 March 2025')),
-        totalAmount: '101.99',
-        currency: { token: '$', location: 'left', decimalToken: '.', decimalPlaces: 2 },
+        currency: {
+          token: '$',
+          location: 'left',
+          decimalToken: '.',
+          decimalPlaces: 2,
+          currencyCode: 'USD',
+          thousandsToken: ',',
+          currencyExchangeRate: '1',
+        },
         status: QuoteStatus.OPEN,
       },
     });
@@ -233,17 +236,18 @@ describe('when the user is a B2B customer', () => {
     renderWithProviders(<QuotesList />, { preloadedState });
 
     const table = await screen.findByRole('table');
-    const row = within(table).getByRole('row', { name: /Many Socks/ });
+    const row = within(table).getByRole('row', {
+      name: new RegExp(QUOTE_NUMBER_MANY_SOCKS),
+    });
 
-    expect(within(row).getByRole('cell', { name: '123456789' })).toBeInTheDocument();
-    expect(within(row).getByRole('cell', { name: 'Many Socks' })).toBeInTheDocument();
-    expect(within(row).getByRole('cell', { name: 'Fred Salesman' })).toBeInTheDocument();
-    expect(within(row).getByRole('cell', { name: 'Sam Shopper' })).toBeInTheDocument();
+    expect(
+      within(row).getByRole('cell', { name: QUOTE_NUMBER_MANY_SOCKS }),
+    ).toBeInTheDocument();
     expect(within(row).getByRole('cell', { name: '1 January 2025' })).toBeInTheDocument();
-    expect(within(row).getByRole('cell', { name: '2 February 2025' })).toBeInTheDocument();
     expect(within(row).getByRole('cell', { name: '3 March 2025' })).toBeInTheDocument();
     expect(within(row).getByRole('cell', { name: '$101.99' })).toBeInTheDocument();
     expect(within(row).getByRole('cell', { name: 'Open' })).toBeInTheDocument();
+    expect(within(row).getByRole('cell', { name: 'USD' })).toBeInTheDocument();
   });
 
   it('displays a quote per row', async () => {
@@ -266,9 +270,10 @@ describe('when the user is a B2B customer', () => {
 
     const table = await screen.findByRole('table');
 
-    expect(within(table).getByRole('row', { name: /Many Socks/ })).toBeInTheDocument();
-    expect(within(table).getByRole('row', { name: /Some Trouser/ })).toBeInTheDocument();
-    expect(within(table).getByRole('row', { name: /One Shirt/ })).toBeInTheDocument();
+    const rows = within(table).getAllByRole('row');
+
+    // Includes header row
+    expect(rows).toHaveLength(4);
   });
 
   describe('when clicking on the row of a non-draft quote', () => {
@@ -352,20 +357,16 @@ describe('when the user is a B2B customer', () => {
 
       // Quote #
       expect(allDraftQuoteCells[0]).toHaveTextContent('—');
-      // Title
-      expect(allDraftQuoteCells[1]).toHaveTextContent('—');
-      // Sales rep
-      expect(allDraftQuoteCells[2]).toHaveTextContent('—');
-      // Draft quotes are created by the current user in state
-      expect(allDraftQuoteCells[3]).toHaveTextContent('John Doe');
-      // Date created
-      expect(allDraftQuoteCells[4]).toHaveTextContent('—');
-      // Last update
-      expect(allDraftQuoteCells[5]).toHaveTextContent('—');
+      // Grand total is the sum of all the items in the draft quote
+      expect(allDraftQuoteCells[1]).toHaveTextContent('$200.00');
+      // Quote status
+      expect(allDraftQuoteCells[2]).toHaveTextContent('Draft');
+      // Creation date
+      expect(allDraftQuoteCells[3]).toHaveTextContent('—');
       // Expiration date
-      expect(allDraftQuoteCells[6]).toHaveTextContent('—');
-      // Subtotal is the sum of all the items in the draft quote
-      expect(allDraftQuoteCells[7]).toHaveTextContent('$200.00');
+      expect(allDraftQuoteCells[4]).toHaveTextContent('—');
+      // Currency is not defined for draft quotes
+      expect(allDraftQuoteCells[5]).toHaveTextContent('—');
     });
   });
 
@@ -790,30 +791,31 @@ describe('when the user is a B2C customer', () => {
     const table = await screen.findByRole('table');
 
     expect(within(table).getByRole('columnheader', { name: 'Quote #' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Title' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Sales rep' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Created by' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Date created' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Last update' })).toBeInTheDocument();
+    expect(within(table).getByRole('columnheader', { name: 'Grand total' })).toBeInTheDocument();
+    expect(within(table).getByRole('columnheader', { name: 'Quote status' })).toBeInTheDocument();
+    expect(within(table).getByRole('columnheader', { name: 'Creation date' })).toBeInTheDocument();
     expect(
       within(table).getByRole('columnheader', { name: 'Expiration date' }),
     ).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Subtotal' })).toBeInTheDocument();
-    expect(within(table).getByRole('columnheader', { name: 'Status' })).toBeInTheDocument();
+    expect(within(table).getByRole('columnheader', { name: 'Currency' })).toBeInTheDocument();
   });
 
   it('displays a table with values for each key attribute of a quote', async () => {
     const manySocks = buildQuoteEdgeWith({
       node: {
-        quoteNumber: '123456789',
-        quoteTitle: 'Many Socks',
-        salesRep: 'Fred Salesman',
-        createdBy: 'Sam Shopper',
+        quoteNumber: QUOTE_NUMBER_MANY_SOCKS,
+        grandTotal: '101.99',
         createdAt: getUnixTime(new Date('1 January 2025')),
-        updatedAt: getUnixTime(new Date('2 February 2025')),
         expiredAt: getUnixTime(new Date('3 March 2025')),
-        totalAmount: '101.99',
-        currency: { token: '$', location: 'left', decimalToken: '.', decimalPlaces: 2 },
+        currency: {
+          token: '$',
+          location: 'left',
+          decimalToken: '.',
+          decimalPlaces: 2,
+          currencyCode: 'USD',
+          thousandsToken: ',',
+          currencyExchangeRate: '1',
+        },
         status: QuoteStatus.OPEN,
       },
     });
@@ -827,17 +829,18 @@ describe('when the user is a B2C customer', () => {
     renderWithProviders(<QuotesList />, { preloadedState });
 
     const table = await screen.findByRole('table');
-    const row = within(table).getByRole('row', { name: /Many Socks/ });
+    const row = within(table).getByRole('row', {
+      name: new RegExp(QUOTE_NUMBER_MANY_SOCKS),
+    });
 
-    expect(within(row).getByRole('cell', { name: '123456789' })).toBeInTheDocument();
-    expect(within(row).getByRole('cell', { name: 'Many Socks' })).toBeInTheDocument();
-    expect(within(row).getByRole('cell', { name: 'Fred Salesman' })).toBeInTheDocument();
-    expect(within(row).getByRole('cell', { name: 'Sam Shopper' })).toBeInTheDocument();
+    expect(
+      within(row).getByRole('cell', { name: QUOTE_NUMBER_MANY_SOCKS }),
+    ).toBeInTheDocument();
     expect(within(row).getByRole('cell', { name: '1 January 2025' })).toBeInTheDocument();
-    expect(within(row).getByRole('cell', { name: '2 February 2025' })).toBeInTheDocument();
     expect(within(row).getByRole('cell', { name: '3 March 2025' })).toBeInTheDocument();
     expect(within(row).getByRole('cell', { name: '$101.99' })).toBeInTheDocument();
     expect(within(row).getByRole('cell', { name: 'Open' })).toBeInTheDocument();
+    expect(within(row).getByRole('cell', { name: 'USD' })).toBeInTheDocument();
   });
 
   it('displays a quote per row', async () => {
@@ -855,9 +858,10 @@ describe('when the user is a B2C customer', () => {
 
     const table = await screen.findByRole('table');
 
-    expect(within(table).getByRole('row', { name: /Many Socks/ })).toBeInTheDocument();
-    expect(within(table).getByRole('row', { name: /Some Trouser/ })).toBeInTheDocument();
-    expect(within(table).getByRole('row', { name: /One Shirt/ })).toBeInTheDocument();
+    const rows = within(table).getAllByRole('row');
+
+    // Includes header row
+    expect(rows).toHaveLength(4);
   });
 
   describe('when clicking on the row of a non-draft quote', () => {

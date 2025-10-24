@@ -11,15 +11,24 @@ import { currencyFormat, displayFormat } from '@/utils';
 
 import QuoteStatus from '../quote/components/QuoteStatus';
 
-interface ListItem {
-  [key: string]: string | Object;
+export interface QuoteListItem {
+  [key: string]: string | number | CurrencyProps | null | undefined;
   status: string;
   quoteNumber: string;
+  quoteTitle?: string;
+  salesRepEmail?: string;
+  createdBy?: string;
+  createdAt?: number | string;
+  updatedAt?: number | string;
+  expiredAt?: number | string;
+  grandTotal?: string | number;
+  totalAmount?: string | number;
+  currency?: CurrencyProps | null;
 }
 
 interface QuoteItemCardProps {
-  goToDetail: (val: ListItem, status: number) => void;
-  item: ListItem;
+  goToDetail: (val: QuoteListItem, status: number) => void;
+  item: QuoteListItem;
 }
 
 const Flex = styled('div')({
@@ -36,7 +45,7 @@ export function QuoteItemCard(props: QuoteItemCardProps) {
 
   const primaryColor = theme.palette.primary.main;
 
-  const columnAllItems: TableColumnItem<ListItem>[] = [
+  const columnAllItems: TableColumnItem<QuoteListItem>[] = [
     {
       key: 'quoteTitle',
       title: b3Lang('quotes.quoteItemCard.title'),

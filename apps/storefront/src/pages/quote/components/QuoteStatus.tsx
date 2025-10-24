@@ -1,3 +1,5 @@
+import styled from '@emotion/styled';
+
 import { B3Tag } from '@/components';
 import { LangFormatFunction, useB3Lang } from '@/lib/lang';
 
@@ -12,6 +14,22 @@ interface QuoteStatusObj {
     color: string;
   };
 }
+
+const StatusTag = styled(B3Tag)`
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 20px;
+  padding: 10px;
+  height: 34px;
+  min-width: 166px;
+`;
 
 const quoteStatus: QuoteStatusObj = {
   '0': {
@@ -59,8 +77,6 @@ export default function QuoteStatus(props: OrderStatusProps) {
   }
 
   return (
-    <B3Tag color={status.color} textColor={status.textColor}>
-      {status.name}
-    </B3Tag>
+    <StatusTag color={status.color} textColor={status.textColor}>{status.name}</StatusTag>
   );
 }
