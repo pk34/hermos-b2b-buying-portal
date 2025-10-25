@@ -90,7 +90,7 @@ function UserManagement() {
         textAlign: 'center',
         verticalAlign: 'middle',
         ml: '38px',
-        width: 'auto',
+        width: 'fit-content',
         maxWidth: '100%',
         flexShrink: 0,
         whiteSpace: 'nowrap',
@@ -108,6 +108,7 @@ function UserManagement() {
           alignSelf: 'center',
         },
       }),
+      disableMobileFullWidth: true,
       placeNextToFilterIcon: true,
     };
 

@@ -47,6 +47,7 @@ interface CustomButtonProps {
   customLabel: string;
   customButtonStyle?: SxProps<Theme>;
   placeNextToFilterIcon?: boolean;
+  disableMobileFullWidth?: boolean;
 }
 
 interface B3FilterProps<T, Y> {
@@ -222,7 +223,7 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
             <CustomButton
               size="small"
               variant="contained"
-              fullWidth
+              fullWidth={!customButtonConfig?.disableMobileFullWidth}
               sx={{
                 marginTop: '20px',
                 height: '42px',
