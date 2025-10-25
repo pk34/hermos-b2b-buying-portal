@@ -1,7 +1,5 @@
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
 import { useB3Lang } from '@/lib/lang';
@@ -29,7 +27,7 @@ interface QuoteItemCardProps {
   item: QuoteListItem;
 }
 
-const QuoteCard = styled(Card)(({ theme }) => ({
+const QuoteCard = styled('button')(({ theme }) => ({
   width: '100%',
   border: '0.2px solid #000000',
   borderRadius: '10px',
@@ -50,7 +48,7 @@ const QuoteCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const CardBody = styled(CardContent)({
+const CardBody = styled('div')({
   padding: 0,
   display: 'flex',
   flexDirection: 'column',
