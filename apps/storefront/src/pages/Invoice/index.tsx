@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -11,7 +11,6 @@ import { TableColumnItem } from '@/components/table/B3Table';
 import { permissionLevels } from '@/constants';
 import { useMobile, useSort } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
-import { GlobalContext } from '@/shared/global';
 import { getInvoiceList, getInvoiceStats } from '@/shared/service/b2b';
 import { rolePermissionSelector, useAppSelector } from '@/store';
 import { CustomerRole } from '@/types';
@@ -191,10 +190,6 @@ function Invoice() {
     level: permissionLevels.COMPANY_SUBSIDIARIES,
     code: b2bPermissionsMap.invoicePayPermission,
   });
-
-  const {
-    state: { bcLanguage },
-  } = useContext(GlobalContext);
 
   const [handleSetOrderBy, order, orderBy] = useSort(
     sortIdArr,
