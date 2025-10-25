@@ -101,9 +101,8 @@ function UserManagement() {
         },
         [theme.breakpoints.down('sm')]: {
           ml: 0,
-          mt: '10px',
+          mt: '18px',
           width: '85%',
-          minWidth: '85%',
           maxWidth: '85%',
           alignSelf: 'center',
         },
