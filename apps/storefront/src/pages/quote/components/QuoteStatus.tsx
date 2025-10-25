@@ -28,7 +28,6 @@ const StatusTag = styled(B3Tag)`
   border-radius: 20px;
   padding: 10px;
   height: 34px;
-  min-width: 166px;
 `;
 
 const quoteStatus: QuoteStatusObj = {
