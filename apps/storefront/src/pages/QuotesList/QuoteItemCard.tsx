@@ -181,7 +181,7 @@ export function QuoteItemCard(props: QuoteItemCardProps) {
   };
 
   return (
-    <QuoteCard component="button" type="button" onClick={handleNavigate}>
+    <QuoteCard type="button" onClick={handleNavigate}>
       <CardBody>
         <TitleRow>
           <TitleBlock>
