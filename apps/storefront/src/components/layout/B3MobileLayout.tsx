@@ -67,13 +67,15 @@ export default function B3MobileLayout({ children, title, titleSx }: B3MobileLay
       color: customColor || '#263238',
     };
 
-    const additionalSx: SxProps<Theme>[] = Array.isArray(titleSx)
-      ? titleSx
-      : titleSx
-        ? [titleSx]
-        : [];
+    if (!titleSx) {
+      return baseTitleSx;
+    }
 
-    return [baseTitleSx, ...additionalSx];
+    if (Array.isArray(titleSx)) {
+      return [baseTitleSx, ...titleSx];
+    }
+
+    return [baseTitleSx, titleSx];
   }, [customColor, titleSx]);
 
   return (
