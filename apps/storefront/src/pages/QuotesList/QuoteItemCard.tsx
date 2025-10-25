@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -30,15 +29,26 @@ interface QuoteItemCardProps {
   item: QuoteListItem;
 }
 
-const QuoteCard = styled(Card)({
+const QuoteCard = styled(Card)(({ theme }) => ({
   width: '100%',
   border: '0.2px solid #000000',
   borderRadius: '10px',
-  backgroundColor: '#FFF',
-  boxShadow: '0px 4px 22px 5px #0000001A',
+  backgroundColor: '#FFFFFF',
+  boxShadow: '0px 4px 22px 5px rgba(0, 0, 0, 0.1)',
   boxSizing: 'border-box',
   padding: '20px',
-});
+  display: 'block',
+  color: 'rgba(0, 0, 0, 0.87)',
+  overflow: 'hidden',
+  transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+  textAlign: 'left',
+  cursor: 'pointer',
+  appearance: 'none',
+  '&:focus-visible': {
+    outline: `3px solid ${theme.palette.primary.main}`,
+    outlineOffset: '2px',
+  },
+}));
 
 const CardBody = styled(CardContent)({
   padding: 0,
@@ -60,6 +70,8 @@ const TitleBlock = styled(Box)({
   flexWrap: 'wrap',
   alignItems: 'center',
   gap: '8px',
+  flex: 1,
+  minWidth: 0,
 });
 
 const PrimaryLabel = styled(Typography)({
@@ -113,12 +125,13 @@ const SecondaryValue = styled(Typography)({
   display: 'inline',
 });
 
+const StandalonePrimaryValue = styled(PrimaryValue)({
+  display: 'block',
+});
+
 export function QuoteItemCard(props: QuoteItemCardProps) {
   const { item, goToDetail } = props;
-  const theme = useTheme();
   const b3Lang = useB3Lang();
-
-  const primaryColor = theme.palette.primary.main;
 
   const getDisplayDate = (date?: number | string) => {
     if (date === null || date === undefined || date === '') {
@@ -162,10 +175,15 @@ export function QuoteItemCard(props: QuoteItemCardProps) {
   };
 
   const titleValue = item.quoteTitle && item.quoteTitle !== '' ? item.quoteTitle : item.quoteNumber || '—';
-  const currencyLabel = item.currency?.currencyCode || item.currency?.token || '—';
+  const currencyRaw = item.currency?.currencyCode ?? item.currency?.token;
+  const currencyLabel = currencyRaw ? String(currencyRaw) : '—';
+
+  const handleNavigate = () => {
+    goToDetail(item, Number(item.status));
+  };
 
   return (
-    <QuoteCard>
+    <QuoteCard component="button" type="button" onClick={handleNavigate}>
       <CardBody>
         <TitleRow>
           <TitleBlock>
@@ -176,14 +194,8 @@ export function QuoteItemCard(props: QuoteItemCardProps) {
         </TitleRow>
 
         <InfoGroup>
-          <InfoRow>
-            <PrimaryLabel>{`${b3Lang('quotes.quoteItemCard.total')}:`}</PrimaryLabel>
-            <PrimaryValue>{getTotal()}</PrimaryValue>
-          </InfoRow>
-          <InfoRow>
-            <PrimaryLabel>{`${b3Lang('quotes.quoteItemCard.currency')}:`}</PrimaryLabel>
-            <PrimaryValue>{currencyLabel}</PrimaryValue>
-          </InfoRow>
+          <StandalonePrimaryValue>{getTotal()}</StandalonePrimaryValue>
+          <StandalonePrimaryValue>{currencyLabel}</StandalonePrimaryValue>
           <InfoRow>
             <SecondaryLabel>{`${b3Lang('quotes.quoteItemCard.dateCreated')}:`}</SecondaryLabel>
             <SecondaryValue>{getDisplayDate(item.createdAt)}</SecondaryValue>
@@ -193,22 +205,6 @@ export function QuoteItemCard(props: QuoteItemCardProps) {
             <SecondaryValue>{getDisplayDate(item.expiredAt)}</SecondaryValue>
           </InfoRow>
         </InfoGroup>
-
-        <Box
-          onClick={() => goToDetail(item, Number(item.status))}
-          sx={{
-            mt: '8px',
-            color: primaryColor || '#1976D2',
-            cursor: 'pointer',
-            fontWeight: 700,
-            display: 'inline-block',
-            fontFamily: "'Lato', sans-serif",
-            fontSize: '14px',
-            lineHeight: '24px',
-          }}
-        >
-          {b3Lang('quotes.quoteItemCard.view')}
-        </Box>
       </CardBody>
     </QuoteCard>
   );

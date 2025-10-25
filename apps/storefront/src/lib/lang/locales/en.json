@@ -232,7 +232,6 @@
   "quotes.quoteItemCard.total": "Total",
   "quotes.quoteItemCard.currency": "Currency",
   "quotes.quoteItemCard.subtotal": "Subtotal",
-  "quotes.quoteItemCard.view": "VIEW",
   "quotes.productValidationFailed": "Product validation failed for {productName}",
   "shoppingLists.createNew": "Create new",
   "shoppingLists.deleteSuccess": "The shopping list was successfully deleted",
