@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import styled from '@emotion/styled';
-import { Card, CardContent, Typography } from '@mui/material';
+import type { CSSObject } from '@emotion/react';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 
 import { B3Table, TableColumnItem } from '@/components/table/B3Table';
 import { useMobile } from '@/hooks';
@@ -12,7 +13,7 @@ import OrderStatus from '../../order/components/OrderStatus';
 import { orderStatusTranslationVariables } from '../../order/shared/getOrderStatus';
 import { OrderDetailsContext } from '../context/OrderDetailsContext';
 
-const HistoryListContainer = styled('div')(() => ({
+const HistoryListContainer = styled('div')((): CSSObject => ({
   '& > .MuiPaper-root': {
     boxShadow: 'none',
   },
@@ -26,7 +27,11 @@ const HistoryListContainer = styled('div')(() => ({
   },
 }));
 
-export default function OrderHistory() {
+interface OrderHistoryProps {
+  variant?: 'default' | 'orderDetail';
+}
+
+export default function OrderHistory({ variant = 'default' }: OrderHistoryProps) {
   const b3Lang = useB3Lang();
   const {
     state: { history = [], orderStatus: orderStatusLabel = [], customStatus },
@@ -52,7 +57,11 @@ export default function OrderHistory() {
     return activeStatusLabel;
   };
 
-  const columnItems: TableColumnItem<OrderHistoryItem>[] = [
+  if (!history.length) {
+    return null;
+  }
+
+  const defaultColumns: TableColumnItem<OrderHistoryItem>[] = [
     {
       key: 'time',
       title: b3Lang('orderDetail.history.dateHeader'),
@@ -68,7 +77,77 @@ export default function OrderHistory() {
     },
   ];
 
-  return history.length > 0 ? (
+  const orderDetailColumns: TableColumnItem<OrderHistoryItem>[] = [
+    {
+      key: 'time',
+      title: b3Lang('orderDetail.history.dateHeader'),
+      style: {
+        fontFamily: 'Lato, sans-serif',
+        fontWeight: '600',
+        fontSize: '16px',
+        lineHeight: '24px',
+        color: '#000000',
+      },
+      render: (item: OrderHistoryItem) => (
+        <Typography
+          component="span"
+          sx={{
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 400,
+            fontSize: '16px',
+            lineHeight: '24px',
+            color: '#000000',
+          }}
+        >
+          {String(displayExtendedFormat(item.createdAt))}
+        </Typography>
+      ),
+    },
+    {
+      key: 'code',
+      title: b3Lang('orderDetail.history.statusHeader'),
+      style: {
+        fontFamily: 'Lato, sans-serif',
+        fontWeight: '600',
+        fontSize: '16px',
+        lineHeight: '24px',
+        color: '#000000',
+      },
+      render: (item: OrderHistoryItem) => (
+        <OrderStatus
+          code={item.status}
+          text={getOrderStatusLabel(item.status)}
+          variant="orderDetailHistory"
+        />
+      ),
+    },
+  ];
+
+  const columnItems = variant === 'orderDetail' ? orderDetailColumns : defaultColumns;
+
+  if (variant === 'orderDetail') {
+    return (
+      <Box>
+        <Typography
+          sx={{
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: '24px',
+            lineHeight: '28px',
+            color: '#000000',
+            marginBottom: '0px',
+          }}
+        >
+          {b3Lang('orderDetail.history.title')}
+        </Typography>
+        <HistoryListContainer>
+          <B3Table columnItems={columnItems} listItems={history} showPagination={false} showBorder={false} />
+        </HistoryListContainer>
+      </Box>
+    );
+  }
+
+  return (
     <Card>
       <CardContent
         sx={{
@@ -81,5 +160,5 @@ export default function OrderHistory() {
         </HistoryListContainer>
       </CardContent>
     </Card>
-  ) : null;
+  );
 }

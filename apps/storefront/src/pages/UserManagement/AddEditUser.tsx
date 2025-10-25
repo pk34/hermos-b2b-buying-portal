@@ -1,9 +1,11 @@
 import { forwardRef, Ref, useEffect, useImperativeHandle, useState } from 'react';
+import { Box } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import concat from 'lodash-es/concat';
 
 import { B3CustomForm } from '@/components';
 import B3Dialog from '@/components/B3Dialog';
+import { filterModalLeftButtonSx, filterModalRightButtonSx } from '@/components/filter/styles';
 import { useB3Lang } from '@/lib/lang';
 import { useAppSelector } from '@/store';
 import { UserTypes } from '@/types';
@@ -12,6 +14,7 @@ import { channelId, isKeyOf, snackbar } from '@/utils';
 import { addUser } from './addUser';
 import { checkUserEmail } from './checkUserEmail';
 import {
+  addEditUserFieldBaseSx,
   emailError,
   ExtraFieldsProps,
   FilterProps,
@@ -251,7 +254,14 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         companyRoleItem.default = data?.companyRoleId || '';
       }
     }
-    const allUsersFiles = concat(usersFiles, userExtrafields);
+    const allUsersFiles = concat(usersFiles, userExtrafields).map((item: UsersFilesProps) => ({
+      ...item,
+      sx: {
+        ...addEditUserFieldBaseSx,
+        ...(item.sx || {}),
+      },
+    })) as UsersFilesProps[];
+
     setUsersFiles(allUsersFiles);
 
     setType(type);
@@ -273,15 +283,82 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
       handleLeftClick={handleCancelClick}
       handRightClick={handleAddUserClick}
       loading={addUpdateLoading}
-      isShowBordered
+      isShowBordered={false}
+      dialogWidth="min(396px, 95vw)"
+      applyDialogWidthOnMobile
+      fullScreenOnMobile={false}
+      maxWidth={false}
+      dialogSx={{
+        '& .MuiDialog-container': {
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        '& .MuiDialog-paper': {
+          borderRadius: '0px',
+          backgroundColor: '#FFFFFF',
+        },
+        '& .MuiDialogTitle-root': {
+          fontFamily: "'Lato', sans-serif",
+          fontWeight: 600,
+          fontSize: '24px',
+          lineHeight: '28px',
+          color: '#000000',
+          borderBottom: '0.5px solid #000000',
+          padding: '24px 24px 16px',
+        },
+        '& .MuiDialogActions-root': {
+          borderTop: '0.5px solid #000000',
+          padding: '16px 24px 24px',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '16px',
+          '@media (max-width: 600px)': {
+            width: '100%',
+            flexDirection: 'column-reverse',
+            gap: '20px',
+            alignItems: 'center',
+            padding: '16px 0 24px',
+          },
+        },
+      }}
+      dialogContentSx={{
+        padding: '9px 24px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        width: '100%',
+      }}
+      leftStyleBtn={{
+        ...filterModalLeftButtonSx,
+      }}
+      rightStyleBtn={{
+        ...filterModalRightButtonSx,
+      }}
     >
-      <B3CustomForm
-        formFields={usersFiles}
-        errors={errors}
-        control={control}
-        getValues={getValues}
-        setValue={setValue}
-      />
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <Box sx={{ width: '100%', maxWidth: '369px' }}>
+          <B3CustomForm
+            formFields={usersFiles}
+            errors={errors}
+            control={control}
+            getValues={getValues}
+            setValue={setValue}
+            containerProps={{
+              spacing: 2.5,
+              sx: {
+                mt: '0 !important',
+              },
+            }}
+          />
+        </Box>
+      </Box>
     </B3Dialog>
   );
 }

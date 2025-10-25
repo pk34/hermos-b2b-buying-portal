@@ -1,6 +1,7 @@
 import { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, useMediaQuery } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 
 import useMobile from '@/hooks/useMobile';
 import { useB3Lang } from '@/lib/lang';
@@ -100,10 +101,32 @@ export default function B3Layout({ children }: { children: ReactNode }) {
     return {};
   }, [location]);
 
+  const pagesWithCustomMobileTitle = ['/addresses', '/user-management'];
+  const isCustomMobileTitlePage = pagesWithCustomMobileTitle.includes(location.pathname);
+
+  const mobileTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
+    if (!isMobile || !isCustomMobileTitlePage) {
+      return undefined;
+    }
+
+    return {
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 600,
+      fontSize: '24px',
+      lineHeight: '28px',
+      color: '#0067A0',
+      textAlign: 'center',
+      width: '100%',
+      marginTop: '24px',
+    };
+  }, [isCustomMobileTitlePage, isMobile]);
+
   return (
     <Box>
       {isMobile ? (
-        <B3MobileLayout title={title}>{children}</B3MobileLayout>
+        <B3MobileLayout title={title} titleSx={mobileTitleSx}>
+          {children}
+        </B3MobileLayout>
       ) : (
         <Box
           id="app-mainPage-layout"
@@ -123,14 +146,14 @@ export default function B3Layout({ children }: { children: ReactNode }) {
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              width: '200px',
+              width: '214px',
               displayPrint: 'none',
             }}
           >
             <B3Logo />
             <Box
               sx={{
-                pt: '24px',
+                mt: '32px',
               }}
             >
               <B3Nav />

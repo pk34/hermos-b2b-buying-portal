@@ -369,7 +369,7 @@ describe('when a personal customer visits an order', () => {
     expect(screen.getByText('Pending')).toBeInTheDocument();
   });
 
-  it('can navigate back to the orders listing page', async () => {
+  it('does not render a back to orders link', async () => {
     server.use(
       graphql.query('GetCustomerOrderStatuses', () =>
         HttpResponse.json(buildCustomerOrderStatusesWith('WHATEVER_VALUES')),
@@ -382,7 +382,7 @@ describe('when a personal customer visits an order', () => {
       ),
     );
 
-    const { navigation } = renderWithProviders(<OrderDetails />, {
+    renderWithProviders(<OrderDetails />, {
       preloadedState,
       initialEntries: [
         {
@@ -395,9 +395,7 @@ describe('when a personal customer visits an order', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
-    await userEvent.click(screen.getByText('Back to orders'));
-
-    expect(navigation).toHaveBeenCalledWith('/orders');
+    expect(screen.queryByText('Back to orders')).not.toBeInTheDocument();
   });
 
   it('renders the order details', async () => {
@@ -947,9 +945,9 @@ describe('when a personal customer visits an order', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
-    expect(screen.getByRole('heading', { name: 'Summary' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Resume' })).toBeInTheDocument();
 
-    expect(screen.getByText('Purchased by Mike Wazowski on 4 May 2025.')).toBeInTheDocument();
+    expect(screen.getByText('Purchased at 4 May 2025')).toBeInTheDocument();
 
     const tax = screen.getByRole('group', { name: 'Tax' });
     expect(tax).toHaveTextContent('Tax €13,50');
@@ -970,7 +968,7 @@ describe('when a personal customer visits an order', () => {
     expect(grandTotal).toHaveTextContent('Grand total €100,00');
 
     expect(screen.getByRole('button', { name: 'Re-Order' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'ADD TO SHOPPING LIST' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Add to shopping list' })).toBeInTheDocument();
   });
 
   describe('when there is no order history', () => {
@@ -1139,7 +1137,7 @@ describe('when a personal customer visits an order', () => {
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
-      expect(screen.getByRole('heading', { name: 'Order #6696, 3405' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Order #6696' })).toBeInTheDocument();
     });
 
     it('renders the payment details section', async () => {
@@ -1303,23 +1301,23 @@ describe('when a personal customer visits an order', () => {
 
       const navigation = await screen.findByRole('navigation', { name: 'Order 1 of 10' });
 
-      expect(screen.getByRole('heading', { name: 'Order #1,' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Order #1' })).toBeInTheDocument();
 
       const [prev, next] = within(navigation).getAllByRole('button');
 
       await userEvent.click(next);
 
-      expect(await screen.findByRole('heading', { name: 'Order #2,' })).toBeInTheDocument();
+      expect(await screen.findByRole('heading', { name: 'Order #2' })).toBeInTheDocument();
       expect(screen.getByRole('navigation', { name: 'Order 2 of 10' })).toBeInTheDocument();
 
       await userEvent.click(next);
 
-      expect(await screen.findByRole('heading', { name: 'Order #3,' })).toBeInTheDocument();
+      expect(await screen.findByRole('heading', { name: 'Order #3' })).toBeInTheDocument();
       expect(screen.getByRole('navigation', { name: 'Order 3 of 10' })).toBeInTheDocument();
 
       await userEvent.click(prev);
 
-      expect(await screen.findByRole('heading', { name: 'Order #2,' })).toBeInTheDocument();
+      expect(await screen.findByRole('heading', { name: 'Order #2' })).toBeInTheDocument();
       expect(screen.getByRole('navigation', { name: 'Order 2 of 10' })).toBeInTheDocument();
     });
 
@@ -1394,7 +1392,7 @@ describe('when a personal customer visits an order', () => {
 
       const navigation = await screen.findByRole('navigation', { name: 'Order 1 of 10' });
 
-      expect(screen.getByRole('heading', { name: 'Order #1,' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Order #1' })).toBeInTheDocument();
 
       const [prev, next] = within(navigation).getAllByRole('button');
 

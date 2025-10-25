@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Box, Typography } from '@mui/material';
 import cloneDeep from 'lodash-es/cloneDeep';
 
-import { B3CustomForm } from '@/components';
+import { B3CustomForm, SectionTitle } from '@/components';
 import { useGetCountry, useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { AddressItemType } from '@/types/address';
@@ -158,17 +158,16 @@ function QuoteAddress(
           mb: '20px',
         }}
       >
-        <Typography
+        <SectionTitle
           id={fieldsetId}
+          component="h2"
           sx={{
-            fontWeight: 400,
-            fontSize: '24px',
             height: '32px',
             mr: '16px',
           }}
         >
           {title}
-        </Typography>
+        </SectionTitle>
         {Number(role) !== 100 && (
           <Typography
             onClick={handleAddressChoose}

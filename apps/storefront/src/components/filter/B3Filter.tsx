@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 
 import useMobile from '@/hooks/useMobile';
 
@@ -44,7 +45,8 @@ type DeepPartial<T> = {
 interface CustomButtonProps {
   isEnabled: boolean;
   customLabel: string;
-  customButtonStyle?: { [key: string]: string };
+  customButtonStyle?: SxProps<Theme>;
+  placeNextToFilterIcon?: boolean;
 }
 
 interface B3FilterProps<T, Y> {
@@ -132,6 +134,20 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
                 resetFilterInfo={resetFilterInfo}
               />
             )}
+            {customButtonConfig?.isEnabled && customButtonConfig?.placeNextToFilterIcon && (
+              <CustomButton
+                size="small"
+                variant="contained"
+                sx={{
+                  height: '42px',
+                  p: '0 20px',
+                  ...(customButtonConfig?.customButtonStyle || {}),
+                }}
+                onClick={handleCustomBtnClick}
+              >
+                {customButtonConfig?.customLabel || ''}
+              </CustomButton>
+            )}
           </Box>
 
           <Box
@@ -159,7 +175,7 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
                 />
               </Box>
             )}
-            {customButtonConfig?.isEnabled && (
+            {customButtonConfig?.isEnabled && !customButtonConfig?.placeNextToFilterIcon && (
               <CustomButton
                 size="small"
                 variant="contained"
@@ -193,7 +209,7 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
               justifyContent: 'space-between',
             }}
           >
-            <B3FilterSearch handleChange={handleSearchChange} w="90%" searchValue={searchValue} />
+            <B3FilterSearch handleChange={handleSearchChange} w="85%" searchValue={searchValue} />
             <B3FilterMore
               startPicker={startPicker}
               endPicker={endPicker}
