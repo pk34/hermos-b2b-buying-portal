@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
+import { SystemStyleObject } from '@mui/system';
 
 import useMobile from '@/hooks/useMobile';
 
@@ -66,16 +67,47 @@ interface B3FilterProps<T, Y> {
   pcTotalWidth?: string;
 }
 
-const mergeSx = (base: SxProps<Theme>, overrides?: SxProps<Theme>): SxProps<Theme> => {
+const resolveSxObject = (
+  sx: SxProps<Theme> | undefined,
+  theme: Theme,
+): SystemStyleObject<Theme> => {
+  if (!sx) {
+    return {};
+  }
+
+  if (Array.isArray(sx)) {
+    return sx.reduce<SystemStyleObject<Theme>>((acc, item) => ({
+      ...acc,
+      ...resolveSxObject(item, theme),
+    }), {});
+  }
+
+  if (typeof sx === 'function') {
+    return resolveSxObject(sx(theme), theme);
+  }
+
+  return sx as SystemStyleObject<Theme>;
+};
+
+const mergeSx = (
+  base: SystemStyleObject<Theme>,
+  overrides?: SxProps<Theme>,
+): SxProps<Theme> => {
   if (!overrides) {
     return base;
   }
 
-  if (Array.isArray(overrides)) {
-    return [base, ...overrides];
+  if (Array.isArray(overrides) || typeof overrides === 'function') {
+    return (theme: Theme) => ({
+      ...resolveSxObject(base, theme),
+      ...resolveSxObject(overrides, theme),
+    });
   }
 
-  return [base, overrides];
+  return {
+    ...base,
+    ...overrides,
+  };
 };
 
 function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
