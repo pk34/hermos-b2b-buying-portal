@@ -102,6 +102,19 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
     if (handleFilterCustomButtonClick) handleFilterCustomButtonClick();
   };
 
+  const mergeCustomButtonSx = (base: SxProps<Theme>): SxProps<Theme> => {
+    const overrides = customButtonConfig?.customButtonStyle;
+
+    if (!overrides) {
+      return base;
+    }
+
+    const baseArray = Array.isArray(base) ? [...base] : [base];
+    const overridesArray = Array.isArray(overrides) ? [...overrides] : [overrides];
+
+    return [...baseArray, ...overridesArray];
+  };
+
   return (
     <>
       {!isMobile && (
@@ -139,15 +152,10 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
               <CustomButton
                 size="small"
                 variant="contained"
-                sx={[
-                  {
-                    height: '42px',
-                    p: '0 20px',
-                  },
-                  ...(customButtonConfig?.customButtonStyle
-                    ? [customButtonConfig.customButtonStyle]
-                    : []),
-                ]}
+                sx={mergeCustomButtonSx({
+                  height: '42px',
+                  p: '0 20px',
+                })}
                 onClick={handleCustomBtnClick}
               >
                 {customButtonConfig?.customLabel || ''}
@@ -184,15 +192,10 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
               <CustomButton
                 size="small"
                 variant="contained"
-                sx={[
-                  {
-                    height: '42px',
-                    p: '0 20px',
-                  },
-                  ...(customButtonConfig?.customButtonStyle
-                    ? [customButtonConfig.customButtonStyle]
-                    : []),
-                ]}
+                sx={mergeCustomButtonSx({
+                  height: '42px',
+                  p: '0 20px',
+                })}
                 onClick={handleCustomBtnClick}
               >
                 {customButtonConfig?.customLabel || ''}
@@ -232,15 +235,10 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
               size="small"
               variant="contained"
               fullWidth={!customButtonConfig?.disableMobileFullWidth}
-              sx={[
-                {
-                  marginTop: '20px',
-                  height: '42px',
-                },
-                ...(customButtonConfig?.customButtonStyle
-                  ? [customButtonConfig.customButtonStyle]
-                  : []),
-              ]}
+              sx={mergeCustomButtonSx({
+                marginTop: '20px',
+                height: '42px',
+              })}
               onClick={handleCustomBtnClick}
             >
               {customButtonConfig?.customLabel || ''}

@@ -17,3 +17,4 @@
 - The MUI `sx` prop accepts arrays, but each item must be a valid style object/function. Passing `undefined` (for example, by spreading `SxProps | undefined` directly into an array) produces build errors like **TS2322: Type 'SxProps<Theme> | undefined' is not assignable ...**.
 - To avoid this, only append optional styles when they are defined, e.g. `...(customStyles ? [customStyles] : [])`.
 - This pattern keeps the array strictly typed and prevents the build failures seen in `B3Filter.tsx`.
+- When merging base styles with custom overrides, be sure the final value is a flattened array (or object) of styles. Wrapping an `SxProps` array inside another array results in `readonly ...[]` shapes that violate the `sx` contract and trigger **TS2322**. Normalize both sides to arrays (e.g., via a helper that spreads them) before returning them to `sx`.
