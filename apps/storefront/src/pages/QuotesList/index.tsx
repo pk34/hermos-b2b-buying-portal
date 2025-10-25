@@ -466,6 +466,7 @@ function QuotesList() {
               isMobile ? b3Lang('quotes.cardsPerPage') : b3Lang('quotes.quotesPerPage')
             }
             renderItem={(row) => <QuoteItemCard item={row} goToDetail={goToDetail} />}
+            itemIsMobileSpacing={3}
             onClickRow={(row) => {
               goToDetail(row, Number(row.status));
             }}

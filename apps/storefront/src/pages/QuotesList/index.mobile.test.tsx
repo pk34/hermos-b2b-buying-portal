@@ -168,6 +168,9 @@ beforeEach(() => {
 
 const storeInfoWithDateFormat = buildStoreInfoStateWith({ timeFormat: { display: 'j F Y' } });
 
+const matchTextContent = (content: string) => (_: string, element: Element | null) =>
+  element?.textContent === content;
+
 describe('when the user is a B2B customer', () => {
   const approvedB2BCompany = buildCompanyStateWith({
     companyInfo: { status: CompanyStatus.APPROVED },
@@ -191,26 +194,26 @@ describe('when the user is a B2B customer', () => {
     renderWithProviders(<QuotesList />, { preloadedState });
 
     expect(await screen.findByText('Title:')).toBeInTheDocument();
-    expect(screen.getByText('Sales rep:')).toBeInTheDocument();
-    expect(screen.getByText('Created by:')).toBeInTheDocument();
+    expect(screen.getByText('Total:')).toBeInTheDocument();
+    expect(screen.getByText('Currency:')).toBeInTheDocument();
     expect(screen.getByText('Date created:')).toBeInTheDocument();
-    expect(screen.getByText('Last update:')).toBeInTheDocument();
     expect(screen.getByText('Expiration date:')).toBeInTheDocument();
-    expect(screen.getByText('Subtotal:')).toBeInTheDocument();
   });
 
   it('displays a card with values for each key attribute of a quote', async () => {
     const manySocks = buildQuoteEdgeWith({
       node: {
-        quoteNumber: '123456789',
         quoteTitle: 'Many Socks',
-        salesRepEmail: 'fred.salesman@acme.com',
-        createdBy: 'Sam Shopper',
         createdAt: getUnixTime(new Date('1 January 2025')),
-        updatedAt: getUnixTime(new Date('2 February 2025')),
         expiredAt: getUnixTime(new Date('3 March 2025')),
         totalAmount: '101.99',
-        currency: { token: '$', location: 'left', decimalToken: '.', decimalPlaces: 2 },
+        currency: {
+          token: '$',
+          location: 'left',
+          decimalToken: '.',
+          decimalPlaces: 2,
+          currencyCode: 'USD',
+        },
         status: QuoteStatus.OPEN,
       },
     });
@@ -228,15 +231,12 @@ describe('when the user is a B2B customer', () => {
 
     renderWithProviders(<QuotesList />, { preloadedState });
 
-    expect(await screen.findByRole('heading', { name: '123456789' })).toBeInTheDocument();
-    expect(screen.getByText('Open')).toBeInTheDocument();
-    expect(screen.getByText('Many Socks')).toBeInTheDocument();
-    expect(screen.getByText('fred.salesman@acme.com')).toBeInTheDocument();
-    expect(screen.getByText('Sam Shopper')).toBeInTheDocument();
-    expect(screen.getByText('1 January 2025')).toBeInTheDocument();
-    expect(screen.getByText('2 February 2025')).toBeInTheDocument();
-    expect(screen.getByText('3 March 2025')).toBeInTheDocument();
-    expect(screen.getByText('$101.99')).toBeInTheDocument();
+    expect(await screen.findByText('Open')).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Title:Many Socks'))).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Total:$101.99'))).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Currency:USD'))).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Date created:1 January 2025'))).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Expiration date:3 March 2025'))).toBeInTheDocument();
   });
 
   it('displays a quote per card', async () => {
@@ -324,26 +324,16 @@ describe('when the user is a B2B customer', () => {
         preloadedState: { ...preloadedState, quoteInfo },
       });
 
-      const allHeadings = await screen.findAllByRole('heading');
+      const titleLabels = await screen.findAllByText('Title:');
 
-      const headingOfDraftQuote = screen.getByRole('heading', { name: '—' });
-      const headingOfSomeSavedQuote = screen.getByRole('heading', { name: '123456789' });
-
-      expect(allHeadings[0]).toBe(headingOfDraftQuote);
-      expect(allHeadings[1]).toBe(headingOfSomeSavedQuote);
-
-      // Custom matcher to match text even if it is broken up by multiple elements
-      const textContent = (content: string) => (_: string, element: Element | null) =>
-        element?.textContent === content;
+      expect(titleLabels[0].parentElement?.textContent).toBe('Title:—');
+      expect(titleLabels[1].parentElement?.textContent).toBe('Title:123456789');
 
       expect(screen.getByText('Draft')).toBeInTheDocument();
-      expect(screen.getByText(textContent('Title:—'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Sales rep:—'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Created by:John Doe'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Date created:—'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Last update:—'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Expiration date:—'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Subtotal:$200.00'))).toBeInTheDocument();
+      expect(screen.getByText(matchTextContent('Total:$200.00'))).toBeInTheDocument();
+      expect(screen.getByText(matchTextContent('Currency:—'))).toBeInTheDocument();
+      expect(screen.getByText(matchTextContent('Date created:—'))).toBeInTheDocument();
+      expect(screen.getByText(matchTextContent('Expiration date:—'))).toBeInTheDocument();
     });
   });
 
@@ -433,26 +423,26 @@ describe('when the user is a B2C customer', () => {
     renderWithProviders(<QuotesList />, { preloadedState });
 
     expect(await screen.findByText('Title:')).toBeInTheDocument();
-    expect(screen.getByText('Sales rep:')).toBeInTheDocument();
-    expect(screen.getByText('Created by:')).toBeInTheDocument();
+    expect(screen.getByText('Total:')).toBeInTheDocument();
+    expect(screen.getByText('Currency:')).toBeInTheDocument();
     expect(screen.getByText('Date created:')).toBeInTheDocument();
-    expect(screen.getByText('Last update:')).toBeInTheDocument();
     expect(screen.getByText('Expiration date:')).toBeInTheDocument();
-    expect(screen.getByText('Subtotal:')).toBeInTheDocument();
   });
 
   it('displays a card with values for each key attribute of a quote', async () => {
     const manySocks = buildQuoteEdgeWith({
       node: {
-        quoteNumber: '123456789',
         quoteTitle: 'Many Socks',
-        salesRepEmail: 'fred.salesman@acme.com',
-        createdBy: 'Sam Shopper',
         createdAt: getUnixTime(new Date('1 January 2025')),
-        updatedAt: getUnixTime(new Date('2 February 2025')),
         expiredAt: getUnixTime(new Date('3 March 2025')),
         totalAmount: '101.99',
-        currency: { token: '$', location: 'left', decimalToken: '.', decimalPlaces: 2 },
+        currency: {
+          token: '$',
+          location: 'left',
+          decimalToken: '.',
+          decimalPlaces: 2,
+          currencyCode: 'USD',
+        },
         status: QuoteStatus.OPEN,
       },
     });
@@ -465,15 +455,12 @@ describe('when the user is a B2C customer', () => {
 
     renderWithProviders(<QuotesList />, { preloadedState });
 
-    expect(await screen.findByRole('heading', { name: '123456789' })).toBeInTheDocument();
-    expect(screen.getByText('Open')).toBeInTheDocument();
-    expect(screen.getByText('Many Socks')).toBeInTheDocument();
-    expect(screen.getByText('fred.salesman@acme.com')).toBeInTheDocument();
-    expect(screen.getByText('Sam Shopper')).toBeInTheDocument();
-    expect(screen.getByText('1 January 2025')).toBeInTheDocument();
-    expect(screen.getByText('2 February 2025')).toBeInTheDocument();
-    expect(screen.getByText('3 March 2025')).toBeInTheDocument();
-    expect(screen.getByText('$101.99')).toBeInTheDocument();
+    expect(await screen.findByText('Open')).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Title:Many Socks'))).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Total:$101.99'))).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Currency:USD'))).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Date created:1 January 2025'))).toBeInTheDocument();
+    expect(screen.getByText(matchTextContent('Expiration date:3 March 2025'))).toBeInTheDocument();
   });
 
   it('displays a quote per card', async () => {
