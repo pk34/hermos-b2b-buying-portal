@@ -139,22 +139,19 @@ it('renders every column', async () => {
 
   const columnHeaders = within(table).getAllByRole('columnheader');
 
-  expect(columnHeaders).toHaveLength(12);
+  expect(columnHeaders).toHaveLength(10);
 
   expect(within(columnHeaders[0]).getByRole('checkbox')).not.toBeChecked();
 
-  expect(columnHeaders[1]).toBeEmptyDOMElement(); // contains the checkboxes
-
-  expect(columnHeaders[2]).toHaveTextContent('Invoices');
-  expect(columnHeaders[3]).toHaveTextContent('Company');
-  expect(columnHeaders[4]).toHaveTextContent('Order');
-  expect(columnHeaders[5]).toHaveTextContent('Invoice date');
-  expect(columnHeaders[6]).toHaveTextContent('Due date');
-  expect(columnHeaders[7]).toHaveTextContent('Invoice total');
-  expect(columnHeaders[8]).toHaveTextContent('Amount due');
-  expect(columnHeaders[9]).toHaveTextContent('Amount to pay');
-  expect(columnHeaders[10]).toHaveTextContent('Status');
-  expect(columnHeaders[11]).toHaveTextContent('Action');
+  expect(columnHeaders[1]).toHaveTextContent('Invoice number');
+  expect(columnHeaders[2]).toHaveTextContent('Order');
+  expect(columnHeaders[3]).toHaveTextContent('Quote date');
+  expect(columnHeaders[4]).toHaveTextContent('Expiration date');
+  expect(columnHeaders[5]).toHaveTextContent('Total');
+  expect(columnHeaders[6]).toHaveTextContent('Debt amount');
+  expect(columnHeaders[7]).toHaveTextContent('Currency');
+  expect(columnHeaders[8]).toHaveTextContent('Status');
+  expect(columnHeaders[9]).toHaveTextContent('Actions');
 });
 
 it('renders all invoices in the table', async () => {
@@ -229,19 +226,15 @@ it('renders invoice information in the table', async () => {
   const row = screen.getByRole('row', { name: /3322/ });
   const cells = within(row).getAllByRole('cell');
 
-  expect(cells[2]).toHaveTextContent('3322');
-  expect(cells[3]).toHaveTextContent('Monsters Inc.');
-  expect(cells[4]).toHaveTextContent('1234');
-  expect(cells[5]).toHaveTextContent('13 March 2025');
-  expect(cells[6]).toHaveTextContent('13 October 2025');
-  expect(cells[7]).toHaveTextContent('$922.00');
-  expect(cells[8]).toHaveTextContent('$433.00');
+  expect(cells[1]).toHaveTextContent('3322');
+  expect(cells[2]).toHaveTextContent('1234');
+  expect(cells[3]).toHaveTextContent('13 March 2025');
+  expect(cells[4]).toHaveTextContent('13 October 2025');
+  expect(cells[5]).toHaveTextContent('$922.00');
+  expect(cells[6]).toHaveTextContent('$433.00');
+  expect(cells[7]).toHaveTextContent('USD');
 
-  // cell with an input to pay the invoice
-  expect(cells[9]).toHaveTextContent('$');
-  expect(within(cells[9]).getByRole('spinbutton')).toHaveValue(433);
-
-  expect(cells[10]).toHaveTextContent('Partially paid');
+  expect(cells[8]).toHaveTextContent('Partially paid');
 
   expect(within(row).getByRole('button', { name: 'More actions' })).toBeInTheDocument();
 });
@@ -1233,137 +1226,6 @@ describe('when using the action menu', () => {
     await userEvent.click(moreActionsButton);
 
     expect(screen.queryByRole('menuitem', { name: 'Pay' })).not.toBeInTheDocument();
-  });
-});
-
-it('exports the list of invoices as CSV', async () => {
-  const getExportInvoicesAsCSVResponse = vi.fn();
-
-  server.use(
-    graphql.query('GetInvoices', () =>
-      HttpResponse.json(buildInvoicesResponseWith('WHATEVER_VALUES')),
-    ),
-    graphql.query('GetInvoiceStats', () =>
-      HttpResponse.json(buildInvoiceStatsResponseWith('WHATEVER_VALUES')),
-    ),
-    graphql.mutation('ExportInvoicesAsCSV', ({ variables }) =>
-      HttpResponse.json(getExportInvoicesAsCSVResponse(variables)),
-    ),
-  );
-
-  when(getExportInvoicesAsCSVResponse)
-    .calledWith({
-      invoiceFilterData: {
-        search: '',
-        idIn: '',
-        orderNumber: '',
-        beginDateAt: null,
-        endDateAt: null,
-        status: [],
-        orderBy: '-invoice_number',
-        companyIds: [Number(preloadedState.company.companyInfo.id)],
-      },
-      lang: 'en',
-    })
-    .thenReturn({
-      data: {
-        invoicesExport: {
-          url: 'https://example.com/invoices.csv',
-        },
-      },
-    });
-
-  vi.spyOn(window, 'open').mockImplementation(vi.fn());
-
-  renderWithProviders(<Invoice />, { preloadedState });
-
-  await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-
-  const exportButton = screen.getByRole('button', { name: 'Export filtered as CSV' });
-  await userEvent.click(exportButton);
-
-  await waitFor(() => {
-    expect(window.open).toHaveBeenCalledWith('https://example.com/invoices.csv', '_blank');
-  });
-});
-
-it('exports selected invoices as CSV', async () => {
-  const getExportInvoicesAsCSVResponse = vi.fn();
-
-  server.use(
-    graphql.query('GetInvoices', () =>
-      HttpResponse.json(
-        buildInvoicesResponseWith({
-          data: {
-            invoices: {
-              edges: [
-                buildInvoiceWith({
-                  node: {
-                    id: '1441',
-                    invoiceNumber: '3322',
-                    companyInfo: { companyId: preloadedState.company.companyInfo.id },
-                  },
-                }),
-                buildInvoiceWith({
-                  node: {
-                    id: '1313',
-                    invoiceNumber: '4343',
-                    companyInfo: { companyId: preloadedState.company.companyInfo.id },
-                  },
-                }),
-              ],
-            },
-          },
-        }),
-      ),
-    ),
-    graphql.query('GetInvoiceStats', () =>
-      HttpResponse.json(buildInvoiceStatsResponseWith('WHATEVER_VALUES')),
-    ),
-    graphql.mutation('ExportInvoicesAsCSV', ({ variables }) =>
-      HttpResponse.json(getExportInvoicesAsCSVResponse(variables)),
-    ),
-  );
-
-  when(getExportInvoicesAsCSVResponse)
-    .calledWith({
-      invoiceFilterData: {
-        search: '',
-        idIn: '1441,1313',
-        orderNumber: '',
-        beginDateAt: null,
-        endDateAt: null,
-        status: [],
-        orderBy: '-invoice_number',
-        companyIds: [Number(preloadedState.company.companyInfo.id)],
-      },
-      lang: 'en',
-    })
-    .thenReturn({
-      data: {
-        invoicesExport: {
-          url: 'https://example.com/invoices.csv',
-        },
-      },
-    });
-
-  vi.spyOn(window, 'open').mockImplementation(vi.fn());
-
-  renderWithProviders(<Invoice />, { preloadedState });
-
-  await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-
-  const row1 = screen.getByRole('row', { name: /3322/ });
-  const row2 = screen.getByRole('row', { name: /4343/ });
-
-  await userEvent.click(within(row1).getByRole('checkbox'));
-  await userEvent.click(within(row2).getByRole('checkbox'));
-
-  const exportButton = screen.getByRole('button', { name: 'Export selected as CSV' });
-  await userEvent.click(exportButton);
-
-  await waitFor(() => {
-    expect(window.open).toHaveBeenCalledWith('https://example.com/invoices.csv', '_blank');
   });
 });
 

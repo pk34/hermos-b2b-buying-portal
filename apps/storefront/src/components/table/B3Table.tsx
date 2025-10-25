@@ -159,31 +159,71 @@ function Row<Row>({
         sx={clickableRowStyles}
         data-testid="tableBody-Row"
       >
-        {showCheckbox && selectedSymbol && (
+        {showCheckbox && CollapseComponent && selectedSymbol ? (
           <TableCell
-            key={`showItemCheckbox-${node.id}`}
+            key={`showItemControls-${node.id}`}
             sx={{
               borderBottom: showBorder ? '1px solid rgba(224, 224, 224, 1)' : lastItemBorderBottom,
             }}
           >
-            <Checkbox
-              // @ts-expect-error typed previously as an any
-              checked={selectCheckbox.includes(node[selectedSymbol])}
-              onChange={() => {
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Checkbox
                 // @ts-expect-error typed previously as an any
-                if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
-              }}
-              disabled={applyAllDisableCheckbox ? disableCheckbox : disableCurrentCheckbox}
-            />
+                checked={selectCheckbox.includes(node[selectedSymbol])}
+                onChange={() => {
+                  // @ts-expect-error typed previously as an any
+                  if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
+                }}
+                disabled={applyAllDisableCheckbox ? disableCheckbox : disableCurrentCheckbox}
+              />
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setOpen((prevOpen) => !prevOpen);
+                }}
+              >
+                {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+              </IconButton>
+            </Box>
           </TableCell>
-        )}
+        ) : (
+          <>
+            {showCheckbox && selectedSymbol && (
+              <TableCell
+                key={`showItemCheckbox-${node.id}`}
+                sx={{
+                  borderBottom: showBorder ? '1px solid rgba(224, 224, 224, 1)' : lastItemBorderBottom,
+                }}
+              >
+                <Checkbox
+                  // @ts-expect-error typed previously as an any
+                  checked={selectCheckbox.includes(node[selectedSymbol])}
+                  onChange={() => {
+                    // @ts-expect-error typed previously as an any
+                    if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
+                  }}
+                  disabled={applyAllDisableCheckbox ? disableCheckbox : disableCurrentCheckbox}
+                />
+              </TableCell>
+            )}
 
-        {CollapseComponent && (
-          <TableCell>
-            <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-              {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
-            </IconButton>
-          </TableCell>
+            {CollapseComponent && (
+              <TableCell>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setOpen((prevOpen) => !prevOpen);
+                  }}
+                >
+                  {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+                </IconButton>
+              </TableCell>
+            )}
+          </>
         )}
 
         {columnItems.map((column) => (
@@ -429,20 +469,38 @@ export function B3Table<Row>({
               {!tableHeaderHide && (
                 <TableHead>
                   <TableRow data-testid="tableHead-Row">
-                    {showSelectAllCheckbox && (
-                      <TableCell key="showSelectAllCheckbox">
-                        <Checkbox
-                          checked={
-                            isSelectOtherPageCheckbox
-                              ? isAllSelect
-                              : selectCheckbox.length === listItems.length
-                          }
-                          onChange={handleSelectAllItems}
-                          disabled={disableCheckbox}
-                        />
+                    {CollapseComponent && showCheckbox ? (
+                      <TableCell key="showItemControlsHeader" width="2%">
+                        {showSelectAllCheckbox && (
+                          <Checkbox
+                            checked={
+                              isSelectOtherPageCheckbox
+                                ? isAllSelect
+                                : selectCheckbox.length === listItems.length
+                            }
+                            onChange={handleSelectAllItems}
+                            disabled={disableCheckbox}
+                          />
+                        )}
                       </TableCell>
+                    ) : (
+                      <>
+                        {showSelectAllCheckbox && (
+                          <TableCell key="showSelectAllCheckbox">
+                            <Checkbox
+                              checked={
+                                isSelectOtherPageCheckbox
+                                  ? isAllSelect
+                                  : selectCheckbox.length === listItems.length
+                              }
+                              onChange={handleSelectAllItems}
+                              disabled={disableCheckbox}
+                            />
+                          </TableCell>
+                        )}
+                        {CollapseComponent && <TableCell width="2%" />}
+                      </>
                     )}
-                    {CollapseComponent && <TableCell width="2%" />}
 
                     {columnItems.map((column) => (
                       <TableCell
