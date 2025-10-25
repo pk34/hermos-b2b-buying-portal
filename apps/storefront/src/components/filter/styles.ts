@@ -84,6 +84,9 @@ export const filterModalDialogSx = {
     display: 'flex',
     justifyContent: 'center',
     gap: '16px',
+    '& > :not(style) ~ :not(style)': {
+      marginLeft: 0,
+    },
     '@media (max-width: 600px)': {
       width: '100%',
       flexDirection: 'column-reverse',
