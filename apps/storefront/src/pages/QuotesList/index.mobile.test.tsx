@@ -176,7 +176,7 @@ describe('when the user is a B2B customer', () => {
 
   const preloadedState = { company: approvedB2BCompany, storeInfo: storeInfoWithDateFormat };
 
-  it('displays cards listing each key attribute of a quote', async () => {
+  it('displays cards with the key mobile attributes of a quote', async () => {
     const quotesListB2B = buildQuotesListB2BWith({
       data: { quotes: { totalCount: 1, edges: [buildQuoteEdgeWith('WHATEVER_VALUES')] } },
     });
@@ -190,13 +190,10 @@ describe('when the user is a B2B customer', () => {
 
     renderWithProviders(<QuotesList />, { preloadedState });
 
-    expect(await screen.findByText('Title:')).toBeInTheDocument();
-    expect(screen.getByText('Sales rep:')).toBeInTheDocument();
-    expect(screen.getByText('Created by:')).toBeInTheDocument();
+    expect(await screen.findByRole('heading')).toBeInTheDocument();
     expect(screen.getByText('Date created:')).toBeInTheDocument();
-    expect(screen.getByText('Last update:')).toBeInTheDocument();
     expect(screen.getByText('Expiration date:')).toBeInTheDocument();
-    expect(screen.getByText('Subtotal:')).toBeInTheDocument();
+    expect(screen.getByText('VIEW')).toBeInTheDocument();
   });
 
   it('displays a card with values for each key attribute of a quote', async () => {
@@ -228,15 +225,12 @@ describe('when the user is a B2B customer', () => {
 
     renderWithProviders(<QuotesList />, { preloadedState });
 
-    expect(await screen.findByRole('heading', { name: '123456789' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Many Socks' })).toBeInTheDocument();
     expect(screen.getByText('Open')).toBeInTheDocument();
-    expect(screen.getByText('Many Socks')).toBeInTheDocument();
-    expect(screen.getByText('fred.salesman@acme.com')).toBeInTheDocument();
-    expect(screen.getByText('Sam Shopper')).toBeInTheDocument();
     expect(screen.getByText('1 January 2025')).toBeInTheDocument();
-    expect(screen.getByText('2 February 2025')).toBeInTheDocument();
     expect(screen.getByText('3 March 2025')).toBeInTheDocument();
     expect(screen.getByText('$101.99')).toBeInTheDocument();
+    expect(screen.getByText('$')).toBeInTheDocument();
   });
 
   it('displays a quote per card', async () => {
@@ -337,13 +331,9 @@ describe('when the user is a B2B customer', () => {
         element?.textContent === content;
 
       expect(screen.getByText('Draft')).toBeInTheDocument();
-      expect(screen.getByText(textContent('Title:—'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Sales rep:—'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Created by:John Doe'))).toBeInTheDocument();
       expect(screen.getByText(textContent('Date created:—'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Last update:—'))).toBeInTheDocument();
       expect(screen.getByText(textContent('Expiration date:—'))).toBeInTheDocument();
-      expect(screen.getByText(textContent('Subtotal:$200.00'))).toBeInTheDocument();
+      expect(screen.getByText('$200.00')).toBeInTheDocument();
     });
   });
 
@@ -423,7 +413,7 @@ describe('when the user is a B2C customer', () => {
 
   const preloadedState = { company: nonCompany, storeInfo: storeInfoWithDateFormat };
 
-  it('displays cards listing each key attribute of a quote', async () => {
+  it('displays cards with the key mobile attributes of a quote', async () => {
     const quotesListB2B = buildQuotesListBCWith({
       data: { customerQuotes: { totalCount: 1, edges: [buildQuoteEdgeWith('WHATEVER_VALUES')] } },
     });
@@ -432,13 +422,10 @@ describe('when the user is a B2C customer', () => {
 
     renderWithProviders(<QuotesList />, { preloadedState });
 
-    expect(await screen.findByText('Title:')).toBeInTheDocument();
-    expect(screen.getByText('Sales rep:')).toBeInTheDocument();
-    expect(screen.getByText('Created by:')).toBeInTheDocument();
+    expect(await screen.findByRole('heading')).toBeInTheDocument();
     expect(screen.getByText('Date created:')).toBeInTheDocument();
-    expect(screen.getByText('Last update:')).toBeInTheDocument();
     expect(screen.getByText('Expiration date:')).toBeInTheDocument();
-    expect(screen.getByText('Subtotal:')).toBeInTheDocument();
+    expect(screen.getByText('VIEW')).toBeInTheDocument();
   });
 
   it('displays a card with values for each key attribute of a quote', async () => {
@@ -465,15 +452,12 @@ describe('when the user is a B2C customer', () => {
 
     renderWithProviders(<QuotesList />, { preloadedState });
 
-    expect(await screen.findByRole('heading', { name: '123456789' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Many Socks' })).toBeInTheDocument();
     expect(screen.getByText('Open')).toBeInTheDocument();
-    expect(screen.getByText('Many Socks')).toBeInTheDocument();
-    expect(screen.getByText('fred.salesman@acme.com')).toBeInTheDocument();
-    expect(screen.getByText('Sam Shopper')).toBeInTheDocument();
     expect(screen.getByText('1 January 2025')).toBeInTheDocument();
-    expect(screen.getByText('2 February 2025')).toBeInTheDocument();
     expect(screen.getByText('3 March 2025')).toBeInTheDocument();
     expect(screen.getByText('$101.99')).toBeInTheDocument();
+    expect(screen.getByText('$')).toBeInTheDocument();
   });
 
   it('displays a quote per card', async () => {
