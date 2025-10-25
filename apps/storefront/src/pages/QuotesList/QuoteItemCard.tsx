@@ -68,6 +68,7 @@ const PrimaryLabel = styled(Typography)({
   fontSize: '16px',
   lineHeight: '24px',
   color: '#231F20',
+  display: 'inline',
 });
 
 const PrimaryValue = styled(Typography)({
@@ -77,6 +78,7 @@ const PrimaryValue = styled(Typography)({
   lineHeight: '24px',
   color: '#231F20',
   wordBreak: 'break-word',
+  display: 'inline',
 });
 
 const InfoGroup = styled('div')({
@@ -98,6 +100,7 @@ const SecondaryLabel = styled(Typography)({
   fontSize: '14px',
   lineHeight: '24px',
   color: '#231F20',
+  display: 'inline',
 });
 
 const SecondaryValue = styled(Typography)({
@@ -107,6 +110,7 @@ const SecondaryValue = styled(Typography)({
   lineHeight: '24px',
   color: '#231F20',
   wordBreak: 'break-word',
+  display: 'inline',
 });
 
 export function QuoteItemCard(props: QuoteItemCardProps) {
@@ -131,7 +135,9 @@ export function QuoteItemCard(props: QuoteItemCardProps) {
       return '—';
     }
 
-    return displayFormat(numericDate);
+    const formatted = displayFormat(numericDate);
+
+    return formatted ? String(formatted) : '—';
   };
 
   const getTotal = () => {
@@ -163,28 +169,28 @@ export function QuoteItemCard(props: QuoteItemCardProps) {
       <CardBody>
         <TitleRow>
           <TitleBlock>
-            <PrimaryLabel component="span">{`${b3Lang('quotes.quoteItemCard.title')}:`}</PrimaryLabel>
-            <PrimaryValue component="span">{titleValue || '—'}</PrimaryValue>
+            <PrimaryLabel>{`${b3Lang('quotes.quoteItemCard.title')}:`}</PrimaryLabel>
+            <PrimaryValue>{titleValue || '—'}</PrimaryValue>
           </TitleBlock>
           {item.status ? <QuoteStatus code={item.status} /> : null}
         </TitleRow>
 
         <InfoGroup>
           <InfoRow>
-            <PrimaryLabel component="span">{`${b3Lang('quotes.quoteItemCard.total')}:`}</PrimaryLabel>
-            <PrimaryValue component="span">{getTotal()}</PrimaryValue>
+            <PrimaryLabel>{`${b3Lang('quotes.quoteItemCard.total')}:`}</PrimaryLabel>
+            <PrimaryValue>{getTotal()}</PrimaryValue>
           </InfoRow>
           <InfoRow>
-            <PrimaryLabel component="span">{`${b3Lang('quotes.quoteItemCard.currency')}:`}</PrimaryLabel>
-            <PrimaryValue component="span">{currencyLabel}</PrimaryValue>
+            <PrimaryLabel>{`${b3Lang('quotes.quoteItemCard.currency')}:`}</PrimaryLabel>
+            <PrimaryValue>{currencyLabel}</PrimaryValue>
           </InfoRow>
           <InfoRow>
-            <SecondaryLabel component="span">{`${b3Lang('quotes.quoteItemCard.dateCreated')}:`}</SecondaryLabel>
-            <SecondaryValue component="span">{getDisplayDate(item.createdAt)}</SecondaryValue>
+            <SecondaryLabel>{`${b3Lang('quotes.quoteItemCard.dateCreated')}:`}</SecondaryLabel>
+            <SecondaryValue>{getDisplayDate(item.createdAt)}</SecondaryValue>
           </InfoRow>
           <InfoRow>
-            <SecondaryLabel component="span">{`${b3Lang('quotes.quoteItemCard.expirationDate')}:`}</SecondaryLabel>
-            <SecondaryValue component="span">{getDisplayDate(item.expiredAt)}</SecondaryValue>
+            <SecondaryLabel>{`${b3Lang('quotes.quoteItemCard.expirationDate')}:`}</SecondaryLabel>
+            <SecondaryValue>{getDisplayDate(item.expiredAt)}</SecondaryValue>
           </InfoRow>
         </InfoGroup>
 
