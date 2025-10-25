@@ -66,10 +66,6 @@ const sortKeys = {
 };
 
 const quotesTableStyles = {
-  '& .MuiPaper-root': {
-    boxShadow: 'none',
-    border: 'none',
-  },
   '& .MuiTableHead-root .MuiTableCell-head': {
     fontFamily: "'Lato', sans-serif",
     fontWeight: 700,
