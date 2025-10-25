@@ -66,6 +66,18 @@ interface B3FilterProps<T, Y> {
   pcTotalWidth?: string;
 }
 
+const mergeSx = (base: SxProps<Theme>, overrides?: SxProps<Theme>): SxProps<Theme> => {
+  if (!overrides) {
+    return base;
+  }
+
+  if (Array.isArray(overrides)) {
+    return [base, ...overrides];
+  }
+
+  return [base, overrides];
+};
+
 function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
   const {
     sortByConfig,
@@ -138,13 +150,13 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
               <CustomButton
                 size="small"
                 variant="contained"
-                sx={[
+                sx={mergeSx(
                   {
                     height: '42px',
                     p: '0 20px',
                   },
                   customButtonConfig?.customButtonStyle,
-                ]}
+                )}
                 onClick={handleCustomBtnClick}
               >
                 {customButtonConfig?.customLabel || ''}
@@ -181,13 +193,13 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
               <CustomButton
                 size="small"
                 variant="contained"
-                sx={[
+                sx={mergeSx(
                   {
                     height: '42px',
                     p: '0 20px',
                   },
                   customButtonConfig?.customButtonStyle,
-                ]}
+                )}
                 onClick={handleCustomBtnClick}
               >
                 {customButtonConfig?.customLabel || ''}
@@ -227,13 +239,13 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
               size="small"
               variant="contained"
               fullWidth
-              sx={[
+              sx={mergeSx(
                 {
                   marginTop: '20px',
                   height: '42px',
                 },
                 customButtonConfig?.customButtonStyle,
-              ]}
+              )}
               onClick={handleCustomBtnClick}
             >
               {customButtonConfig?.customLabel || ''}
