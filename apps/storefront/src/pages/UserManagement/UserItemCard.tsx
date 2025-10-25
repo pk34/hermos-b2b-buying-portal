@@ -1,10 +1,10 @@
 import type { SVGProps } from 'react';
-import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 
 import { B3Tag } from '@/components';
 import { verifyLevelPermission } from '@/utils';
