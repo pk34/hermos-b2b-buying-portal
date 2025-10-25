@@ -1,3 +1,5 @@
+import { filterModalFieldBaseSx } from '@/components/filter/styles';
+
 import { AddressItemType, BCAddressItemType } from '../../../types/address';
 
 interface B2bShippingBillingChildProps {
@@ -26,6 +28,7 @@ export const filterFormConfig = [
     variant: 'filled',
     size: 'small',
     idLang: 'addresses.filter.city',
+    sx: filterModalFieldBaseSx,
   },
   {
     name: 'state',
@@ -37,6 +40,7 @@ export const filterFormConfig = [
     variant: 'filled',
     size: 'small',
     idLang: 'addresses.filter.state',
+    sx: filterModalFieldBaseSx,
   },
   {
     name: 'country',
@@ -48,6 +52,7 @@ export const filterFormConfig = [
     variant: 'filled',
     size: 'small',
     idLang: 'addresses.filter.country',
+    sx: filterModalFieldBaseSx,
   },
 ];
 

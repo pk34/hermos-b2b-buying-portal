@@ -1,12 +1,13 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 import trim from 'lodash-es/trim';
 
 import { B3CustomForm } from '@/components';
 import CustomButton from '@/components/button/CustomButton';
-import { b3HexToRgb, getContrastColor } from '@/components/outSideComponents/utils/b3CustomStyles';
 import B3Spin from '@/components/spin/B3Spin';
 import { useMobile } from '@/hooks';
 import useStorageState from '@/hooks/useStorageState';
@@ -31,6 +32,47 @@ import { deCodeField, getAccountFormFields } from '../Registered/config';
 import { getAccountSettingsFields, getPasswordModifiedFields } from './config';
 import { UpgradeBanner } from './UpgradeBanner';
 import { b2bSubmitDataProcessing, bcSubmitDataProcessing, initB2BInfo, initBcInfo } from './utils';
+
+type FieldInputProps = {
+  sx?: SxProps<Theme>;
+  [key: string]: unknown;
+};
+
+type FieldMuiTextFieldProps = {
+  style?: CSSProperties;
+  [key: string]: unknown;
+};
+
+type FieldLabelProps = {
+  sx?: SxProps<Theme>;
+  [key: string]: unknown;
+};
+
+type AccountFormField = Partial<Fields> & {
+  sx?: SxProps<Theme>;
+  InputProps?: FieldInputProps;
+  muiTextFieldProps?: FieldMuiTextFieldProps;
+  InputLabelProps?: FieldLabelProps;
+  labelName?: string;
+  labelSpacing?: string | number;
+  labelSx?: SxProps<Theme>;
+  labelColon?: boolean;
+};
+
+const appendSx = (
+  existing: SxProps<Theme> | undefined,
+  addition: SxProps<Theme>,
+): SxProps<Theme> => {
+  if (!existing) {
+    return addition;
+  }
+
+  if (Array.isArray(existing)) {
+    return [...existing, addition] as SxProps<Theme>;
+  }
+
+  return [existing, addition] as SxProps<Theme>;
+};
 
 function useData() {
   const isB2BUser = useAppSelector(isB2BUserSelector);
@@ -188,7 +230,9 @@ function AccountSetting() {
         setExtraFields(additionalInformation);
       } finally {
         if (isFinishUpdate) {
-          snackbar.success(b3Lang('accountSettings.notification.detailsUpdated'));
+          snackbar.success(b3Lang('accountSettings.notification.detailsUpdated'), {
+            customType: 'account-settings-success',
+          });
           setIsFinishUpdate(false);
         }
         setLoading(false);
@@ -203,13 +247,15 @@ function AccountSetting() {
 
   const handleGetUserExtraFields = (
     data: CustomFieldItems,
-    accountInfoFormFields: Partial<Fields>[],
+    accountInfoFields: Partial<Fields>[],
   ) => {
-    const userExtraFields = accountInfoFormFields.filter(
-      (item: CustomFieldItems) => item.custom && item.groupId === 1,
+    const userExtraFields = accountInfoFields.filter(
+      (item): item is Partial<Fields> & { name: string } =>
+        Boolean(item.custom && item.groupId === 1 && item.name),
     );
-    return userExtraFields.map((item: CustomFieldItems) => ({
-      fieldName: deCodeField(item?.name || ''),
+
+    return userExtraFields.map((item) => ({
+      fieldName: deCodeField(item.name),
       fieldValue: data[item.name],
     }));
   };
@@ -300,11 +346,112 @@ function AccountSetting() {
       field_confirm_password: b3Lang('accountSettings.form.confirmPassword'),
     };
 
-    return accountInfoFormFields.map((item) => ({
-      ...item,
-      label: fieldTranslations[item.fieldId ?? ''] ?? item.label,
-    }));
-  }, [accountInfoFormFields, b3Lang]);
+    const accountFieldWidth = isMobile ? '100%' : '301px';
+
+    const inputRootStyles: SxProps<Theme> = {
+      width: accountFieldWidth,
+      maxWidth: '100%',
+      mb: 0,
+      '& .MuiInputBase-root': {
+        width: '100%',
+        height: '40px',
+        borderRadius: '5px',
+        border: '0.2px solid #575757',
+        padding: '0 !important',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        backgroundColor: '#FFFFFF',
+        fontFamily: "'Lato', sans-serif",
+        fontWeight: 400,
+        fontSize: '16px',
+        lineHeight: '24px',
+        verticalAlign: 'middle',
+        color: '#000000',
+        boxSizing: 'border-box',
+      },
+      '& .MuiInputBase-root:before, & .MuiInputBase-root:after': {
+        borderBottom: '0 !important',
+      },
+      '& .MuiInputBase-input': {
+        padding: '10px',
+        fontFamily: "'Lato', sans-serif",
+        fontWeight: 400,
+        fontSize: '16px',
+        lineHeight: '24px',
+        verticalAlign: 'middle',
+        color: '#000000',
+        height: '100%',
+        boxSizing: 'border-box',
+      },
+      '& .MuiInputBase-root:hover': {
+        borderColor: '#575757',
+        backgroundColor: '#FFFFFF',
+      },
+      '& .MuiInputBase-root.Mui-focused': {
+        borderColor: '#575757',
+        backgroundColor: '#FFFFFF',
+      },
+      '& .MuiInputBase-root.Mui-disabled': {
+        borderColor: '#575757',
+        backgroundColor: '#FFFFFF',
+        color: '#000000',
+      },
+      '& .MuiInputBase-root.Mui-disabled .MuiInputBase-input': {
+        color: '#000000',
+        WebkitTextFillColor: '#000000',
+      },
+    };
+
+    const labelStyles: SxProps<Theme> = {
+      fontFamily: "'Lato', sans-serif",
+      fontWeight: 600,
+      fontSize: '16px',
+      lineHeight: '24px',
+      letterSpacing: 0,
+      verticalAlign: 'middle',
+      color: '#000000',
+    };
+
+    return accountInfoFormFields.map((item) => {
+      const field = item as AccountFormField;
+      const currentLabel = fieldTranslations[field.fieldId ?? ''] ?? field.label;
+
+      const existingInputProps: FieldInputProps = field.InputProps ?? {};
+      const existingMuiTextFieldProps: FieldMuiTextFieldProps = field.muiTextFieldProps ?? {};
+      const existingTextFieldStyle = existingMuiTextFieldProps.style ?? {};
+
+      const styledField: AccountFormField = {
+        ...field,
+        label: currentLabel,
+        sx: appendSx(field.sx, inputRootStyles),
+        InputProps: {
+          ...existingInputProps,
+          disableUnderline: true,
+        },
+        muiTextFieldProps: {
+          ...existingMuiTextFieldProps,
+          style: {
+            ...existingTextFieldStyle,
+            fontFamily: "'Lato', sans-serif",
+            fontWeight: 400,
+            fontSize: '16px',
+            lineHeight: '24px',
+            verticalAlign: 'middle',
+            color: '#000000',
+            padding: '10px',
+            height: '40px',
+          },
+        },
+        labelName: currentLabel,
+        labelSpacing: '10px',
+        labelSx: labelStyles,
+        labelColon: false,
+      };
+
+      return styledField;
+    });
+  }, [accountInfoFormFields, b3Lang, isMobile]);
 
   return (
     <B3Spin isSpinning={isLoading} background={backgroundColor}>
@@ -312,26 +459,12 @@ function AccountSetting() {
         {isDisplayUpgradeBanner && <UpgradeBanner />}
         <Box
           sx={{
-            width: isMobile ? '100%' : '35%',
+            width: '100%',
+            maxWidth: isMobile ? '100%' : '301px',
             minHeight: isMobile ? '800px' : '300px',
-            '& input, & .MuiFormControl-root .MuiTextField-root, & .MuiSelect-select.MuiSelect-filled, & .MuiTextField-root .MuiInputBase-multiline':
-              {
-                bgcolor: b3HexToRgb('#FFFFFF', 0.87),
-                borderRadius: '4px',
-                borderBottomLeftRadius: '0',
-                borderBottomRightRadius: '0',
-              },
-            '& .MuiButtonBase-root.MuiCheckbox-root:not(.Mui-checked), & .MuiRadio-root:not(.Mui-checked)':
-              {
-                color: b3HexToRgb(getContrastColor(backgroundColor), 0.6),
-              },
-            '& .MuiTypography-root.MuiTypography-body1.MuiFormControlLabel-label, & .MuiFormControl-root .MuiFormLabel-root:not(.Mui-focused)':
-              {
-                color: b3HexToRgb(getContrastColor(backgroundColor), 0.87),
-              },
-            '& .MuiInputLabel-root.MuiInputLabel-formControl:not(.Mui-focused)': {
-              color: b3HexToRgb(getContrastColor('#FFFFFF'), 0.6),
-            },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'stretch',
           }}
         >
           <B3CustomForm
@@ -340,14 +473,38 @@ function AccountSetting() {
             control={control}
             getValues={getValues}
             setValue={setValue}
+            containerProps={{
+              spacing: 0,
+              columnSpacing: isMobile ? 0 : 2,
+              rowSpacing: '14px',
+            }}
           />
 
           <CustomButton
             sx={{
               mt: '28px',
               mb: isMobile ? '20px' : '0',
-              width: '100%',
+              width: isMobile ? '100%' : '301px',
+              maxWidth: '100%',
+              height: '39px',
+              borderRadius: '5px',
+              padding: '10px',
+              gap: '10px',
+              fontFamily: "'Lato', sans-serif",
+              fontWeight: 600,
+              fontSize: '16px',
+              lineHeight: '24px',
+              letterSpacing: 0,
+              textAlign: 'center',
+              verticalAlign: 'middle',
+              textTransform: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               visibility: isVisible ? 'visible' : 'hidden',
+              '&:hover': {
+                backgroundColor: '#00965E',
+              },
             }}
             onClick={handleAddUserClick}
             variant="contained"

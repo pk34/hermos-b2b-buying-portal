@@ -105,11 +105,29 @@ function ShoppingLists() {
     isEnabled: isB2BUser ? shoppingListCreateActionsPermission : true,
     customLabel: b3Lang('shoppingLists.createNew'),
     customButtonStyle: {
-      fontSize: '15px',
-      fontWeight: '500',
-      width: '140px',
-      padding: '0',
+      height: '44px',
+      minWidth: 'auto',
+      borderRadius: '5px',
+      py: '10px',
+      px: '24px',
+      gap: '10px',
+      textTransform: 'capitalize',
+      backgroundColor: '#0067A0',
+      color: '#FFFFFF',
+      fontFamily: "'Lato', sans-serif",
+      fontWeight: '600',
+      fontSize: '16px',
+      lineHeight: '24px',
+      textAlign: 'center',
+      verticalAlign: 'middle',
+      ml: '38px',
+      whiteSpace: 'nowrap',
+      '&:hover': {
+        backgroundColor: '#00965E',
+        color: '#FFFFFF',
+      },
     },
+    placeNextToFilterIcon: true,
   };
   const statusPermissions = !submitShoppingListPermission
     ? [ShoppingListStatus.Approved, ShoppingListStatus.ReadyForApproval]

@@ -74,51 +74,62 @@ export default defineConfig(({ mode }): UserConfig & Pick<ViteUserConfig, 'test'
       },
     },
     build: {
-      minify: true,
-      sourcemap: true,
-      rollupOptions: {
-        input: {
-          index: 'src/main.ts',
-          headless: 'src/headless.ts',
-        },
-        output: {
-          entryFileNames({ name }) {
-            if (name.includes('headless') || env.VITE_DISABLE_BUILD_HASH) {
-              return '[name].js';
-            }
-            return '[name].[hash].js';
-          },
-          manualChunks: {
-            reactVendor: ['react', 'react-dom'],
-            intl: ['react-intl'],
-            mui: ['@emotion/react', '@emotion/styled', '@mui/material'],
-            muiIcon: ['@mui/icons-material'],
-            redux: ['react-redux'],
-            dateFns: ['date-fns'],
-            pdfobject: ['pdfobject'],
-            resizable: ['react-resizable'],
-            toolkit: ['@reduxjs/toolkit'],
-            form: ['react-hook-form'],
-            router: ['react-router-dom'],
-            lodashEs: ['lodash-es'],
-            dropzone: ['react-dropzone'],
-            eCache: ['@emotion/cache'],
-          },
-        },
-        onwarn(warning, warn) {
-          if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
-            return;
-          }
-          warn(warning);
-        },
-        plugins: env.VITE_VISUALIZER === '1' && [
-          visualizer({
-            open: true,
-            gzipSize: true,
-            brotliSize: true,
-          }),
-        ],
+  minify: true,
+  sourcemap: true,
+  // 1) Make CSS deterministic so your loader can link it once.
+  cssCodeSplit: false,
+
+  rollupOptions: {
+    input: {
+      index: 'src/main.ts',
+      headless: 'src/headless.ts',
+    },
+    output: {
+      // 2) Pin the main entry to b2b-portal.js; keep your existing logic for others.
+      entryFileNames({ name }) {
+        if (name === 'index') return 'b2b-portal.js';          // <— main app entry (used by your loader)
+        if (name.includes('headless')) return 'headless.js';    // <— keep headless predictable too
+        if (env.VITE_DISABLE_BUILD_HASH) return '[name].js';
+        return '[name].[hash].js';
+      },
+
+      // 3) (Optional) Keep chunk names readable; they’ll still be auto-loaded by the entry.
+      chunkFileNames: 'b2b-[name].js',
+
+      // 4) Pin the single emitted CSS file so your loader can `loadCSS('/b2b-portal.css')`.
+      assetFileNames(assetInfo) {
+        if (assetInfo.name && assetInfo.name.endsWith('.css')) return 'b2b-portal.css';
+        return 'b2b-[name][extname]';
+      },
+
+      manualChunks: {
+        reactVendor: ['react', 'react-dom'],
+        intl: ['react-intl'],
+        mui: ['@emotion/react', '@emotion/styled', '@mui/material'],
+        muiIcon: ['@mui/icons-material'],
+        redux: ['react-redux'],
+        dateFns: ['date-fns'],
+        pdfobject: ['pdfobject'],
+        resizable: ['react-resizable'],
+        toolkit: ['@reduxjs/toolkit'],
+        form: ['react-hook-form'],
+        router: ['react-router-dom'],
+        lodashEs: ['lodash-es'],
+        dropzone: ['react-dropzone'],
+        eCache: ['@emotion/cache'],
       },
     },
+
+    onwarn(warning, warn) {
+      if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
+      warn(warning);
+    },
+
+    plugins:
+      env.VITE_VISUALIZER === '1' && [
+        visualizer({ open: true, gzipSize: true, brotliSize: true }),
+      ],
+  },
+},
   };
 });

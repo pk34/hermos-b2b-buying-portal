@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Box } from '@mui/material';
 import trim from 'lodash-es/trim';
 
-import { B3CustomForm } from '@/components';
+import { B3CustomForm, SectionTitle } from '@/components';
 import { useMobile } from '@/hooks';
 import { LangFormatFunction, useB3Lang } from '@/lib/lang';
 import { validateQuoteExtraFields } from '@/shared/service/b2b';
@@ -288,17 +288,16 @@ function ContactInfo(
     <Box width="100%">
       {formData.map((data) => (
         <Box key={data.title} width="100%">
-          <Box
+          <SectionTitle
+            component="h2"
             sx={{
-              fontWeight: 400,
-              fontSize: '24px',
               height: '32px',
               mb: '20px',
               ...data?.style,
             }}
           >
             {data.title}
-          </Box>
+          </SectionTitle>
 
           <B3CustomForm
             formFields={data.infos}

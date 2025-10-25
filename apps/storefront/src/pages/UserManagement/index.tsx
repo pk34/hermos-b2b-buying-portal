@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Box } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 import B3Dialog from '@/components/B3Dialog';
 import B3Filter from '@/components/filter/B3Filter';
 import B3Spin from '@/components/spin/B3Spin';
-import { useCardListColumn, useMobile, useTableRef } from '@/hooks';
+import { filterModalLeftButtonSx, filterModalRightButtonSx } from '@/components/filter/styles';
+import { useCardListColumn, useTableRef } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { rolePermissionSelector, useAppSelector } from '@/store';
 import { CustomerRole } from '@/types';
-import { snackbar } from '@/utils';
 import { verifyCreatePermission } from '@/utils/b3CheckPermissions';
 import { b2bPermissionsMap } from '@/utils/b3CheckPermissions/config';
 
@@ -41,11 +42,10 @@ function UserManagement() {
   const [isRequestLoading, setIsRequestLoading] = useState<boolean>(false);
 
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+  const [deleteSuccessOpen, setDeleteSuccessOpen] = useState<boolean>(false);
 
   const [userId, setUserId] = useState<string>();
   const b3Lang = useB3Lang();
-
-  const [isMobile] = useMobile();
 
   const isExtraLarge = useCardListColumn();
 
@@ -72,6 +72,43 @@ function UserManagement() {
     return {
       isEnabled: isEnableBtnPermissions && isCreatePermission,
       customLabel: b3Lang('userManagement.addUser'),
+      customButtonStyle: (theme: Theme) => ({
+        height: '44px',
+        minWidth: '50%',
+        borderRadius: '5px',
+        py: '10px',
+        px: '24px',
+        gap: '10px',
+        textTransform: 'capitalize',
+        backgroundColor: '#0067A0',
+        color: '#FFFFFF',
+        border: '1px solid #0067A0',
+        fontFamily: "'Lato', sans-serif",
+        fontWeight: '600',
+        fontSize: '16px',
+        lineHeight: '24px',
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        ml: '38px',
+        width: 'auto',
+        maxWidth: '100%',
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+        '&:hover': {
+          backgroundColor: '#00965E',
+          color: '#FFFFFF',
+          borderColor: '#00965E',
+        },
+        [theme.breakpoints.down('sm')]: {
+          ml: 0,
+          mt: '10px',
+          width: '85%',
+          minWidth: '85%',
+          maxWidth: '85%',
+          alignSelf: 'center',
+        },
+      }),
+      placeNextToFilterIcon: true,
     };
 
     // ignore b3Lang due it's function that doesn't not depend on any reactive value
@@ -162,12 +199,17 @@ function UserManagement() {
   };
 
   const handleDelete: Delete = (id) => {
+    setDeleteSuccessOpen(false);
     setUserId(id);
     setDeleteOpen(true);
   };
 
   const handleCancelClick = () => {
     setDeleteOpen(false);
+  };
+
+  const handleCloseDeleteSuccessModal = () => {
+    setDeleteSuccessOpen(false);
   };
 
   const handleDeleteUserClick = async (userId?: string) => {
@@ -182,7 +224,7 @@ function UserManagement() {
         userId,
         companyId: selectCompanyHierarchyId || companyId,
       });
-      snackbar.success(b3Lang('userManagement.deleteUserSuccessfully'));
+      setDeleteSuccessOpen(true);
     } finally {
       setIsRequestLoading(false);
       initSearchList();
@@ -236,18 +278,172 @@ function UserManagement() {
           handRightClick={handleDeleteUserClick}
           row={userId}
           rightStyleBtn={{
-            color: '#D32F2F',
+            ...filterModalRightButtonSx,
+            gap: '10px',
+          }}
+          leftStyleBtn={{
+            ...filterModalLeftButtonSx,
+            gap: '10px',
           }}
           isShowBordered={false}
+          dialogWidth="min(449px, 95vw)"
+          applyDialogWidthOnMobile
+          dialogContentSx={{
+            p: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            fontFamily: "'Lato', sans-serif",
+            fontWeight: 600,
+            fontSize: '16px',
+            lineHeight: '24px',
+            color: '#000000',
+          }}
+          dialogSx={{
+            '& .MuiDialog-container': {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            '& .MuiDialog-paper': {
+              backgroundColor: '#FFFFFF',
+              borderRadius: 0,
+              padding: '25px',
+              boxShadow: '0px 4px 22px 5px #0000001A',
+              maxHeight: 'calc(100vh - 32px)',
+            },
+            '& .MuiDialogTitle-root': {
+              fontFamily: "'Lato', sans-serif",
+              fontWeight: 600,
+              fontSize: '24px',
+              lineHeight: '28px',
+              color: '#000000',
+              textAlign: 'left',
+              padding: 0,
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+            },
+            '& .MuiDialogContent-root': {
+              padding: 0,
+            },
+            '& .MuiDialogActions-root': {
+              borderTop: 'none',
+              justifyContent: 'center',
+              columnGap: '33px',
+              gap: '33px',
+              padding: 0,
+              '@media (max-width: 600px)': {
+                width: '100%',
+                flexDirection: 'column-reverse',
+                gap: '20px',
+                alignItems: 'center',
+                columnGap: '20px',
+                padding: '16px 0 24px',
+              },
+            },
+          }}
+          fullScreenOnMobile={false}
         >
           <Box
             sx={{
               display: 'flex',
-              width: isMobile ? '100%' : '450px',
-              height: '100%',
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
             }}
           >
             {b3Lang('userManagement.confirmDelete')}
+          </Box>
+        </B3Dialog>
+        <B3Dialog
+          isOpen={deleteSuccessOpen}
+          title={b3Lang('userManagement.deleteUserSuccessTitle')}
+          showLeftBtn={false}
+          rightSizeBtn={b3Lang('userManagement.deleteUserSuccessContinue')}
+          handleLeftClick={handleCloseDeleteSuccessModal}
+          handRightClick={handleCloseDeleteSuccessModal}
+          rightStyleBtn={{
+            ...filterModalRightButtonSx,
+          }}
+          isShowBordered={false}
+          dialogWidth="min(449px, 95vw)"
+          applyDialogWidthOnMobile
+          dialogContentSx={{
+            p: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+          }}
+          dialogSx={{
+            '& .MuiDialog-container': {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            '& .MuiDialog-paper': {
+              backgroundColor: '#FFFFFF',
+              borderRadius: 0,
+              padding: '25px',
+              boxShadow: '0px 4px 22px 5px #0000001A',
+              maxHeight: 'calc(100vh - 32px)',
+            },
+            '& .MuiDialogTitle-root': {
+              fontFamily: "'Lato', sans-serif",
+              fontWeight: 600,
+              fontSize: '24px',
+              lineHeight: '28px',
+              color: '#000000',
+              textAlign: 'center',
+              padding: 0,
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            '& .MuiDialogContent-root': {
+              padding: 0,
+            },
+            '& .MuiDialogActions-root': {
+              borderTop: 'none',
+              justifyContent: 'center',
+              padding: 0,
+              '@media (max-width: 600px)': {
+                width: '100%',
+                flexDirection: 'column',
+                gap: '20px',
+                alignItems: 'center',
+                padding: '16px 0 24px',
+              },
+            },
+          }}
+          fullScreenOnMobile={false}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                fontFamily: "'Lato', sans-serif",
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#000000',
+              }}
+            >
+              {b3Lang('userManagement.deleteUserSuccessMessage')}
+            </Box>
           </Box>
         </B3Dialog>
       </Box>

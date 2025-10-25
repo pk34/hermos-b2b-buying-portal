@@ -64,6 +64,8 @@ function Row<Row extends OrderIdRow>({ columnItems, node, onClickRow }: RowProps
       onClick={onClickRow}
       sx={{
         cursor: 'pointer',
+        borderTop: '1px solid #000000',
+        borderBottom: 'none',
       }}
       data-testid="tableBody-Row"
     >
@@ -72,6 +74,14 @@ function Row<Row extends OrderIdRow>({ columnItems, node, onClickRow }: RowProps
           align={column.align ?? 'left'}
           key={column.title}
           data-testid={column.key ? `tableBody-${column.key}` : ''}
+          sx={{
+            fontFamily: "'Lato', sans-serif",
+            fontWeight: 400,
+            fontSize: '16px',
+            lineHeight: '24px',
+            color: '#000000',
+            borderBottom: 'none',
+          }}
         >
           {column.render(node)}
         </TableCell>
@@ -184,16 +194,23 @@ export function B3Table<Row extends OrderIdRow>({
       )}
       {!isInfiniteScroll && (
         <Card
+          elevation={0}
           sx={{
             height: '100%',
-            boxShadow:
-              '0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)',
+            boxShadow: 'none',
+            border: 'none',
           }}
         >
-          <TableContainer>
+          <TableContainer
+            sx={{
+              boxShadow: 'none',
+              border: 'none',
+            }}
+          >
             <Table
               sx={{
                 tableLayout: 'initial',
+                borderCollapse: 'collapse',
               }}
             >
               <TableHead>
@@ -202,9 +219,18 @@ export function B3Table<Row extends OrderIdRow>({
                     <TableCell
                       key={column.title}
                       width={column.width}
-                      align={column.align ?? 'left'}
+                      align="left"
                       sortDirection={column.key === orderBy ? sortDirection : false}
                       data-testid={column.key ? `tableHead-${column.key}` : ''}
+                      sx={{
+                        fontFamily: "'Lato', sans-serif",
+                        fontWeight: 700,
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        color: '#000000',
+                        borderBottom: 'none',
+                        textAlign: 'left',
+                      }}
                     >
                       {column.isSortable ? (
                         <TableSortLabel
@@ -212,6 +238,22 @@ export function B3Table<Row extends OrderIdRow>({
                           direction={column.key === orderBy ? sortDirection : 'desc'}
                           hideSortIcon={column.key !== orderBy}
                           onClick={() => sortByFn?.(column.key)}
+                          sx={{
+                            fontFamily: "'Lato', sans-serif",
+                            fontWeight: 700,
+                            fontSize: '16px',
+                            lineHeight: '24px',
+                            color: '#000000',
+                            '&.Mui-active': {
+                              color: '#000000',
+                            },
+                            '&:hover': {
+                              color: '#000000',
+                            },
+                            '& .MuiTableSortLabel-icon': {
+                              color: '#000000 !important',
+                            },
+                          }}
                         >
                           {column.title}
                         </TableSortLabel>

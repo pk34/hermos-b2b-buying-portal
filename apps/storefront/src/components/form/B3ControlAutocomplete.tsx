@@ -30,6 +30,7 @@ export default function B3ControlAutocomplete({ control, errors, ...rest }: Form
     size = 'small',
     disabled = false,
     extraPadding,
+    sx = {},
   } = rest;
 
   const b3Lang = useB3Lang();
@@ -186,12 +187,17 @@ export default function B3ControlAutocomplete({ control, errors, ...rest }: Form
     }
   };
 
+  const formControlColor = muiSelectProps?.disabled
+    ? 'rgba(0, 0, 0, 0.38)'
+    : 'rgba(0, 0, 0, 0.6)';
+
   return (
     <FormControl
       variant="filled"
-      style={{
+      sx={{
         width: '100%',
-        color: muiSelectProps?.disabled ? 'rgba(0, 0, 0, 0.38)' : 'rgba(0, 0, 0, 0.6)',
+        color: formControlColor,
+        ...sx,
       }}
       disabled={disabled}
     >

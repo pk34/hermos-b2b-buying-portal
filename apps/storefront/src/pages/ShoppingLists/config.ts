@@ -1,3 +1,4 @@
+import { filterModalFieldBaseSx } from '@/components/filter/styles';
 import { LangFormatFunction, useB3Lang } from '@/lib/lang';
 import { CompanyInfoTypes } from '@/types/invoice';
 import { ShoppingListStatus } from '@/types/shoppingList';
@@ -115,6 +116,7 @@ export const useGetFilterMoreList = () => {
         variant: 'filled',
         size: 'small',
         label: b3Lang('global.shoppingLists.filter.createdBy'),
+        sx: filterModalFieldBaseSx,
       },
       {
         name: 'status',
@@ -126,6 +128,7 @@ export const useGetFilterMoreList = () => {
         variant: 'filled',
         size: 'small',
         label: b3Lang('global.shoppingLists.filter.status'),
+        sx: filterModalFieldBaseSx,
       },
     ];
   };

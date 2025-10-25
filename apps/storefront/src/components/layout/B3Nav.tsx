@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo } from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
-import { Badge, List, ListItem, ListItemButton, ListItemText, useTheme } from '@mui/material';
+import { Badge, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
@@ -16,8 +16,6 @@ import {
 import { PagesSubsidiariesPermissionProps } from '@/types';
 import { B3SStorage } from '@/utils';
 import { validatePermissionWithComparisonType } from '@/utils/b3CheckPermissions';
-
-import { b3HexToRgb, getContrastColor } from '../outSideComponents/utils/b3CustomStyles';
 
 interface B3NavProps {
   closeSidebar?: (x: boolean) => void;
@@ -59,9 +57,6 @@ export default function B3Nav({ closeSidebar }: B3NavProps) {
 
   const { state: globalState } = useContext(GlobalContext);
   const { quoteDetailHasNewMessages, registerEnabled } = globalState;
-
-  const theme = useTheme();
-  const primaryColor = theme.palette.primary.main;
 
   const jumpRegister = () => {
     navigate('/register');
@@ -191,24 +186,49 @@ export default function B3Nav({ closeSidebar }: B3NavProps) {
     return false;
   };
 
+  const optionWidth = isMobile ? '100%' : '214px';
+
+  const listItemButtonSx = {
+    height: '50px',
+    width: optionWidth,
+    bgcolor: '#F7F7F7',
+    color: '#0067A0',
+    borderRadius: 0,
+    justifyContent: 'flex-start',
+    px: '16px',
+    '&.Mui-selected': {
+      bgcolor: '#0067A0',
+      color: '#F7F7F7',
+    },
+    '&:hover': {
+      bgcolor: '#F7F7F7',
+    },
+    '&.Mui-selected:hover': {
+      bgcolor: '#0067A0',
+    },
+  } as const;
+
+  const listItemTextProps = {
+    primaryTypographyProps: {
+      sx: {
+        fontFamily: 'Lato, sans-serif',
+        fontWeight: 600,
+        fontSize: '16px',
+        lineHeight: '24px',
+        color: 'inherit',
+      },
+    },
+  } as const;
+
   return (
     <List
+      disablePadding
       sx={{
-        width: '100%',
-        maxWidth: 360,
-        bgcolor: isMobile ? 'background.paper' : 'background.default',
-        color: primaryColor || 'info.main',
-        '& .MuiListItem-root': {
-          '& .MuiButtonBase-root.Mui-selected': {
-            color: getContrastColor(primaryColor) || '#fff',
-            bgcolor: 'primary.main',
-            borderRadius: '4px',
-          },
-          '& .MuiButtonBase-root:hover:not(.Mui-selected)': {
-            bgcolor: b3HexToRgb(primaryColor, 0.12),
-            borderRadius: '4px',
-          },
-        },
+        width: optionWidth,
+        maxWidth: optionWidth,
+        bgcolor: 'transparent',
+        display: 'flex',
+        flexDirection: 'column',
       }}
       component="nav"
       aria-labelledby="nested-list-subheader"
@@ -217,7 +237,7 @@ export default function B3Nav({ closeSidebar }: B3NavProps) {
         if (item.name === 'Quotes') {
           const { pathname } = location;
           return (
-            <ListItem key={item.path} disablePadding>
+            <ListItem key={item.path} disablePadding sx={{ width: '100%' }}>
               <Badge
                 badgeContent={
                   quoteDetailHasNewMessages && pathname.includes('quoteDetail') ? '' : 0
@@ -228,23 +248,31 @@ export default function B3Nav({ closeSidebar }: B3NavProps) {
                   '& .MuiBadge-badge.MuiBadge-dot': {
                     width: 8,
                     height: 8,
-                    bgcolor: '#FFFFFF',
-                    right: 14,
-                    top: 22,
+                    bgcolor: '#0067A0',
+                    right: 18,
+                    top: 20,
                   },
                 }}
               >
-                <ListItemButton onClick={() => handleClick(item)} selected={activePath(item.path)}>
-                  <ListItemText primary={b3Lang(item.idLang)} />
+                <ListItemButton
+                  sx={listItemButtonSx}
+                  onClick={() => handleClick(item)}
+                  selected={activePath(item.path)}
+                >
+                  <ListItemText primary={b3Lang(item.idLang)} {...listItemTextProps} />
                 </ListItemButton>
               </Badge>
             </ListItem>
           );
         }
         return (
-          <ListItem key={item.path} disablePadding>
-            <ListItemButton onClick={() => handleClick(item)} selected={activePath(item.path)}>
-              <ListItemText primary={b3Lang(item.idLang)} />
+          <ListItem key={item.path} disablePadding sx={{ width: '100%' }}>
+            <ListItemButton
+              sx={listItemButtonSx}
+              onClick={() => handleClick(item)}
+              selected={activePath(item.path)}
+            >
+              <ListItemText primary={b3Lang(item.idLang)} {...listItemTextProps} />
             </ListItemButton>
           </ListItem>
         );

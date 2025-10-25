@@ -4,6 +4,7 @@ import { Box, Typography } from '@mui/material';
 import CustomButton from '@/components/button/CustomButton';
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
+import { SectionTitle } from '@/components';
 import {
   BillingAddress,
   ContactInfo,
@@ -87,16 +88,15 @@ function QuoteInfoItem({ flag, title, info, status }: QuoteInfoItemProps) {
         paddingLeft: infoPaddingLeft,
       }}
     >
-      <Typography
+      <SectionTitle
         id={titleId}
+        component="h2"
         sx={{
-          fontWeight: 400,
-          fontSize: '24px',
           height: '32px',
         }}
       >
         {title}
-      </Typography>
+      </SectionTitle>
       <Box
         sx={{
           p: '15px 0',

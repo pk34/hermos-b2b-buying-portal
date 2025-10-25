@@ -1,3 +1,4 @@
+import { filterModalFieldBaseSx } from '@/components/filter/styles';
 import { LangFormatFunction } from '@/lib/lang';
 
 interface ExtraFieldsProps {
@@ -16,8 +17,9 @@ interface FilterProps {
 }
 
 interface UsersFilesProps {
-  [key: string]: string | boolean | number | Array<any> | boolean | undefined;
+  [key: string]: string | boolean | number | Array<unknown> | undefined | Record<string, unknown>;
   name: string;
+  sx?: Record<string, unknown>;
 }
 
 interface UserRoleProps {
@@ -52,6 +54,8 @@ const getUserRole = () => {
   return userRole;
 };
 
+const addEditUserFieldBaseSx = filterModalFieldBaseSx;
+
 const getFilterMoreList = (b3Lang: LangFormatFunction) => {
   return [
     {
@@ -65,6 +69,7 @@ const getFilterMoreList = (b3Lang: LangFormatFunction) => {
       disabled: false,
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
   ] satisfies [unknown];
 };
@@ -86,6 +91,7 @@ const getUsersFiles = (type: string, b3Lang: LangFormatFunction, disabledUserRol
       default: '',
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
     {
       name: 'firstName',
@@ -96,6 +102,7 @@ const getUsersFiles = (type: string, b3Lang: LangFormatFunction, disabledUserRol
       xs: 6,
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
     {
       name: 'lastName',
@@ -106,6 +113,7 @@ const getUsersFiles = (type: string, b3Lang: LangFormatFunction, disabledUserRol
       default: '',
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
     {
       name: 'phone',
@@ -116,6 +124,7 @@ const getUsersFiles = (type: string, b3Lang: LangFormatFunction, disabledUserRol
       default: '',
       variant: 'filled',
       size: 'small',
+      sx: addEditUserFieldBaseSx,
     },
   ];
 
@@ -133,6 +142,6 @@ const emailError: EmailError = {
   6: 'global.emailValidate.usedSuperAdmin',
 };
 
-export { emailError, getFilterMoreList, getUserRole, getUsersFiles };
+export { addEditUserFieldBaseSx, emailError, getFilterMoreList, getUserRole, getUsersFiles };
 
 export type { FilterProps, UsersFilesProps, ExtraFieldsProps };

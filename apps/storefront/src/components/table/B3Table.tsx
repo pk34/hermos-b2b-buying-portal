@@ -101,6 +101,7 @@ interface TableProps<Row> {
   sortDirection?: 'asc' | 'desc';
   sortByFn?: (e: { key: string }) => void;
   orderBy?: string;
+  customRenderFooter?: ReactNode;
 }
 
 interface RowProps<Row> {
@@ -254,6 +255,7 @@ export function B3Table<Row>({
   sortDirection = 'asc',
   sortByFn,
   orderBy = '',
+  customRenderFooter,
 }: TableProps<Row>) {
   const {
     state: {
@@ -339,6 +341,7 @@ export function B3Table<Row>({
               );
             })}
           </Grid>
+          {customRenderFooter}
           {showPagination && (
             <TablePagination
               labelDisplayedRows={({ from, to, count }) =>
@@ -380,6 +383,7 @@ export function B3Table<Row>({
               );
             })}
           </Grid>
+          {customRenderFooter}
           {showPagination && (
             <TablePagination
               labelDisplayedRows={({ from, to, count }) =>

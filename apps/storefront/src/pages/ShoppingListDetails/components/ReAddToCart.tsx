@@ -3,11 +3,15 @@ import styled from '@emotion/styled';
 import { Delete } from '@mui/icons-material';
 import { Alert, Box, Grid, Typography } from '@mui/material';
 
-import { B3QuantityTextField } from '@/components';
+import { B3QuantityTextField, SectionTitle } from '@/components';
 import B3Dialog from '@/components/B3Dialog';
 import CustomButton from '@/components/button/CustomButton';
 import B3Spin from '@/components/spin/B3Spin';
-import { CART_URL, CHECKOUT_URL, PRODUCT_DEFAULT_IMAGE } from '@/constants';
+import {
+  CART_URL,
+  CHECKOUT_URL,
+  PRODUCT_DEFAULT_IMAGE,
+} from '@/constants';
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { activeCurrencyInfoSelector, rolePermissionSelector, useAppSelector } from '@/store';
@@ -395,15 +399,11 @@ export default function ReAddToCart(props: ShoppingProductsProps) {
               margin: '0.5rem 0 1rem 0',
             }}
           >
-            <Box
-              sx={{
-                fontSize: '24px',
-              }}
-            >
+            <SectionTitle component="h2">
               {b3Lang('shoppingList.reAddToCart.productCount', {
                 quantity: products.length,
               })}
-            </Box>
+            </SectionTitle>
             <CustomButton onClick={() => handleClearNoStock()}>
               {b3Lang('shoppingList.reAddToCart.adjustQuantity')}
             </CustomButton>

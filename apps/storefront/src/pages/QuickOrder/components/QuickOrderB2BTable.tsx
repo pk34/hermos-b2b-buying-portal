@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { Box, styled, TextField, Typography } from '@mui/material';
 
 import B3Spin from '@/components/spin/B3Spin';
+import { SectionTitle } from '@/components';
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
 import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
@@ -445,14 +446,14 @@ function QuickOrderTable({
   return (
     <B3Spin isSpinning={isRequestLoading}>
       <StyleQuickOrderTable>
-        <Typography
+        <SectionTitle
+          component="h2"
           sx={{
-            fontSize: '24px',
             height: '50px',
           }}
         >
           {b3Lang('purchasedProducts.totalProducts', { total })}
-        </Typography>
+        </SectionTitle>
         <Box
           sx={{
             marginBottom: '5px',

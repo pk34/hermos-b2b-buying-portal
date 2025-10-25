@@ -1,15 +1,11 @@
 import { PropsWithChildren } from 'react';
 import styled from '@emotion/styled';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
-import { Theme, useTheme } from '@mui/material';
-import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { B3Tag } from '@/components';
-import CustomButton from '@/components/button/CustomButton';
 import { useB3Lang } from '@/lib/lang';
 
 import { AddressItemType } from '../../../types/address';
@@ -25,23 +21,34 @@ interface TagBoxProps {
   marginBottom: number | string;
 }
 
-const TagBox = styled('div')(({ marginBottom }: TagBoxProps) => ({
+const TagBox = styled('div')<TagBoxProps>(({ marginBottom }) => ({
   marginBottom,
+  marginLeft: '7px',
   '& > span:not(:last-child)': {
     marginRight: '4px',
   },
 }));
 
-interface FlexProps {
-  theme?: Theme;
+interface TextBlockProps {
+  marginBottom?: number | string;
 }
 
-const Flex = styled('div')(({ theme }: FlexProps) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginTop: theme!.spacing(3),
+const TextBlock = styled('div')<TextBlockProps>(({ marginBottom }) => ({
+  marginTop: '9px',
+  marginRight: 0,
+  marginBottom: marginBottom ?? '9px',
+  marginLeft: '7px',
 }));
+
+const textStyles = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 400,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000',
+  margin: 0,
+  display: 'block',
+} as const;
 
 function Tag({ children }: PropsWithChildren) {
   return (
@@ -52,41 +59,61 @@ function Tag({ children }: PropsWithChildren) {
 }
 
 function Text({ children }: PropsWithChildren) {
-  return <Typography variant="body1">{children}</Typography>;
+  return (
+    <TextBlock>
+      <Typography component="p" sx={textStyles}>
+        {children}
+      </Typography>
+    </TextBlock>
+  );
 }
 
 export function AddressItemCard({
   item: addressInfo,
-  onEdit,
-  onDelete,
-  onSetDefault,
 }: OrderItemCardProps) {
   const theme = useTheme();
   const b3Lang = useB3Lang();
-  const hasPermission = Boolean(onEdit || onDelete || onSetDefault);
 
   const isDefaultShipping = addressInfo.isDefaultShipping === 1;
   const isDefaultBilling = addressInfo.isDefaultBilling === 1;
 
   return (
-    <Card key={addressInfo.id}>
+    <Card
+      key={addressInfo.id}
+      sx={{
+        width: { xs: '100%', md: '327px' },
+        height: { xs: 'auto', md: '194px' },
+        border: '0.2px solid #000000',
+        borderRadius: '10px',
+        backgroundColor: '#FFF',
+        padding: '20px',
+        boxSizing: 'border-box',
+        boxShadow: '0px 4px 22px 5px #0000001A',
+      }}
+    >
       <CardContent
         sx={{
+          p: 0,
           color: '#313440',
           wordBreak: 'break-word',
         }}
       >
         {addressInfo.label && (
-          <Typography
-            variant="h5"
-            sx={{
-              marginBottom:
-                isDefaultShipping || isDefaultBilling ? theme.spacing(1) : theme.spacing(3),
-              color: 'rgba(0, 0, 0, 0.87)',
-            }}
+          <TextBlock
+            marginBottom={
+              isDefaultShipping || isDefaultBilling ? theme.spacing(1) : theme.spacing(3)
+            }
           >
-            {addressInfo.label}
-          </Typography>
+            <Typography
+              component="p"
+              sx={{
+                ...textStyles,
+                color: 'rgba(0, 0, 0, 0.87)',
+              }}
+            >
+              {addressInfo.label}
+            </Typography>
+          </TextBlock>
         )}
 
         <TagBox marginBottom={isDefaultShipping || isDefaultBilling ? theme.spacing(3) : 0}>
@@ -104,42 +131,6 @@ export function AddressItemCard({
           {addressInfo.city}, {addressInfo.state} {addressInfo.zipCode}, {addressInfo.country}
         </Text>
         <Text>{addressInfo.phoneNumber}</Text>
-
-        {hasPermission && (
-          <Flex>
-            {onSetDefault && (
-              <CustomButton
-                variant="text"
-                sx={{
-                  ml: '-8px',
-                }}
-                onClick={onSetDefault}
-              >
-                {b3Lang('addresses.addressItemCard.setAsDefault')}
-              </CustomButton>
-            )}
-            <Box
-              sx={{
-                flex: 1,
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '8px',
-              }}
-            >
-              {onEdit && (
-                <IconButton aria-label="edit" size="small" onClick={onEdit}>
-                  <EditIcon fontSize="inherit" />
-                </IconButton>
-              )}
-
-              {onDelete && (
-                <IconButton aria-label="delete" size="small" onClick={onDelete}>
-                  <DeleteIcon fontSize="inherit" />
-                </IconButton>
-              )}
-            </Box>
-          </Flex>
-        )}
       </CardContent>
     </Card>
   );
