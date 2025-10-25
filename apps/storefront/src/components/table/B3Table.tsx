@@ -341,6 +341,7 @@ export function B3Table<Row>({
               );
             })}
           </Grid>
+          {customRenderFooter}
           {showPagination && (
             <TablePagination
               labelDisplayedRows={({ from, to, count }) =>

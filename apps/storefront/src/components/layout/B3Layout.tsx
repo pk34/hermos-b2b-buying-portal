@@ -1,6 +1,7 @@
 import { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, useMediaQuery } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 
 import useMobile from '@/hooks/useMobile';
 import { useB3Lang } from '@/lib/lang';
@@ -100,10 +101,30 @@ export default function B3Layout({ children }: { children: ReactNode }) {
     return {};
   }, [location]);
 
+  const isAddressesPage = location.pathname === '/addresses';
+
+  const mobileTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
+    if (!isMobile || !isAddressesPage) {
+      return undefined;
+    }
+
+    return {
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 600,
+      fontSize: '24px',
+      lineHeight: '28px',
+      color: '#0067A0',
+      textAlign: 'center',
+      width: '100%',
+    };
+  }, [isAddressesPage, isMobile]);
+
   return (
     <Box>
       {isMobile ? (
-        <B3MobileLayout title={title}>{children}</B3MobileLayout>
+        <B3MobileLayout title={title} titleSx={mobileTitleSx}>
+          {children}
+        </B3MobileLayout>
       ) : (
         <Box
           id="app-mainPage-layout"

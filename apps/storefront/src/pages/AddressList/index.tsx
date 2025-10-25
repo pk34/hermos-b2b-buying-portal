@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 import B3Filter from '@/components/filter/B3Filter';
 import B3Spin from '@/components/spin/B3Spin';
@@ -26,6 +27,23 @@ import DeleteAddressDialog from './components/DeleteAddressDialog';
 import SetDefaultDialog from './components/SetDefaultDialog';
 import { convertBCToB2BAddress, filterFormConfig } from './shared/config';
 import { CountryProps, getAddressFields } from './shared/getAddressFields';
+
+const warningMessageSx: SxProps<Theme> = [
+  {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '14px',
+    lineHeight: '20px',
+    color: '#FF8E3E',
+    textAlign: { xs: 'center', md: 'left' },
+  },
+  (theme) => ({
+    [theme.breakpoints.down('md')]: {
+      color: '#000000',
+      margin: 0,
+    },
+  }),
+];
 
 const permissionKeys = [
   b2bPermissionsMap.addressesCreateActionsPermission,
@@ -277,12 +295,14 @@ function Address() {
           customRenderFooter={
             <Box
               sx={{
-                display: 'flex',
+                display: 'grid',
+                gridTemplateColumns: { xs: 'auto 1fr', md: 'auto 1fr' },
                 alignItems: 'center',
-                width: '674px',
-                height: '60px',
+                columnGap: { xs: '12px', md: '5px' },
+                width: { xs: '100%', md: '674px' },
+                minHeight: { xs: '60px', md: '60px' },
                 borderRadius: '5px',
-                padding: '10px',
+                padding: { xs: '10px 16px', md: '10px' },
                 mt: '21px',
                 backgroundColor: '#E6E6E6',
               }}
@@ -310,17 +330,7 @@ function Address() {
                   />
                 </svg>
               </Box>
-              <Box
-                component="p"
-                sx={{
-                  fontFamily: 'Lato, sans-serif',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  color: '#FF8E3E',
-                  ml: '5px',
-                }}
-              >
+              <Box component="p" sx={warningMessageSx}>
                 Necesitas agregar o modificar una dirección contacta a tu vendedor o escríbenos a
                 {' '}
                 ayuda@hermos.com
