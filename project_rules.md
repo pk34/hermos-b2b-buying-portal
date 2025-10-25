@@ -12,3 +12,8 @@
 - When a styled component needs access to the Material UI theme (e.g., `theme.breakpoints`), import `styled` from `@mui/material/styles` instead of `@emotion/styled`.
 - The Emotion `Theme` type used by default lacks the Material UI breakpoint helpers, which causes build errors such as **TS2339: Property 'breakpoints' does not exist on type 'Theme'**.
 - Using `@mui/material/styles` ensures the theme instance is typed correctly and prevents the build failure encountered in `UserItemCard.tsx`.
+
+## Supplying `sx` overrides
+- The MUI `sx` prop accepts arrays, but each item must be a valid style object/function. Passing `undefined` (for example, by spreading `SxProps | undefined` directly into an array) produces build errors like **TS2322: Type 'SxProps<Theme> | undefined' is not assignable ...**.
+- To avoid this, only append optional styles when they are defined, e.g. `...(customStyles ? [customStyles] : [])`.
+- This pattern keeps the array strictly typed and prevents the build failures seen in `B3Filter.tsx`.

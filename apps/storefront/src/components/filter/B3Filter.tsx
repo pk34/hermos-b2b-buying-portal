@@ -144,7 +144,9 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
                     height: '42px',
                     p: '0 20px',
                   },
-                  customButtonConfig?.customButtonStyle,
+                  ...(customButtonConfig?.customButtonStyle
+                    ? [customButtonConfig.customButtonStyle]
+                    : []),
                 ]}
                 onClick={handleCustomBtnClick}
               >
@@ -187,7 +189,9 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
                     height: '42px',
                     p: '0 20px',
                   },
-                  customButtonConfig?.customButtonStyle,
+                  ...(customButtonConfig?.customButtonStyle
+                    ? [customButtonConfig.customButtonStyle]
+                    : []),
                 ]}
                 onClick={handleCustomBtnClick}
               >
@@ -233,7 +237,9 @@ function B3Filter<T, Y>(props: B3FilterProps<T, Y>) {
                   marginTop: '20px',
                   height: '42px',
                 },
-                customButtonConfig?.customButtonStyle,
+                ...(customButtonConfig?.customButtonStyle
+                  ? [customButtonConfig.customButtonStyle]
+                  : []),
               ]}
               onClick={handleCustomBtnClick}
             >
