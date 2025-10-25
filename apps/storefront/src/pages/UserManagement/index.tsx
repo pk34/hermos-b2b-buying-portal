@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Box } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 import B3Dialog from '@/components/B3Dialog';
 import B3Filter from '@/components/filter/B3Filter';
@@ -70,7 +71,7 @@ function UserManagement() {
     return {
       isEnabled: isEnableBtnPermissions && isCreatePermission,
       customLabel: b3Lang('userManagement.addUser'),
-      customButtonStyle: {
+      customButtonStyle: (theme: Theme) => ({
         height: '44px',
         minWidth: 'auto',
         borderRadius: '5px',
@@ -92,7 +93,13 @@ function UserManagement() {
           backgroundColor: '#00965E',
           color: '#FFFFFF',
         },
-      },
+        [theme.breakpoints.down('sm')]: {
+          ml: 0,
+          mt: '10px',
+          width: '85%',
+          alignSelf: 'flex-start',
+        },
+      }),
       placeNextToFilterIcon: true,
     };
 

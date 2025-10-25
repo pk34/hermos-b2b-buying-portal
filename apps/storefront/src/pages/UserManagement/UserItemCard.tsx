@@ -46,11 +46,9 @@ const StyledCard = styled(Card)(() => ({
   height: '194px',
   borderRadius: '10px',
   backgroundColor: '#FFFFFF',
-  borderTop: '0px solid #000000',
-  borderRight: '0.5px solid #000000',
-  borderBottom: '0.5px solid #000000',
-  borderLeft: '0px solid #000000',
-  boxShadow: 'none',
+  border: '0.2px solid #000000',
+  boxShadow: '0px 4px 22px 5px #0000001A',
+  boxSizing: 'border-box' as const,
 }));
 
 const StyledCardContent = styled(CardContent)(() => ({
