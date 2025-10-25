@@ -5,6 +5,7 @@ import concat from 'lodash-es/concat';
 
 import { B3CustomForm } from '@/components';
 import B3Dialog from '@/components/B3Dialog';
+import { filterModalLeftButtonSx, filterModalRightButtonSx } from '@/components/filter/styles';
 import { useB3Lang } from '@/lib/lang';
 import { useAppSelector } from '@/store';
 import { UserTypes } from '@/types';
@@ -311,6 +312,13 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
           display: 'flex',
           justifyContent: 'center',
           gap: '16px',
+          '@media (max-width: 600px)': {
+            width: '100%',
+            flexDirection: 'column-reverse',
+            gap: '20px',
+            alignItems: 'center',
+            padding: '16px 0 24px',
+          },
         },
       }}
       dialogContentSx={{
@@ -322,46 +330,10 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         width: '100%',
       }}
       leftStyleBtn={{
-        width: '150px',
-        height: '44px',
-        opacity: 1,
-        border: '1px solid #0067A0',
-        borderRadius: '5px',
-        padding: '10px',
-        color: '#000000',
-        backgroundColor: '#FFFFFF',
-        fontFamily: "'Lato', sans-serif",
-        fontWeight: 600,
-        fontSize: '16px',
-        lineHeight: '24px',
-        textTransform: 'capitalize',
-        display: 'block',
-        textAlign: 'center',
-        '&:hover': {
-          backgroundColor: '#FFFFFF',
-          borderColor: '#00965E',
-        },
+        ...filterModalLeftButtonSx,
       }}
       rightStyleBtn={{
-        width: '150px',
-        height: '44px',
-        opacity: 1,
-        borderRadius: '5px',
-        padding: '10px',
-        color: '#FFFFFF',
-        backgroundColor: '#0067A0',
-        border: '1px solid #0067A0',
-        fontFamily: "'Lato', sans-serif",
-        fontWeight: 600,
-        fontSize: '16px',
-        lineHeight: '24px',
-        textTransform: 'capitalize',
-        display: 'block',
-        textAlign: 'center',
-        '&:hover': {
-          backgroundColor: '#00965E',
-          borderColor: '#00965E',
-        },
+        ...filterModalRightButtonSx,
       }}
     >
       <Box

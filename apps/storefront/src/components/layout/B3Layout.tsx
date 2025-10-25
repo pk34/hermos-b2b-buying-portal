@@ -101,10 +101,11 @@ export default function B3Layout({ children }: { children: ReactNode }) {
     return {};
   }, [location]);
 
-  const isAddressesPage = location.pathname === '/addresses';
+  const pagesWithCustomMobileTitle = ['/addresses', '/user-management'];
+  const isCustomMobileTitlePage = pagesWithCustomMobileTitle.includes(location.pathname);
 
   const mobileTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
-    if (!isMobile || !isAddressesPage) {
+    if (!isMobile || !isCustomMobileTitlePage) {
       return undefined;
     }
 
@@ -116,8 +117,9 @@ export default function B3Layout({ children }: { children: ReactNode }) {
       color: '#0067A0',
       textAlign: 'center',
       width: '100%',
+      marginTop: '24px',
     };
-  }, [isAddressesPage, isMobile]);
+  }, [isCustomMobileTitlePage, isMobile]);
 
   return (
     <Box>

@@ -41,7 +41,7 @@ interface OrderItemCardProps {
   onDelete: Delete;
 }
 
-const StyledCard = styled(Card)(() => ({
+const StyledCard = styled(Card)(({ theme }) => ({
   width: '327px',
   height: '194px',
   borderRadius: '10px',
@@ -49,6 +49,10 @@ const StyledCard = styled(Card)(() => ({
   border: '0.2px solid #000000',
   boxShadow: '0px 4px 22px 5px #0000001A',
   boxSizing: 'border-box' as const,
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    height: 'auto',
+  },
 }));
 
 const StyledCardContent = styled(CardContent)(() => ({

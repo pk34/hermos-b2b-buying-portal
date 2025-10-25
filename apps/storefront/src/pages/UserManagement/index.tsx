@@ -5,6 +5,7 @@ import type { Theme } from '@mui/material/styles';
 import B3Dialog from '@/components/B3Dialog';
 import B3Filter from '@/components/filter/B3Filter';
 import B3Spin from '@/components/spin/B3Spin';
+import { filterModalLeftButtonSx, filterModalRightButtonSx } from '@/components/filter/styles';
 import { useCardListColumn, useTableRef } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { rolePermissionSelector, useAppSelector } from '@/store';
@@ -73,7 +74,7 @@ function UserManagement() {
       customLabel: b3Lang('userManagement.addUser'),
       customButtonStyle: (theme: Theme) => ({
         height: '44px',
-        minWidth: 'auto',
+        minWidth: 'fit-content',
         borderRadius: '5px',
         py: '10px',
         px: '24px',
@@ -88,6 +89,9 @@ function UserManagement() {
         textAlign: 'center',
         verticalAlign: 'middle',
         ml: '38px',
+        width: 'fit-content',
+        maxWidth: '100%',
+        flexShrink: 0,
         whiteSpace: 'nowrap',
         '&:hover': {
           backgroundColor: '#00965E',
@@ -97,7 +101,7 @@ function UserManagement() {
           ml: 0,
           mt: '10px',
           width: '85%',
-          alignSelf: 'flex-start',
+          alignSelf: 'center',
         },
       }),
       placeNextToFilterIcon: true,
@@ -270,39 +274,12 @@ function UserManagement() {
           handRightClick={handleDeleteUserClick}
           row={userId}
           rightStyleBtn={{
-            width: '150px',
-            height: '44px',
-            borderRadius: '5px',
-            padding: '10px',
+            ...filterModalRightButtonSx,
             gap: '10px',
-            border: '1px solid #0067A0',
-            backgroundColor: '#0067A0',
-            color: '#FFFFFF',
-            textTransform: 'capitalize',
-            fontFamily: "'Lato', sans-serif",
-            fontWeight: 600,
-            '&:hover': {
-              backgroundColor: '#00965E',
-              borderColor: '#00965E',
-            },
           }}
           leftStyleBtn={{
-            width: '150px',
-            height: '44px',
-            opacity: 1,
-            borderRadius: '5px',
-            padding: '10px',
+            ...filterModalLeftButtonSx,
             gap: '10px',
-            border: '1px solid #0067A0',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            textTransform: 'capitalize',
-            fontFamily: "'Lato', sans-serif",
-            fontWeight: 600,
-            '&:hover': {
-              backgroundColor: '#FFFFFF',
-              borderColor: '#00965E',
-            },
           }}
           isShowBordered={false}
           dialogContentSx={{
@@ -354,6 +331,14 @@ function UserManagement() {
               columnGap: '33px',
               gap: '33px',
               padding: 0,
+              '@media (max-width: 600px)': {
+                width: '100%',
+                flexDirection: 'column-reverse',
+                gap: '20px',
+                alignItems: 'center',
+                columnGap: '20px',
+                padding: '16px 0 24px',
+              },
             },
           }}
           fullScreenOnMobile={false}
@@ -379,20 +364,7 @@ function UserManagement() {
           handleLeftClick={handleCloseDeleteSuccessModal}
           handRightClick={handleCloseDeleteSuccessModal}
           rightStyleBtn={{
-            width: '150px',
-            height: '44px',
-            borderRadius: '5px',
-            padding: '10px',
-            border: '1px solid #0067A0',
-            backgroundColor: '#0067A0',
-            color: '#FFFFFF',
-            textTransform: 'capitalize',
-            fontFamily: "'Lato', sans-serif",
-            fontWeight: 600,
-            '&:hover': {
-              backgroundColor: '#00965E',
-              borderColor: '#00965E',
-            },
+            ...filterModalRightButtonSx,
           }}
           isShowBordered={false}
           dialogContentSx={{
@@ -438,6 +410,13 @@ function UserManagement() {
               borderTop: 'none',
               justifyContent: 'center',
               padding: 0,
+              '@media (max-width: 600px)': {
+                width: '100%',
+                flexDirection: 'column',
+                gap: '20px',
+                alignItems: 'center',
+                padding: '16px 0 24px',
+              },
             },
           }}
           fullScreenOnMobile={false}
