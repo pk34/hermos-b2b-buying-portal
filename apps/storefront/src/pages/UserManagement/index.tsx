@@ -5,6 +5,7 @@ import type { Theme } from '@mui/material/styles';
 import B3Dialog from '@/components/B3Dialog';
 import B3Filter from '@/components/filter/B3Filter';
 import B3Spin from '@/components/spin/B3Spin';
+import { filterModalLeftButtonSx, filterModalRightButtonSx } from '@/components/filter/styles';
 import { useCardListColumn, useTableRef } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { rolePermissionSelector, useAppSelector } from '@/store';
@@ -73,7 +74,7 @@ function UserManagement() {
       customLabel: b3Lang('userManagement.addUser'),
       customButtonStyle: (theme: Theme) => ({
         height: '44px',
-        minWidth: 'auto',
+        minWidth: '50%',
         borderRadius: '5px',
         py: '10px',
         px: '24px',
@@ -81,6 +82,7 @@ function UserManagement() {
         textTransform: 'capitalize',
         backgroundColor: '#0067A0',
         color: '#FFFFFF',
+        border: '1px solid #0067A0',
         fontFamily: "'Lato', sans-serif",
         fontWeight: '600',
         fontSize: '16px',
@@ -88,16 +90,22 @@ function UserManagement() {
         textAlign: 'center',
         verticalAlign: 'middle',
         ml: '38px',
+        width: 'auto',
+        maxWidth: '100%',
+        flexShrink: 0,
         whiteSpace: 'nowrap',
         '&:hover': {
           backgroundColor: '#00965E',
           color: '#FFFFFF',
+          borderColor: '#00965E',
         },
         [theme.breakpoints.down('sm')]: {
           ml: 0,
           mt: '10px',
           width: '85%',
-          alignSelf: 'flex-start',
+          minWidth: '85%',
+          maxWidth: '85%',
+          alignSelf: 'center',
         },
       }),
       placeNextToFilterIcon: true,
@@ -270,41 +278,16 @@ function UserManagement() {
           handRightClick={handleDeleteUserClick}
           row={userId}
           rightStyleBtn={{
-            width: '150px',
-            height: '44px',
-            borderRadius: '5px',
-            padding: '10px',
+            ...filterModalRightButtonSx,
             gap: '10px',
-            border: '1px solid #0067A0',
-            backgroundColor: '#0067A0',
-            color: '#FFFFFF',
-            textTransform: 'capitalize',
-            fontFamily: "'Lato', sans-serif",
-            fontWeight: 600,
-            '&:hover': {
-              backgroundColor: '#00965E',
-              borderColor: '#00965E',
-            },
           }}
           leftStyleBtn={{
-            width: '150px',
-            height: '44px',
-            opacity: 1,
-            borderRadius: '5px',
-            padding: '10px',
+            ...filterModalLeftButtonSx,
             gap: '10px',
-            border: '1px solid #0067A0',
-            backgroundColor: '#FFFFFF',
-            color: '#000000',
-            textTransform: 'capitalize',
-            fontFamily: "'Lato', sans-serif",
-            fontWeight: 600,
-            '&:hover': {
-              backgroundColor: '#FFFFFF',
-              borderColor: '#00965E',
-            },
           }}
           isShowBordered={false}
+          dialogWidth="min(449px, 95vw)"
+          applyDialogWidthOnMobile
           dialogContentSx={{
             p: 0,
             display: 'flex',
@@ -328,9 +311,6 @@ function UserManagement() {
               borderRadius: 0,
               padding: '25px',
               boxShadow: '0px 4px 22px 5px #0000001A',
-              width: '449px',
-              height: '212px',
-              maxWidth: 'calc(100vw - 32px)',
               maxHeight: 'calc(100vh - 32px)',
             },
             '& .MuiDialogTitle-root': {
@@ -354,6 +334,14 @@ function UserManagement() {
               columnGap: '33px',
               gap: '33px',
               padding: 0,
+              '@media (max-width: 600px)': {
+                width: '100%',
+                flexDirection: 'column-reverse',
+                gap: '20px',
+                alignItems: 'center',
+                columnGap: '20px',
+                padding: '16px 0 24px',
+              },
             },
           }}
           fullScreenOnMobile={false}
@@ -362,7 +350,6 @@ function UserManagement() {
             sx={{
               display: 'flex',
               width: '100%',
-              height: '100%',
               alignItems: 'center',
               justifyContent: 'center',
               textAlign: 'center',
@@ -379,22 +366,11 @@ function UserManagement() {
           handleLeftClick={handleCloseDeleteSuccessModal}
           handRightClick={handleCloseDeleteSuccessModal}
           rightStyleBtn={{
-            width: '150px',
-            height: '44px',
-            borderRadius: '5px',
-            padding: '10px',
-            border: '1px solid #0067A0',
-            backgroundColor: '#0067A0',
-            color: '#FFFFFF',
-            textTransform: 'capitalize',
-            fontFamily: "'Lato', sans-serif",
-            fontWeight: 600,
-            '&:hover': {
-              backgroundColor: '#00965E',
-              borderColor: '#00965E',
-            },
+            ...filterModalRightButtonSx,
           }}
           isShowBordered={false}
+          dialogWidth="min(449px, 95vw)"
+          applyDialogWidthOnMobile
           dialogContentSx={{
             p: 0,
             display: 'flex',
@@ -413,9 +389,6 @@ function UserManagement() {
               borderRadius: 0,
               padding: '25px',
               boxShadow: '0px 4px 22px 5px #0000001A',
-              width: '449px',
-              height: '212px',
-              maxWidth: 'calc(100vw - 32px)',
               maxHeight: 'calc(100vh - 32px)',
             },
             '& .MuiDialogTitle-root': {
@@ -438,6 +411,13 @@ function UserManagement() {
               borderTop: 'none',
               justifyContent: 'center',
               padding: 0,
+              '@media (max-width: 600px)': {
+                width: '100%',
+                flexDirection: 'column',
+                gap: '20px',
+                alignItems: 'center',
+                padding: '16px 0 24px',
+              },
             },
           }}
           fullScreenOnMobile={false}
@@ -446,7 +426,6 @@ function UserManagement() {
             sx={{
               display: 'flex',
               width: '100%',
-              height: '100%',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',

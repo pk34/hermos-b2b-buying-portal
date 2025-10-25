@@ -1,10 +1,10 @@
 import type { SVGProps } from 'react';
-import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 
 import { B3Tag } from '@/components';
 import { verifyLevelPermission } from '@/utils';
@@ -41,7 +41,7 @@ interface OrderItemCardProps {
   onDelete: Delete;
 }
 
-const StyledCard = styled(Card)(() => ({
+const StyledCard = styled(Card)(({ theme }) => ({
   width: '327px',
   height: '194px',
   borderRadius: '10px',
@@ -49,6 +49,10 @@ const StyledCard = styled(Card)(() => ({
   border: '0.2px solid #000000',
   boxShadow: '0px 4px 22px 5px #0000001A',
   boxSizing: 'border-box' as const,
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    height: 'auto',
+  },
 }));
 
 const StyledCardContent = styled(CardContent)(() => ({
