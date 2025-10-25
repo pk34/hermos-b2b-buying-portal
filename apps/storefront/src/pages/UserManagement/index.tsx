@@ -74,7 +74,7 @@ function UserManagement() {
       customLabel: b3Lang('userManagement.addUser'),
       customButtonStyle: (theme: Theme) => ({
         height: '44px',
-        minWidth: 'fit-content',
+        minWidth: '50%',
         borderRadius: '5px',
         py: '10px',
         px: '24px',
@@ -82,6 +82,7 @@ function UserManagement() {
         textTransform: 'capitalize',
         backgroundColor: '#0067A0',
         color: '#FFFFFF',
+        border: '1px solid #0067A0',
         fontFamily: "'Lato', sans-serif",
         fontWeight: '600',
         fontSize: '16px',
@@ -89,18 +90,21 @@ function UserManagement() {
         textAlign: 'center',
         verticalAlign: 'middle',
         ml: '38px',
-        width: 'fit-content',
+        width: 'auto',
         maxWidth: '100%',
         flexShrink: 0,
         whiteSpace: 'nowrap',
         '&:hover': {
           backgroundColor: '#00965E',
           color: '#FFFFFF',
+          borderColor: '#00965E',
         },
         [theme.breakpoints.down('sm')]: {
           ml: 0,
           mt: '10px',
           width: '85%',
+          minWidth: '85%',
+          maxWidth: '85%',
           alignSelf: 'center',
         },
       }),
@@ -282,6 +286,8 @@ function UserManagement() {
             gap: '10px',
           }}
           isShowBordered={false}
+          dialogWidth="min(449px, 95vw)"
+          applyDialogWidthOnMobile
           dialogContentSx={{
             p: 0,
             display: 'flex',
@@ -305,9 +311,6 @@ function UserManagement() {
               borderRadius: 0,
               padding: '25px',
               boxShadow: '0px 4px 22px 5px #0000001A',
-              width: '449px',
-              height: '212px',
-              maxWidth: 'calc(100vw - 32px)',
               maxHeight: 'calc(100vh - 32px)',
             },
             '& .MuiDialogTitle-root': {
@@ -347,7 +350,6 @@ function UserManagement() {
             sx={{
               display: 'flex',
               width: '100%',
-              height: '100%',
               alignItems: 'center',
               justifyContent: 'center',
               textAlign: 'center',
@@ -367,6 +369,8 @@ function UserManagement() {
             ...filterModalRightButtonSx,
           }}
           isShowBordered={false}
+          dialogWidth="min(449px, 95vw)"
+          applyDialogWidthOnMobile
           dialogContentSx={{
             p: 0,
             display: 'flex',
@@ -385,9 +389,6 @@ function UserManagement() {
               borderRadius: 0,
               padding: '25px',
               boxShadow: '0px 4px 22px 5px #0000001A',
-              width: '449px',
-              height: '212px',
-              maxWidth: 'calc(100vw - 32px)',
               maxHeight: 'calc(100vh - 32px)',
             },
             '& .MuiDialogTitle-root': {
@@ -425,7 +426,6 @@ function UserManagement() {
             sx={{
               display: 'flex',
               width: '100%',
-              height: '100%',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',

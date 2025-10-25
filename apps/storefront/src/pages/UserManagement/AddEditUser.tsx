@@ -284,7 +284,7 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
       handRightClick={handleAddUserClick}
       loading={addUpdateLoading}
       isShowBordered={false}
-      dialogWidth="396px"
+      dialogWidth="min(396px, 95vw)"
       applyDialogWidthOnMobile
       fullScreenOnMobile={false}
       maxWidth={false}
