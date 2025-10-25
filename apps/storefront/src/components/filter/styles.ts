@@ -85,6 +85,7 @@ export const filterModalDialogSx = {
     justifyContent: 'center',
     gap: '16px',
     '@media (max-width: 600px)': {
+      width: '100%',
       flexDirection: 'column-reverse',
       gap: '20px',
       alignItems: 'center',
@@ -124,6 +125,8 @@ export const filterModalLeftButtonSx = {
   },
   '@media (max-width: 600px)': {
     width: '90%',
+    alignSelf: 'center',
+    boxSizing: 'border-box',
   },
 } as const;
 
@@ -149,6 +152,8 @@ export const filterModalRightButtonSx = {
   },
   '@media (max-width: 600px)': {
     width: '90%',
+    alignSelf: 'center',
+    boxSizing: 'border-box',
   },
 } as const;
 
