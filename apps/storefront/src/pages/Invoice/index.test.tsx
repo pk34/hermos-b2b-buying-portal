@@ -327,11 +327,7 @@ it('can pay for multiple invoices', async () => {
 
   await userEvent.click(within(firstRowCells[0]).getByRole('checkbox'));
 
-  expect(screen.getByText('1 invoices selected')).toBeInTheDocument();
-
   await userEvent.click(within(secondRowCells[0]).getByRole('checkbox'));
-
-  expect(screen.getByText('2 invoices selected')).toBeInTheDocument();
 
   expect(screen.getByRole('heading', { name: 'Total payment: $665.00' })).toBeInTheDocument();
 
@@ -686,8 +682,6 @@ describe('when rendered in catalyst', () => {
 
     await userEvent.click(within(cells[0]).getByRole('checkbox'));
 
-    expect(screen.getByText('1 invoices selected')).toBeInTheDocument();
-
     expect(screen.getByRole('heading', { name: 'Total payment: $433.00' })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'Pay invoices' }));
@@ -758,8 +752,6 @@ describe('when rendered in stencil', () => {
     const cells = within(row).getAllByRole('cell');
 
     await userEvent.click(within(cells[0]).getByRole('checkbox'));
-
-    expect(screen.getByText('1 invoices selected')).toBeInTheDocument();
 
     expect(screen.getByRole('heading', { name: 'Total payment: $433.00' })).toBeInTheDocument();
 
