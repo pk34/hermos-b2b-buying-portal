@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
 import { TableColumnItem } from '@/components/table/B3Table';
+import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { InvoiceList, InvoiceListNode } from '@/types/invoice';
 import { currencyFormat, displayFormat } from '@/utils';
@@ -47,6 +48,7 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
   } = props;
   const b3Lang = useB3Lang();
   const navigate = useNavigate();
+  const [isMobile] = useMobile();
 
   const { id, status, dueDate, openBalance, companyInfo } = item;
 
@@ -133,12 +135,129 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
 
   const groupId = useId();
 
+  const toNumber = (value: number | string | undefined) => {
+    if (value === '.' || value === undefined || value === null) {
+      return 0;
+    }
+
+    const parsed = Number(value);
+
+    return Number.isNaN(parsed) ? 0 : parsed;
+  };
+
+  const invoiceTotalValue = toNumber(item?.originalBalance?.value);
+  const pendingAmountValue = toNumber(openBalance?.value);
+  const amountToPayValue = toNumber(item?.amountToPay ?? openBalance?.value);
+
+  const mobileLabelStyles = {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    whiteSpace: 'nowrap' as const,
+    marginRight: '16px',
+  };
+
+  const mobileValueStyles = {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    textAlign: 'right' as const,
+  };
+
+  const isOverdue = currentDate > dueDate * 1000 && status !== 2;
+
+  const formatDisplayDate = (value: number | string | null | undefined) =>
+    value ? `${displayFormat(Number(value))}` : '–';
+
+  const mobileDetails = [
+    {
+      key: 'orderNumber',
+      label: b3Lang('invoice.invoiceItemCardHeader.order'),
+      value: (
+        <Box
+          role="button"
+          sx={{
+            ...mobileValueStyles,
+            color: '#000000',
+            cursor: 'pointer',
+            textDecoration: 'underline',
+          }}
+          onClick={() => {
+            navigate(`/orderDetail/${item.orderNumber}`);
+          }}
+        >
+          {item?.orderNumber || '-'}
+        </Box>
+      ),
+    },
+    {
+      key: 'createdAt',
+      label: b3Lang('invoice.invoiceItemCardHeader.quoteDate'),
+      value: (
+        <Typography sx={mobileValueStyles}>{formatDisplayDate(item.createdAt)}</Typography>
+      ),
+    },
+    {
+      key: 'updatedAt',
+      label: b3Lang('invoice.invoiceItemCardHeader.expirationDate'),
+      value: (
+        <Typography
+          sx={{
+            ...mobileValueStyles,
+            color: isOverdue ? '#D32F2F' : mobileValueStyles.color,
+          }}
+        >
+          {formatDisplayDate(item.dueDate)}
+        </Typography>
+      ),
+    },
+    {
+      key: 'originalBalance',
+      label: b3Lang('invoice.invoiceItemCardHeader.total'),
+      value: (
+        <Typography sx={mobileValueStyles}>{currencyFormat(invoiceTotalValue || 0)}</Typography>
+      ),
+    },
+    {
+      key: 'openBalance',
+      label: b3Lang('invoice.invoiceItemCardHeader.debtAmount'),
+      value: (
+        <Typography sx={mobileValueStyles}>{currencyFormat(pendingAmountValue || 0)}</Typography>
+      ),
+    },
+    {
+      key: 'amountToPay',
+      label: b3Lang('invoice.invoiceItemCardHeader.amountToPay'),
+      value: (
+        <Typography sx={mobileValueStyles}>{currencyFormat(amountToPayValue || 0)}</Typography>
+      ),
+    },
+    {
+      key: 'currency',
+      label: b3Lang('invoice.invoiceItemCardHeader.currency'),
+      value: (
+        <Typography sx={mobileValueStyles}>
+          {openBalance?.code || item?.originalBalance?.code || '-'}
+        </Typography>
+      ),
+    },
+  ];
+
   return (
     <Card
       role="group"
       aria-labelledby={groupId}
       sx={{
         marginBottom: selectedPay.length > 0 && addBottom ? '5rem' : 0,
+        ...(isMobile && {
+          border: '0.2px solid #000000',
+          boxShadow: '0px 4px 22px 5px #0000001A',
+          transition: 'none',
+        }),
       }}
     >
       <CardContent
@@ -167,6 +286,13 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
               variant="h6"
               sx={{
                 color: 'rgba(0, 0, 0, 0.87)',
+                ...(isMobile && {
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                  color: '#000000',
+                }),
               }}
             >
               <Box
@@ -176,6 +302,12 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
                   color: '#000000',
                   cursor: 'pointer',
                   textDecoration: 'underline',
+                  ...(isMobile && {
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                  }),
                 }}
                 onClick={() => {
                   handleViewInvoice(id, status, companyInfo.companyId);
@@ -186,49 +318,68 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
             </Typography>
           </Box>
           <Box sx={{ mb: '0.5rem' }}>
-          <B3Pulldown
-            row={item}
-            setInvoiceId={setInvoiceId}
-            handleOpenDetails={handleOpenDetails}
-            setIsRequestLoading={setIsRequestLoading}
-            isCurrentCompany={isCurrentCompany}
-            invoicePay={invoicePay}
-          />
-        </Box>
+            <B3Pulldown
+              row={item}
+              setInvoiceId={setInvoiceId}
+              handleOpenDetails={handleOpenDetails}
+              setIsRequestLoading={setIsRequestLoading}
+              isCurrentCompany={isCurrentCompany}
+              invoicePay={invoicePay}
+            />
+          </Box>
         </Box>
         <Box sx={{ mb: '1rem' }}>
           <InvoiceStatus code={statusCode} />
         </Box>
 
-        {columnAllItems.map((list: CustomFieldItems) => (
-          <Box
-            key={list.key}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              mt: '4px',
-            }}
-          >
-            <Typography
-              sx={{
-                fontWeight: 'bold',
-                color: 'rgba(0, 0, 0, 0.87)',
-                mr: '5px',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {`${list.title}:`}
-            </Typography>
-            <Box
-              sx={{
-                color: 'black',
-                wordBreak: 'break-all',
-              }}
-            >
-              {list?.render ? list.render() : item[list.key]}
-            </Box>
-          </Box>
-        ))}
+        {isMobile
+          ? mobileDetails.map((detail) => (
+              <Box
+                key={detail.key}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  mt: '4px',
+                  width: '100%',
+                  gap: '16px',
+                }}
+              >
+                <Typography sx={mobileLabelStyles}>{`${detail.label}:`}</Typography>
+                <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                  {detail.value}
+                </Box>
+              </Box>
+            ))
+          : columnAllItems.map((list: CustomFieldItems) => (
+              <Box
+                key={list.key}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  mt: '4px',
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontWeight: 'bold',
+                    color: 'rgba(0, 0, 0, 0.87)',
+                    mr: '5px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {`${list.title}:`}
+                </Typography>
+                <Box
+                  sx={{
+                    color: 'black',
+                    wordBreak: 'break-all',
+                  }}
+                >
+                  {list?.render ? list.render() : item[list.key]}
+                </Box>
+              </Box>
+            ))}
       </CardContent>
       {item?.isCollapse && (
         <Box sx={{ padding: '0 16px 16px' }}>

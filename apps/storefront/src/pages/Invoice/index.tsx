@@ -781,16 +781,18 @@ function Invoice() {
           <Box
             sx={{
               display: 'flex',
+              alignItems: 'center',
               marginBottom: '30px',
-              flexDirection: document.body.clientWidth <= 465 ? 'column' : 'row',
+              flexDirection: 'row',
+              gap: isMobile ? '12px' : 0,
             }}
           >
             <Typography
               sx={{
                 fontFamily: 'Lato, sans-serif',
-                fontWeight: 400,
-                fontSize: '20px',
-                lineHeight: '28px',
+                fontWeight: isMobile ? 600 : 400,
+                fontSize: isMobile ? '14px' : '20px',
+                lineHeight: isMobile ? '20px' : '28px',
                 color: '#000000',
               }}
             >
@@ -798,7 +800,15 @@ function Invoice() {
                 unpaid: currencyFormat(unpaidAmount),
               })}
             </Typography>
-            {document.body.clientWidth >= 465 && (
+            {isMobile ? (
+              <Box
+                sx={{
+                  width: 0,
+                  height: '19px',
+                  border: '2px solid #000000',
+                }}
+              />
+            ) : (
               <Typography
                 sx={{
                   fontFamily: 'Lato, sans-serif',
@@ -814,9 +824,9 @@ function Invoice() {
             <Typography
               sx={{
                 fontFamily: 'Lato, sans-serif',
-                fontWeight: 400,
-                fontSize: '20px',
-                lineHeight: '28px',
+                fontWeight: isMobile ? 600 : 400,
+                fontSize: isMobile ? '14px' : '20px',
+                lineHeight: isMobile ? '20px' : '28px',
                 color: '#F70000',
               }}
             >

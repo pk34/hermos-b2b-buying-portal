@@ -138,6 +138,9 @@ const MOUSE_POINTER_STYLE = {
 
 const CHECKBOX_SX = {
   padding: '4px',
+  '&:hover': {
+    backgroundColor: 'transparent',
+  },
   '& .MuiSvgIcon-root': {
     width: '22px',
     height: '22px',
@@ -146,7 +149,7 @@ const CHECKBOX_SX = {
     boxSizing: 'border-box',
   },
   '&.Mui-checked .MuiSvgIcon-root': {
-    borderColor: '#0067A0',
+    border: '0.2px solid #000000',
     backgroundColor: '#0067A0',
     color: '#FFFFFF',
   },

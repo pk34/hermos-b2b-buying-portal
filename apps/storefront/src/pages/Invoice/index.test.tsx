@@ -145,10 +145,10 @@ it('renders every column', async () => {
 
   expect(columnHeaders[1]).toHaveTextContent('Invoice number');
   expect(columnHeaders[2]).toHaveTextContent('Order');
-  expect(columnHeaders[3]).toHaveTextContent('Quote date');
+  expect(columnHeaders[3]).toHaveTextContent('Invoice date');
   expect(columnHeaders[4]).toHaveTextContent('Expiration date');
-  expect(columnHeaders[5]).toHaveTextContent('Total');
-  expect(columnHeaders[6]).toHaveTextContent('Debt amount');
+  expect(columnHeaders[5]).toHaveTextContent('Invoice total');
+  expect(columnHeaders[6]).toHaveTextContent('Pending amount');
   expect(columnHeaders[7]).toHaveTextContent('Currency');
   expect(columnHeaders[8]).toHaveTextContent('Status');
   expect(columnHeaders[9]).toHaveTextContent('Actions');
