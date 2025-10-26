@@ -54,7 +54,7 @@ interface ListItem {
   totalIncTax: string;
   status: string;
   createdAt: string;
-  companyName: string;
+  companyName?: string;
   companyInfo?: CompanyInfoProps;
   currencyCode?: string;
 }
@@ -125,25 +125,16 @@ const getOrderBy = ({ key, dir }: OrderBy) => {
   return dir === 'desc' ? `-${sortKeys[key]}` : sortKeys[key];
 };
 
-const getCurrencyDisplay = (currencyCode?: string, money?: string) => {
-  if (currencyCode) {
-    return currencyCode;
+const getCompanyDisplay = (companyInfo?: CompanyInfoProps, companyName?: string) => {
+  if (companyInfo?.companyName) {
+    return companyInfo.companyName;
   }
 
-  if (!money || typeof money !== 'string') {
-    return '–';
+  if (companyName) {
+    return companyName;
   }
 
-  try {
-    const parsedMoney = JSON.parse(JSON.parse(money)) as {
-      currency_code?: string;
-      currency_token?: string;
-    };
-
-    return parsedMoney.currency_code || parsedMoney.currency_token || '–';
-  } catch {
-    return '–';
-  }
+  return '–';
 };
 
 function Order({ isCompanyOrder = false }: OrderProps) {
@@ -284,6 +275,15 @@ function Order({ isCompanyOrder = false }: OrderProps) {
       render: ({ orderId }) => orderId,
     },
     {
+      key: 'company',
+      title: b3Lang('orders.company'),
+      render: ({ companyInfo, companyName }) => (
+        <Box>{getCompanyDisplay(companyInfo, companyName)}</Box>
+      ),
+      width: '16%',
+      isSortable: false,
+    },
+    {
       key: 'poNumber',
       title: b3Lang('orders.poReference'),
       render: ({ poNumber }) => <Box>{poNumber || '–'}</Box>,
@@ -311,13 +311,6 @@ function Order({ isCompanyOrder = false }: OrderProps) {
       isSortable: true,
     },
     {
-      key: 'currencyCode',
-      title: b3Lang('orders.currency'),
-      render: ({ currencyCode, money }) => <Box>{getCurrencyDisplay(currencyCode, money)}</Box>,
-      width: '10%',
-      isSortable: false,
-    },
-    {
       key: 'placedBy',
       title: b3Lang('orders.placedBy'),
       render: ({ firstName, lastName }) => `${firstName} ${lastName}`,
@@ -336,6 +329,7 @@ function Order({ isCompanyOrder = false }: OrderProps) {
   const getColumnItems = (): TableColumnItem<ListItem>[] => {
     const getNewColumnItems = columnAllItems.filter((item) => {
       const { key } = item;
+      if (!isB2BUser && key === 'company') return false;
       if ((!isB2BUser || (Number(role) === 3 && !isAgenting)) && key === 'placedBy') return false;
 
       if (key === 'placedBy' && !(Number(role) === 3 && !isAgenting) && !isCompanyOrder) {
