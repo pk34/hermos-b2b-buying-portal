@@ -193,6 +193,11 @@ function ShoppingDetailHeader(props: ShoppingDetailHeaderProps) {
               sx={{
                 marginRight: '1rem',
                 wordBreak: 'break-all',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '30px',
+                lineHeight: '38px',
+                color: '#0067A0',
               }}
             >
               {`${shoppingListInfo?.name || ''}`}
@@ -214,6 +219,11 @@ function ShoppingDetailHeader(props: ShoppingDetailHeaderProps) {
               sx={{
                 width: '100%',
                 wordBreak: 'break-all',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#000000',
               }}
             >
               {shoppingListInfo?.description}
@@ -224,11 +234,26 @@ function ShoppingDetailHeader(props: ShoppingDetailHeaderProps) {
                   variant="subtitle2"
                   sx={{
                     marginRight: '0.5rem',
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    color: '#000000',
                   }}
                 >
                   {b3Lang('shoppingList.header.createdBy')}
                 </Typography>
-                <span>{`${customerInfo?.firstName || ''} ${customerInfo?.lastName || ''}`}</span>
+                <span
+                  style={{
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    color: '#000000',
+                  }}
+                >
+                  {`${customerInfo?.firstName || ''} ${customerInfo?.lastName || ''}`}
+                </span>
               </StyledCreateName>
             )}
           </Box>

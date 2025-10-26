@@ -127,6 +127,22 @@ const MOUSE_POINTER_STYLE = {
   cursor: 'pointer',
 };
 
+const CHECKBOX_SX = {
+  padding: '4px',
+  '& .MuiSvgIcon-root': {
+    width: '22px',
+    height: '22px',
+    border: '0.2px solid #000000',
+    borderRadius: '5px',
+    boxSizing: 'border-box',
+  },
+  '&.Mui-checked .MuiSvgIcon-root': {
+    borderColor: '#0067A0',
+    backgroundColor: '#0067A0',
+    color: '#FFFFFF',
+  },
+};
+
 function Row<Row>({
   columnItems,
   node,
@@ -175,6 +191,7 @@ function Row<Row>({
                   if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
                 }}
                 disabled={applyAllDisableCheckbox ? disableCheckbox : disableCurrentCheckbox}
+                sx={CHECKBOX_SX}
               />
               <IconButton
                 aria-label="expand row"
@@ -205,6 +222,7 @@ function Row<Row>({
                     if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
                   }}
                   disabled={applyAllDisableCheckbox ? disableCheckbox : disableCurrentCheckbox}
+                  sx={CHECKBOX_SX}
                 />
               </TableCell>
             )}
@@ -354,6 +372,7 @@ export function B3Table<Row>({
                 }
                 onChange={handleSelectAllItems}
                 disabled={disableCheckbox}
+                sx={CHECKBOX_SX}
               />
               Select all
             </Box>
@@ -371,6 +390,7 @@ export function B3Table<Row>({
                     if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
                   }}
                   disabled={disable || disableCheckbox}
+                  sx={CHECKBOX_SX}
                 />
               );
               return (
@@ -480,6 +500,7 @@ export function B3Table<Row>({
                             }
                             onChange={handleSelectAllItems}
                             disabled={disableCheckbox}
+                            sx={CHECKBOX_SX}
                           />
                         )}
                       </TableCell>
@@ -495,6 +516,7 @@ export function B3Table<Row>({
                               }
                               onChange={handleSelectAllItems}
                               disabled={disableCheckbox}
+                              sx={CHECKBOX_SX}
                             />
                           </TableCell>
                         )}

@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react';
 import { Delete, Edit, StickyNote2 } from '@mui/icons-material';
-import { Box, Grid, styled, TextField, Typography } from '@mui/material';
+import { Box, Grid, styled, Typography } from '@mui/material';
 import cloneDeep from 'lodash-es/cloneDeep';
 
 import {
@@ -104,13 +104,27 @@ const StyledShoppingListTableContainer = styled('div')(() => ({
   borderRadius: '4px',
   boxShadow:
     '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 1px 3px rgba(0, 0, 0, 0.12)',
-
+  borderWidth: '0px 0.3px 0.3px 0px',
+  borderStyle: 'solid',
+  borderColor: '#000000',
+  '& thead th': {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+  },
   '& tbody': {
     '& tr': {
       '& td': {
         verticalAlign: 'top',
+        fontFamily: 'Lato, sans-serif',
+        fontWeight: 600,
+        fontSize: '14px',
+        lineHeight: '20px',
+        color: '#000000',
       },
-      '& td: first-of-type': {
+      '& td:first-of-type': {
         paddingTop: '25px',
       },
     },
@@ -123,15 +137,110 @@ const StyledShoppingListTableContainer = styled('div')(() => ({
 }));
 
 const StyledImage = styled('img')(() => ({
-  maxWidth: '60px',
+  maxWidth: '85px',
+  maxHeight: '85px',
   height: 'auto',
   marginRight: '0.5rem',
 }));
 
-const StyledTextField = styled(TextField)(() => ({
-  '& input': {
-    paddingTop: '12px',
-    paddingRight: '6px',
+const QuantityControlsContainer = styled('div')(() => ({
+  display: 'inline-flex',
+  alignItems: 'stretch',
+  height: '40px',
+}));
+
+const quantityButtonBaseStyles = {
+  width: '27px',
+  backgroundColor: '#E6E6E6',
+  borderTop: '0.2px solid #000000',
+  borderBottom: '0.2px solid #000000',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 0,
+  cursor: 'pointer',
+  position: 'relative',
+  '&:disabled': {
+    cursor: 'not-allowed',
+    opacity: 0.5,
+  },
+} as const;
+
+const QuantityMinusButton = styled('button')(() => ({
+  ...quantityButtonBaseStyles,
+  borderLeft: '0.2px solid #000000',
+  borderRight: '0px',
+}));
+
+const QuantityPlusButton = styled('button')(() => ({
+  ...quantityButtonBaseStyles,
+  borderLeft: '0px',
+  borderRight: '0.2px solid #000000',
+}));
+
+const MinusSign = styled('span')(() => ({
+  width: '14px',
+  height: '2px',
+  backgroundColor: '#0067A0',
+  position: 'absolute',
+  top: 'calc(50% - 1px)',
+  left: 'calc(50% - 7px)',
+}));
+
+const PlusSign = styled('span')(() => ({
+  position: 'absolute',
+  width: '14px',
+  height: '14px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  '&::before': {
+    content: "''",
+    position: 'absolute',
+    width: '14px',
+    height: '2px',
+    backgroundColor: '#0067A0',
+  },
+  '&::after': {
+    content: "''",
+    position: 'absolute',
+    width: '2px',
+    height: '14px',
+    backgroundColor: '#0067A0',
+  },
+}));
+
+const QuantityInput = styled('input')(() => ({
+  width: '64px',
+  backgroundColor: '#E6E6E6',
+  borderLeft: '0px',
+  borderRight: '0px',
+  borderTop: '0.2px solid #000000',
+  borderBottom: '0.2px solid #000000',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 400,
+  fontSize: '20px',
+  lineHeight: '28px',
+  textAlign: 'center',
+  verticalAlign: 'middle',
+  color: '#000000',
+  height: '40px',
+  outline: 'none',
+  padding: 0,
+  '&:disabled': {
+    cursor: 'not-allowed',
+    opacity: 0.6,
+  },
+  '&::-webkit-outer-spin-button': {
+    WebkitAppearance: 'none',
+    margin: 0,
+  },
+  '&::-webkit-inner-spin-button': {
+    WebkitAppearance: 'none',
+    margin: 0,
+  },
+  '&[type=number]': {
+    MozAppearance: 'textfield',
   },
 }));
 
@@ -200,7 +309,7 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
   const [handleSetOrderBy, order, orderBy] = useSort(sortKeys, defaultSortKey, search, setSearch);
 
   const handleUpdateProductQty = (id: number | string, value: number | string) => {
-    if (Number(value) < 0) return;
+    if (Number(value) < 0) return false;
     const currentItem = originProducts.find((item: ListItemProps) => {
       const { node } = item;
 
@@ -208,7 +317,8 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
     });
 
     const currentQty = currentItem?.node?.quantity || '';
-    setQtyNotChangeFlag(Number(currentQty) === Number(value));
+    const isSameQuantity = Number(currentQty) === Number(value);
+    setQtyNotChangeFlag(isSameQuantity);
 
     const listItems: ListItemProps[] = paginationTableRef.current?.getList() || [];
     const newListItems = listItems?.map((item: ListItemProps) => {
@@ -226,6 +336,8 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
     );
     setDisabledSelectAll(nonNumberProducts.length === newListItems.length);
     paginationTableRef.current?.setList([...newListItems]);
+
+    return !isSameQuantity;
   };
 
   const initSearch = (type?: TableRefreshConfig) => {
@@ -326,8 +438,11 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
     await updateShoppingListItem(data);
   };
 
-  const handleUpdateShoppingListItemQty = async (itemId: number | string) => {
-    if (qtyNotChangeFlag) return;
+  const handleUpdateShoppingListItemQty = async (
+    itemId: number | string,
+    options?: { force?: boolean },
+  ) => {
+    if (!options?.force && qtyNotChangeFlag) return;
     setIsRequestLoading(true);
     try {
       await handleUpdateShoppingListItem(itemId);
@@ -462,7 +577,6 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
             <Box>
               <Typography
                 variant="body1"
-                color="#212121"
                 onClick={() => {
                   const {
                     location: { origin },
@@ -472,11 +586,25 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
                 }}
                 sx={{
                   cursor: 'pointer',
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  color: '#000000',
                 }}
               >
                 {row.productName}
               </Typography>
-              <Typography variant="body1" color="#616161">
+              <Typography
+                variant="body1"
+                sx={{
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  color: '#000000',
+                }}
+              >
                 {row.variantSku}
               </Typography>
               {optionList.length > 0 && optionsValue.length > 0 && (
@@ -484,9 +612,11 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
                   {optionsValue.map((option: any) => (
                     <Typography
                       sx={{
-                        fontSize: '0.75rem',
-                        lineHeight: '1.5',
-                        color: '#455A64',
+                        fontFamily: 'Lato, sans-serif',
+                        fontWeight: 600,
+                        fontSize: '14px',
+                        lineHeight: '20px',
+                        color: '#000000',
                       }}
                       key={option.valueLabel}
                     >
@@ -499,7 +629,10 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
               {row?.productNote && row?.productNote.trim().length > 0 && (
                 <Typography
                   sx={{
-                    fontSize: '0.75rem',
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 600,
                     color: '#ED6C02',
                     marginTop: '0.3rem',
                   }}
@@ -525,6 +658,11 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
           <Typography
             sx={{
               padding: '12px 0',
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '14px',
+              lineHeight: '20px',
+              color: '#000000',
             }}
           >
             {showPrice(currencyFormat(inTaxPrice), row)}
@@ -539,30 +677,55 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
     {
       key: 'Qty',
       title: b3Lang('shoppingList.table.quantity'),
-      render: (row) => (
-        <StyledTextField
-          size="small"
-          type="number"
-          variant="filled"
-          sx={{
-            width: '72px',
-          }}
-          disabled={
-            b2bAndBcShoppingListActionsPermissions ? isReadForApprove || isJuniorApprove : true
-          }
-          value={row.quantity}
-          inputProps={{
-            inputMode: 'numeric',
-            pattern: '[0-9]*',
-          }}
-          onChange={(e) => {
-            handleUpdateProductQty(row.id, e.target.value);
-          }}
-          onBlur={() => {
-            handleUpdateShoppingListItemQty(row.itemId);
-          }}
-        />
-      ),
+      render: (row) => {
+        const isQuantityDisabled = b2bAndBcShoppingListActionsPermissions
+          ? isReadForApprove || isJuniorApprove
+          : true;
+        const numericQuantity = Number(row.quantity) || 0;
+
+        return (
+          <QuantityControlsContainer>
+            <QuantityMinusButton
+              type="button"
+              disabled={isQuantityDisabled || numericQuantity <= 0}
+              onClick={() => {
+                const nextValue = numericQuantity - 1;
+                if (nextValue < 0) return;
+                const hasChanged = handleUpdateProductQty(row.id, nextValue);
+                if (hasChanged) {
+                  void handleUpdateShoppingListItemQty(row.itemId, { force: true });
+                }
+              }}
+            >
+              <MinusSign />
+            </QuantityMinusButton>
+            <QuantityInput
+              type="number"
+              disabled={isQuantityDisabled}
+              value={row.quantity}
+              onChange={(event) => {
+                handleUpdateProductQty(row.id, event.target.value);
+              }}
+              onBlur={() => {
+                void handleUpdateShoppingListItemQty(row.itemId);
+              }}
+            />
+            <QuantityPlusButton
+              type="button"
+              disabled={isQuantityDisabled}
+              onClick={() => {
+                const nextValue = numericQuantity + 1;
+                const hasChanged = handleUpdateProductQty(row.id, nextValue);
+                if (hasChanged) {
+                  void handleUpdateShoppingListItemQty(row.itemId, { force: true });
+                }
+              }}
+            >
+              <PlusSign />
+            </QuantityPlusButton>
+          </QuantityControlsContainer>
+        );
+      },
       width: '15%',
       style: {
         textAlign: 'right',
@@ -598,6 +761,11 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
             <Typography
               sx={{
                 padding: '12px 0',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#000000',
               }}
             >
               {showPrice(currencyFormat(totalPrice), row)}
@@ -710,14 +878,27 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
           margin: '0 0 1rem 0',
         }}
       >
-        <SectionTitle component="h2">
+        <SectionTitle
+          component="h2"
+          sx={{
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 400,
+            fontSize: '20px',
+            lineHeight: '28px',
+            color: '#000000',
+          }}
+        >
           {b3Lang('shoppingList.table.totalProductCount', {
             quantity: shoppingListInfo?.products?.totalCount || 0,
           })}
         </SectionTitle>
         <Typography
           sx={{
-            fontSize: '24px',
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 400,
+            fontSize: '20px',
+            lineHeight: '28px',
+            color: '#000000',
           }}
         >
           {priceHidden ? '' : currencyFormat(shoppingListTotalPrice || 0.0)}
@@ -725,10 +906,41 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
       </Box>
       <Box
         sx={{
-          marginBottom: '5px',
+          marginBottom: '16px',
+          '& .MuiPaper-root': {
+            width: '100%',
+            minWidth: '100%',
+            maxWidth: '100%',
+            borderBottom: '0.2px solid #000000',
+            borderRadius: '5px',
+            backgroundColor: '#E6E6E6',
+          },
+          '& .MuiInputBase-root': {
+            fontFamily: 'Lato, sans-serif !important',
+            fontWeight: '600 !important',
+            fontSize: '16px !important',
+            lineHeight: '24px !important',
+            color: '#000000 !important',
+          },
+          '& .MuiInputBase-input': {
+            fontFamily: 'Lato, sans-serif !important',
+            fontWeight: '600 !important',
+            fontSize: '16px !important',
+            lineHeight: '24px !important',
+            color: '#000000 !important',
+            '&::placeholder': {
+              fontFamily: 'Lato, sans-serif !important',
+              fontWeight: '600 !important',
+              fontSize: '16px !important',
+              lineHeight: '24px !important',
+              color: '#000000 !important',
+              opacity: 1,
+            },
+          },
         }}
       >
         <B3FilterSearch
+          w="100%"
           searchBGColor="rgba(0, 0, 0, 0.06)"
           handleChange={(e) => {
             handleSearchProduct(e);
