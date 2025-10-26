@@ -525,6 +525,14 @@ const quickAddBaseFieldStyles = {
     fontSize: '16px',
     lineHeight: '24px',
     color: '#000000',
+    '&::placeholder': {
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 600,
+      fontSize: '16px',
+      lineHeight: '24px',
+      color: '#000000',
+      opacity: 1,
+    },
   },
   '& .MuiInputBase-input': {
     padding: 0,
@@ -533,6 +541,14 @@ const quickAddBaseFieldStyles = {
     fontSize: '16px',
     lineHeight: '24px',
     color: '#000000',
+    '&::placeholder': {
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 600,
+      fontSize: '16px',
+      lineHeight: '24px',
+      color: '#000000',
+      opacity: 1,
+    },
   },
   '& .MuiFormLabel-root': {
     fontFamily: 'Lato, sans-serif',
@@ -540,6 +556,7 @@ const quickAddBaseFieldStyles = {
     fontSize: '16px',
     lineHeight: '24px',
     color: '#000000',
+    zIndex: 1,
   },
   '& .MuiFormLabel-root.Mui-focused': {
     color: '#000000',

@@ -429,10 +429,11 @@ export default function QuickAdd(props: AddToListContentProps) {
               <Box
                 component="svg"
                 width="6"
-                height="11"
+                height="16"
                 viewBox="0 0 6 11"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                sx={{ height: '16px', width: 'auto' }}
               >
                 <path
                   fillRule="evenodd"
@@ -445,14 +446,7 @@ export default function QuickAdd(props: AddToListContentProps) {
           </Grid>
         </Grid>
 
-        <Box
-          onKeyDown={handleKeyDown}
-          sx={{
-            '& label': {
-              zIndex: 0,
-            },
-          }}
-        >
+        <Box onKeyDown={handleKeyDown}>
           <B3CustomForm
             formFields={formFields}
             errors={errors}
@@ -486,7 +480,7 @@ export default function QuickAdd(props: AddToListContentProps) {
             color: '#FFFFFF',
             boxShadow: 'none',
             '&:hover': {
-              backgroundColor: '#005987',
+              backgroundColor: '#00965E',
               boxShadow: 'none',
             },
             '&:disabled': {

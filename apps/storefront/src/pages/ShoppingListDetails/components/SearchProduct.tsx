@@ -249,55 +249,55 @@ export default function SearchProduct({
             }}
           />
         </Box>
-      <CustomButton
-        variant="contained"
-        disabled={isLoading}
-        onClick={handleSearchButtonClicked}
-        sx={{
-          width: '100%',
-          maxWidth: '327px',
-          height: '44px',
-          borderRadius: '5px',
-          padding: '10px',
-          backgroundColor: '#0067A0',
-          textTransform: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          alignSelf: 'flex-start',
-          fontFamily: 'Lato, sans-serif',
-          fontWeight: 600,
-          fontSize: '16px',
-          lineHeight: '24px',
-          color: '#FFFFFF',
-          boxShadow: 'none',
-          '&:hover': {
-            backgroundColor: '#005987',
-            boxShadow: 'none',
-          },
-          '&:disabled': {
+        <CustomButton
+          variant="contained"
+          disabled={isLoading}
+          onClick={handleSearchButtonClicked}
+          sx={{
+            width: '100%',
+            maxWidth: '327px',
+            height: '44px',
+            borderRadius: '5px',
+            padding: '10px',
             backgroundColor: '#0067A0',
-            opacity: 0.5,
+            textTransform: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'flex-start',
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: '16px',
+            lineHeight: '24px',
             color: '#FFFFFF',
-          },
-        }}
-      >
-        <B3Spin isSpinning={isLoading} tip="" size={16}>
-          <Box
-            sx={{
-              flex: 1,
-              textAlign: 'center',
-              fontFamily: 'Lato, sans-serif',
-              fontWeight: 600,
-              fontSize: '16px',
-              lineHeight: '24px',
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: '#00965E',
+              boxShadow: 'none',
+            },
+            '&:disabled': {
+              backgroundColor: '#0067A0',
+              opacity: 0.5,
               color: '#FFFFFF',
-            }}
-          >
-            {b3Lang('global.searchProductAddProduct.searchProduct')}
-          </Box>
-        </B3Spin>
-      </CustomButton>
+            },
+          }}
+        >
+          <B3Spin isSpinning={isLoading} tip="" size={16}>
+            <Box
+              sx={{
+                flex: 1,
+                textAlign: 'center',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#FFFFFF',
+              }}
+            >
+              {b3Lang('global.searchProductAddProduct.searchProduct')}
+            </Box>
+          </B3Spin>
+        </CustomButton>
       </Box>
 
       <ProductListDialog

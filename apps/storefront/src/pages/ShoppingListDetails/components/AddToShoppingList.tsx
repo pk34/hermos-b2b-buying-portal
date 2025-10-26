@@ -263,15 +263,18 @@ export default function AddToShoppingList(props: AddToListProps) {
                 alignItems: 'center',
                 gap: '8px',
                 minWidth: 'unset',
+                width: '100%',
+                justifyContent: 'center',
               }}
             >
               <Box
                 component="svg"
                 width="18"
-                height="18"
+                height="16"
                 viewBox="0 0 18 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                sx={{ height: '16px', width: 'auto' }}
               >
                 <path
                   d="M1 13L1 14C1 15.6569 2.34315 17 4 17L14 17C15.6569 17 17 15.6569 17 14L17 13M13 5L9 1M9 1L5 5M9 1L9 13"
