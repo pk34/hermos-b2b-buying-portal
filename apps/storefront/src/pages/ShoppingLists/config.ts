@@ -1,3 +1,5 @@
+import { SxProps, Theme } from '@mui/material/styles';
+
 import { filterModalFieldBaseSx } from '@/components/filter/styles';
 import { LangFormatFunction, useB3Lang } from '@/lib/lang';
 import { CompanyInfoTypes } from '@/types/invoice';
@@ -56,6 +58,7 @@ export interface GetFilterMoreListProps {
   size: string;
   maxLength?: number;
   idLang?: string;
+  sx?: SxProps<Theme>;
 }
 
 const useGetFilterShoppingListStatus = () => {
