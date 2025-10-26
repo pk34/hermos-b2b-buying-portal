@@ -1,8 +1,16 @@
 import { forwardRef, Ref, useEffect, useImperativeHandle, useState } from 'react';
+import { Box } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import { B3CustomForm } from '@/components';
 import B3Dialog from '@/components/B3Dialog';
+import {
+  filterModalDialogContentSx,
+  filterModalDialogSx,
+  filterModalFormGridContainerProps,
+  filterModalLeftButtonSx,
+  filterModalRightButtonSx,
+} from '@/components/filter/styles';
 import { useB3Lang } from '@/lib/lang';
 import { rolePermissionSelector, useAppSelector } from '@/store';
 import { ShoppingListStatus } from '@/types/shoppingList';
@@ -153,14 +161,33 @@ function AddEditShoppingLists(
       handleLeftClick={handleCancelClick}
       handRightClick={handleAddUserClick}
       loading={addUpdateLoading}
+      leftStyleBtn={filterModalLeftButtonSx}
+      rightStyleBtn={filterModalRightButtonSx}
+      dialogSx={filterModalDialogSx}
+      dialogContentSx={filterModalDialogContentSx}
+      dialogWidth="min(396px, 95vw)"
+      maxWidth={false}
+      fullScreenOnMobile={false}
+      applyDialogWidthOnMobile
+      isShowBordered={false}
     >
-      <B3CustomForm
-        formFields={usersFiles}
-        errors={errors}
-        control={control}
-        getValues={getValues}
-        setValue={setValue}
-      />
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <B3CustomForm
+          formFields={usersFiles}
+          errors={errors}
+          control={control}
+          getValues={getValues}
+          setValue={setValue}
+          containerProps={filterModalFormGridContainerProps}
+        />
+      </Box>
     </B3Dialog>
   );
 }

@@ -234,6 +234,7 @@
   "quotes.productValidationFailed": "Product validation failed for {productName}",
   "shoppingLists.createNew": "Create new",
   "shoppingLists.deleteSuccess": "The shopping list was successfully deleted",
+  "shoppingLists.deleteSuccessTitle": "Shopping list deleted",
   "shoppingLists.deleteShoppingList": "Delete shopping list",
   "shoppingLists.cancel": "Cancel",
   "shoppingLists.delete": "Delete",

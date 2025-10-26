@@ -1,3 +1,5 @@
+import { SxProps, Theme } from '@mui/material/styles';
+
 import { filterModalFieldBaseSx } from '@/components/filter/styles';
 import { LangFormatFunction, useB3Lang } from '@/lib/lang';
 import { CompanyInfoTypes } from '@/types/invoice';
@@ -56,6 +58,7 @@ export interface GetFilterMoreListProps {
   size: string;
   maxLength?: number;
   idLang?: string;
+  sx?: SxProps<Theme>;
 }
 
 const useGetFilterShoppingListStatus = () => {
@@ -134,6 +137,77 @@ export const useGetFilterMoreList = () => {
   };
 };
 
+const shoppingListModalFieldBaseSx = {
+  width: '90%',
+  marginBottom: '24px',
+  '& .MuiFilledInput-root': {
+    borderRadius: '5px',
+    backgroundColor: '#F7F7F7',
+    padding: 0,
+    '&:before': {
+      borderBottom: '2px solid #231F20',
+    },
+    '&:after': {
+      borderBottom: '2px solid #231F20',
+    },
+    '&:hover': {
+      backgroundColor: '#F7F7F7',
+    },
+    '&.Mui-focused': {
+      backgroundColor: '#F7F7F7',
+    },
+  },
+  '& .MuiFilledInput-input': {
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    padding: '10px',
+    paddingBottom: '0px !important',
+  },
+  '& .MuiInputLabel-root': {
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+  },
+  '& .MuiInputLabel-root.Mui-focused': {
+    color: '#000000',
+  },
+} as const;
+
+const shoppingListModalNameFieldSx = {
+  ...shoppingListModalFieldBaseSx,
+  '& .MuiFilledInput-root': {
+    ...shoppingListModalFieldBaseSx['& .MuiFilledInput-root'],
+    height: '44px',
+  },
+} as const;
+
+const shoppingListModalDescriptionFieldSx = {
+  ...shoppingListModalFieldBaseSx,
+  '& .MuiFilledInput-root': {
+    ...shoppingListModalFieldBaseSx['& .MuiFilledInput-root'],
+    minHeight: '83px',
+    height: '83px',
+    alignItems: 'flex-start',
+  },
+  '& .MuiFilledInput-input': {
+    ...shoppingListModalFieldBaseSx['& .MuiFilledInput-input'],
+    height: '83px',
+    paddingTop: '20px !important',
+  },
+  '& .MuiFilledInput-inputMultiline': {
+    ...shoppingListModalFieldBaseSx['& .MuiFilledInput-input'],
+    padding: '10px',
+    paddingTop: '20px !important',
+    height: '83px',
+    boxSizing: 'border-box',
+  },
+} as const;
+
 export const getCreatedShoppingListFiles = (
   b3Lang: LangFormatFunction,
 ): GetFilterMoreListProps[] => [
@@ -147,6 +221,7 @@ export const getCreatedShoppingListFiles = (
     variant: 'filled',
     size: 'small',
     maxLength: 200,
+    sx: shoppingListModalNameFieldSx,
   },
   {
     name: 'description',
@@ -159,5 +234,6 @@ export const getCreatedShoppingListFiles = (
     size: 'small',
     rows: 4,
     maxLength: 200,
+    sx: shoppingListModalDescriptionFieldSx,
   },
 ];
