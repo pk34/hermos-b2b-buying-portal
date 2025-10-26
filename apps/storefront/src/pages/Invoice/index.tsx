@@ -72,9 +72,7 @@ const initFilter = {
 const invoiceTableStyles: SxProps<Theme> = {
   '& .MuiCard-root': {
     backgroundColor: '#FFFFFF',
-    border: '0.2px solid #000000',
     borderRadius: '10px',
-    boxShadow: '0px 4px 22px 5px #0000001A',
     overflow: 'hidden',
   },
   '& .MuiTable-root': {
@@ -755,7 +753,10 @@ function Invoice() {
           >
             <Typography
               sx={{
-                fontSize: '24px',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 400,
+                fontSize: '20px',
+                lineHeight: '28px',
                 color: '#000000',
               }}
             >
@@ -766,7 +767,10 @@ function Invoice() {
             {document.body.clientWidth >= 465 && (
               <Typography
                 sx={{
-                  fontSize: '24px',
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '28px',
                   margin: '0 8px',
                 }}
               >
@@ -775,8 +779,11 @@ function Invoice() {
             )}
             <Typography
               sx={{
-                fontSize: '24px',
-                color: '#D32F2F',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 400,
+                fontSize: '20px',
+                lineHeight: '28px',
+                color: '#F70000',
               }}
             >
               {b3Lang('invoice.overdueAmount', {
