@@ -134,6 +134,78 @@ export const useGetFilterMoreList = () => {
   };
 };
 
+const shoppingListModalFieldBaseSx = {
+  width: '90%',
+  marginBottom: '24px',
+  '& .MuiFilledInput-root': {
+    borderRadius: '5px',
+    backgroundColor: '#FFFFFF',
+    padding: 0,
+    '&:before': {
+      borderBottom: '2px solid #231F20',
+    },
+    '&:after': {
+      borderBottom: '2px solid #231F20',
+    },
+    '&:hover': {
+      backgroundColor: '#FFFFFF',
+    },
+    '&.Mui-focused': {
+      backgroundColor: '#FFFFFF',
+    },
+  },
+  '& .MuiFilledInput-input': {
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    padding: '10px',
+  },
+  '& .MuiInputLabel-root': {
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+  },
+  '& .MuiInputLabel-root.Mui-focused': {
+    color: '#000000',
+  },
+} as const;
+
+const shoppingListModalNameFieldSx = {
+  ...shoppingListModalFieldBaseSx,
+  '& .MuiFilledInput-root': {
+    ...shoppingListModalFieldBaseSx['& .MuiFilledInput-root'],
+    height: '44px',
+  },
+} as const;
+
+const shoppingListModalDescriptionFieldSx = {
+  ...shoppingListModalFieldBaseSx,
+  '& .MuiFilledInput-root': {
+    ...shoppingListModalFieldBaseSx['& .MuiFilledInput-root'],
+    minHeight: '83px',
+    height: '83px',
+    alignItems: 'flex-start',
+  },
+  '& .MuiFilledInput-input': {
+    ...shoppingListModalFieldBaseSx['& .MuiFilledInput-input'],
+    height: '83px',
+  },
+  '& .MuiFilledInput-inputMultiline': {
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    padding: '10px',
+    height: '83px',
+    boxSizing: 'border-box',
+  },
+} as const;
+
 export const getCreatedShoppingListFiles = (
   b3Lang: LangFormatFunction,
 ): GetFilterMoreListProps[] => [
@@ -147,6 +219,7 @@ export const getCreatedShoppingListFiles = (
     variant: 'filled',
     size: 'small',
     maxLength: 200,
+    sx: shoppingListModalNameFieldSx,
   },
   {
     name: 'description',
@@ -159,5 +232,6 @@ export const getCreatedShoppingListFiles = (
     size: 'small',
     rows: 4,
     maxLength: 200,
+    sx: shoppingListModalDescriptionFieldSx,
   },
 ];
