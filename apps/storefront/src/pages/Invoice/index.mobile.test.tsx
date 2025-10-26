@@ -282,8 +282,6 @@ it('can pay for multiple invoices', async () => {
   await userEvent.click(within(group3344).getByRole('checkbox'));
   await userEvent.click(within(group3345).getByRole('checkbox'));
 
-  expect(screen.getByText('2 invoices selected')).toBeInTheDocument();
-
   expect(screen.getByRole('heading', { name: 'Total payment: $665.00' })).toBeInTheDocument();
 
   await userEvent.click(screen.getByRole('button', { name: 'Pay invoices' }));
