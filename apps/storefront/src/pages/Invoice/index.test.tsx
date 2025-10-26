@@ -486,20 +486,20 @@ it('shows the current open/overdue values at the header', async () => {
   expect(overdueBalance).toBeInTheDocument();
 });
 
-const buildInvoicePaymentNodeWith = builder(() => ({
-  node: {
-    id: faker.number.int().toString(),
-    paymentType: faker.lorem.words(3),
-    invoiceId: faker.number.int(),
-    amount: {
-      code: faker.finance.currencyCode(),
-      value: faker.commerce.price(),
-    },
-    transactionType: faker.lorem.word(),
-    referenceNumber: '',
-    createdAt: faker.date.past(),
-  },
-}));
+// const buildInvoicePaymentNodeWith = builder(() => ({
+//   node: {
+//     id: faker.number.int().toString(),
+//     paymentType: faker.lorem.words(3),
+//     invoiceId: faker.number.int(),
+//     amount: {
+//       code: faker.finance.currencyCode(),
+//       value: faker.commerce.price(),
+//     },
+//     transactionType: faker.lorem.word(),
+//     referenceNumber: '',
+//     createdAt: faker.date.past(),
+//   },
+// }));
 
 it('opens the invoice in a new window when clicking on the invoice number', async () => {
   const pdfFile = new Blob(['%PDF-1.4 Mock PDF Content'], { type: 'application/pdf' });

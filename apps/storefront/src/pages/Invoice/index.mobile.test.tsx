@@ -29,20 +29,20 @@ vi.mock('./components/triggerPdfDownload');
 
 const { server } = startMockServer();
 
-const buildInvoicePaymentNodeWith = builder(() => ({
-  node: {
-    id: faker.number.int().toString(),
-    paymentType: faker.lorem.words(3),
-    invoiceId: faker.number.int(),
-    amount: {
-      code: faker.finance.currencyCode(),
-      value: faker.commerce.price(),
-    },
-    transactionType: faker.lorem.word(),
-    referenceNumber: '',
-    createdAt: faker.date.past(),
-  },
-}));
+// const buildInvoicePaymentNodeWith = builder(() => ({
+//   node: {
+//     id: faker.number.int().toString(),
+//     paymentType: faker.lorem.words(3),
+//     invoiceId: faker.number.int(),
+//     amount: {
+//       code: faker.finance.currencyCode(),
+//       value: faker.commerce.price(),
+//     },
+//     transactionType: faker.lorem.word(),
+//     referenceNumber: '',
+//     createdAt: faker.date.past(),
+//   },
+// }));
 
 const buildInvoiceWith = builder(() => ({
   node: {
