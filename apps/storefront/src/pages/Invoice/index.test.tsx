@@ -501,18 +501,6 @@ const buildInvoicePaymentNodeWith = builder(() => ({
   },
 }));
 
-const buildInvoicePaymentHistoryResponseWith = builder(() => {
-  const totalCount = faker.number.int({ min: 1, max: 5 });
-  return {
-    data: {
-      allReceiptLines: {
-        totalCount,
-        edges: bulk(buildInvoicePaymentNodeWith, 'WHATEVER_VALUES').times(totalCount),
-      },
-    },
-  };
-});
-
 it('opens the invoice in a new window when clicking on the invoice number', async () => {
   const pdfFile = new Blob(['%PDF-1.4 Mock PDF Content'], { type: 'application/pdf' });
 

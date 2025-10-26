@@ -44,18 +44,6 @@ const buildInvoicePaymentNodeWith = builder(() => ({
   },
 }));
 
-const buildInvoicePaymentHistoryResponseWith = builder(() => {
-  const totalCount = faker.number.int({ min: 1, max: 5 });
-  return {
-    data: {
-      allReceiptLines: {
-        totalCount,
-        edges: bulk(buildInvoicePaymentNodeWith, 'WHATEVER_VALUES').times(totalCount),
-      },
-    },
-  };
-});
-
 const buildInvoiceWith = builder(() => ({
   node: {
     id: faker.number.int().toString(),
