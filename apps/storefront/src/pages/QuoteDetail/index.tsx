@@ -609,6 +609,8 @@ function QuoteDetail() {
   const { quotePurchasabilityPermission, quoteConvertToOrderPermission } =
     quotePurchasabilityPermissionInfo;
 
+  const shouldShowBuyerInfoCard = false;
+
   return (
     <B3Spin isSpinning={isRequestLoading || quoteCheckoutLoading}>
       <Box
@@ -623,24 +625,27 @@ function QuoteDetail() {
           quoteNumber={quoteDetail.quoteNumber}
           issuedAt={quoteDetail.createdAt}
           expirationDate={quoteDetail.expiredAt}
+          currency={quoteDetail.currency}
           exportPdf={exportPdf}
           printQuote={printQuote}
           role={role}
           salesRepInfo={quoteDetail.salesRepInfo}
         />
 
-        <Box
-          sx={{
-            marginTop: '1rem',
-          }}
-        >
-          <QuoteInfo
-            quoteAndExtraFieldsInfo={quoteAndExtraFieldsInfo}
-            contactInfo={quoteDetail.contactInfo}
-            shippingAddress={quoteDetail.shippingAddress}
-            billingAddress={quoteDetail.billingAddress}
-          />
-        </Box>
+        {shouldShowBuyerInfoCard && (
+          <Box
+            sx={{
+              marginTop: '1rem',
+            }}
+          >
+            <QuoteInfo
+              quoteAndExtraFieldsInfo={quoteAndExtraFieldsInfo}
+              contactInfo={quoteDetail.contactInfo}
+              shippingAddress={quoteDetail.shippingAddress}
+              billingAddress={quoteDetail.billingAddress}
+            />
+          </Box>
+        )}
 
         <Grid
           container

@@ -17,10 +17,19 @@ interface QuoteTableCardProps {
 }
 
 const StyledImage = styled('img')(() => ({
-  maxWidth: '60px',
+  maxWidth: '85px',
+  maxHeight: '85px',
   height: 'auto',
   marginRight: '0.5rem',
 }));
+
+const TABLE_DATA_TYPOGRAPHY_SX = {
+  fontFamily: 'Poppins',
+  fontWeight: 300,
+  fontSize: '14px',
+  lineHeight: '21px',
+  color: '#000000',
+} as const;
 
 function QuoteDetailTableCard(props: QuoteTableCardProps) {
   const {
@@ -70,13 +79,13 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
       key={quoteTableItem.id}
       width="100%"
       sx={{
-        borderTop: '1px solid #D9DCE9',
-        borderBottom: itemIndex === len - 1 ? '1px solid #D9DCE9' : '',
+        borderTop: '0.5px solid #000000',
+        borderBottom: itemIndex === len - 1 ? '0.5px solid #000000' : '',
       }}
     >
       <CardContent
         sx={{
-          color: '#313440',
+          color: '#000000',
           display: 'flex',
           pl: 0,
         }}
@@ -91,7 +100,6 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
         >
           <Typography
             variant="body1"
-            color="#212121"
             onClick={() => {
               const {
                 location: { origin },
@@ -102,12 +110,18 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
               }
             }}
             sx={{
+              ...TABLE_DATA_TYPOGRAPHY_SX,
               cursor: 'pointer',
             }}
           >
             {productName}
           </Typography>
-          <Typography variant="body1" color="#616161">
+          <Typography
+            variant="body1"
+            sx={{
+              ...TABLE_DATA_TYPOGRAPHY_SX,
+            }}
+          >
             {sku}
           </Typography>
           <Box
@@ -120,9 +134,7 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
                 {options.map((option: any) => (
                   <Typography
                     sx={{
-                      fontSize: '0.75rem',
-                      lineHeight: '1.5',
-                      color: '#455A64',
+                      ...TABLE_DATA_TYPOGRAPHY_SX,
                     }}
                     key={option.optionName}
                   >
@@ -132,19 +144,26 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
               </Box>
             )}
           </Box>
-          <Typography variant="body1" color="#616161">
+          <Typography
+            variant="body1"
+            sx={{
+              ...TABLE_DATA_TYPOGRAPHY_SX,
+            }}
+          >
             {notes}
           </Typography>
 
           <Typography
             sx={{
-              fontSize: '14px',
+              ...TABLE_DATA_TYPOGRAPHY_SX,
             }}
           >
             {b3Lang('quoteDetail.tableCard.price')}
             {isDiscount && (
-              <span
-                style={{
+              <Typography
+                component="span"
+                sx={{
+                  ...TABLE_DATA_TYPOGRAPHY_SX,
                   marginLeft: '5px',
                   textDecoration: 'line-through',
                 }}
@@ -155,12 +174,13 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
                   }),
                   quoteTableItem,
                 )}`}
-              </span>
+              </Typography>
             )}
-            <span
-              style={{
+            <Typography
+              component="span"
+              sx={{
+                ...TABLE_DATA_TYPOGRAPHY_SX,
                 marginLeft: '5px',
-                color: isDiscount ? '#2E7D32' : '#212121',
               }}
             >
               {`${showPrice(
@@ -169,13 +189,13 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
                 }),
                 quoteTableItem,
               )}`}
-            </span>
+            </Typography>
           </Typography>
 
           <Typography
             sx={{
+              ...TABLE_DATA_TYPOGRAPHY_SX,
               padding: '12px 0',
-              fontSize: '14px',
             }}
           >
             {b3Lang('quoteDetail.tableCard.qty', { quantity })}
@@ -183,13 +203,15 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
 
           <Typography
             sx={{
-              fontSize: '14px',
+              ...TABLE_DATA_TYPOGRAPHY_SX,
             }}
           >
             {b3Lang('quoteDetail.tableCard.total')}
             {isDiscount && (
-              <span
-                style={{
+              <Typography
+                component="span"
+                sx={{
+                  ...TABLE_DATA_TYPOGRAPHY_SX,
                   marginLeft: '5px',
                   textDecoration: 'line-through',
                 }}
@@ -200,12 +222,13 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
                   }),
                   quoteTableItem,
                 )}`}
-              </span>
+              </Typography>
             )}
-            <span
-              style={{
+            <Typography
+              component="span"
+              sx={{
+                ...TABLE_DATA_TYPOGRAPHY_SX,
                 marginLeft: '5px',
-                color: isDiscount ? '#2E7D32' : '#212121',
               }}
             >
               {`${showPrice(
@@ -214,7 +237,7 @@ function QuoteDetailTableCard(props: QuoteTableCardProps) {
                 }),
                 quoteTableItem,
               )}`}
-            </span>
+            </Typography>
           </Typography>
         </Box>
       </CardContent>
