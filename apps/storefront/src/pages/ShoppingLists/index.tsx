@@ -252,7 +252,10 @@ function ShoppingLists() {
       lineHeight: '24px',
       textAlign: 'center',
       verticalAlign: 'middle',
-      ml: '38px',
+      ml: {
+        xs: '0px !important',
+        sm: '38px',
+      },
       whiteSpace: 'nowrap',
       '&:hover': {
         backgroundColor: '#00965E',

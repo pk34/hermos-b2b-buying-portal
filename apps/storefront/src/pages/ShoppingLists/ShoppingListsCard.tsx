@@ -220,7 +220,7 @@ function ShoppingListsCard(props: OrderItemCardProps) {
       sx={{
         width: '100%',
         maxWidth: '389px',
-        height: '231px',
+        minHeight: '231px',
         background: '#FFFFFF',
         borderRadius: '10px',
         border: '0.2px solid #000000',
