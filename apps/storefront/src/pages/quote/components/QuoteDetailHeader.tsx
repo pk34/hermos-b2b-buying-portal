@@ -157,7 +157,6 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
                 <CustomButton
                   variant="outlined"
                   sx={{
-                    width: '127px',
                     height: '39px',
                     marginLeft: isMobile ? 0 : '60px',
                     marginTop: isMobile ? '16px' : '0',
@@ -169,6 +168,9 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
                     fontWeight: 400,
                     fontSize: '16px',
                     displayPrint: 'none',
+                    '&:hover': {
+                      borderColor: '#00965E',
+                    },
                   }}
                   onClick={printQuote}
                 >
@@ -177,7 +179,6 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
                 <CustomButton
                   variant="outlined"
                   sx={{
-                    width: '127px',
                     height: '39px',
                     marginLeft: isMobile ? 0 : '60px',
                     marginTop: isMobile ? '16px' : '0',
@@ -189,6 +190,9 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
                     fontWeight: 400,
                     fontSize: '16px',
                     displayPrint: 'none',
+                    '&:hover': {
+                      borderColor: '#00965E',
+                    },
                   }}
                   onClick={exportPdf}
                 >
