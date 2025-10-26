@@ -46,22 +46,22 @@ const DetailsRow = styled(Box)(() => ({
   },
 }));
 
-const DetailsTitle = styled(Typography)(() => ({
+const detailsTitleSx = {
   fontFamily: 'Lato, sans-serif',
   fontWeight: 700,
   fontSize: '16px',
   lineHeight: '24px',
   color: '#000000',
-}));
+} as const;
 
-const DetailsValue = styled(Typography)(() => ({
+const detailsValueSx = {
   fontFamily: 'Lato, sans-serif',
   fontWeight: 400,
   fontSize: '16px',
   lineHeight: '24px',
-  textAlign: 'right',
+  textAlign: 'right' as const,
   color: '#000000',
-}));
+} as const;
 
 const getCurrencyDisplay = (currencyCode?: string, money?: string) => {
   if (currencyCode) {
@@ -82,6 +82,20 @@ const getCurrencyDisplay = (currencyCode?: string, money?: string) => {
   } catch {
     return '–';
   }
+};
+
+const getCreatedAtDisplay = (value: string) => {
+  if (!value) {
+    return '–';
+  }
+
+  const formatted = displayFormat(Number(value));
+
+  if (!formatted) {
+    return '–';
+  }
+
+  return String(formatted);
 };
 
 export function OrderItemCard({ item, goToDetail, isCompanyOrder = false }: OrderItemCardProps) {
@@ -153,24 +167,26 @@ export function OrderItemCard({ item, goToDetail, isCompanyOrder = false }: Orde
 
             <Box>
               <DetailsRow>
-                <DetailsTitle>Reference</DetailsTitle>
-                <DetailsValue>{item.poNumber || '–'}</DetailsValue>
+                <Typography sx={detailsTitleSx}>Reference</Typography>
+                <Typography sx={detailsValueSx}>{item.poNumber || '–'}</Typography>
               </DetailsRow>
               <DetailsRow>
-                <DetailsTitle>Total</DetailsTitle>
-                <DetailsValue>{getTotalDisplay(item)}</DetailsValue>
+                <Typography sx={detailsTitleSx}>Total</Typography>
+                <Typography sx={detailsValueSx}>{getTotalDisplay(item)}</Typography>
               </DetailsRow>
               <DetailsRow>
-                <DetailsTitle>Created by</DetailsTitle>
-                <DetailsValue>{getCreatorName(item)}</DetailsValue>
+                <Typography sx={detailsTitleSx}>Created by</Typography>
+                <Typography sx={detailsValueSx}>{getCreatorName(item)}</Typography>
               </DetailsRow>
               <DetailsRow>
-                <DetailsTitle>Creation date</DetailsTitle>
-                <DetailsValue>{displayFormat(item.createdAt)}</DetailsValue>
+                <Typography sx={detailsTitleSx}>Creation date</Typography>
+                <Typography sx={detailsValueSx}>{getCreatedAtDisplay(item.createdAt)}</Typography>
               </DetailsRow>
               <DetailsRow>
-                <DetailsTitle>Currency</DetailsTitle>
-                <DetailsValue>{getCurrencyDisplay(item.currencyCode, item.money)}</DetailsValue>
+                <Typography sx={detailsTitleSx}>Currency</Typography>
+                <Typography sx={detailsValueSx}>
+                  {getCurrencyDisplay(item.currencyCode, item.money)}
+                </Typography>
               </DetailsRow>
             </Box>
           </Box>
@@ -237,7 +253,7 @@ export function OrderItemCard({ item, goToDetail, isCompanyOrder = false }: Orde
           >
             {getName(item)}
           </Typography>
-          <Typography>{`${displayFormat(item.createdAt)}`}</Typography>
+          <Typography>{getCreatedAtDisplay(item.createdAt)}</Typography>
         </Box>
       </CardContent>
     </Card>
