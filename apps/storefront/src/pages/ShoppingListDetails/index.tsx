@@ -486,6 +486,25 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
                 />
               </Grid>
             </B3Spin>
+
+            {!isReadForApprove &&
+              (allowJuniorPlaceOrder || productQuoteEnabled || !isJuniorApprove) && (
+                <ShoppingDetailFooter
+                  shoppingListInfo={shoppingListInfo}
+                  allowJuniorPlaceOrder={allowJuniorPlaceOrder}
+                  checkedArr={checkedArr}
+                  selectedSubTotal={calculateSubTotal(checkedArr)}
+                  setLoading={setIsRequestLoading}
+                  setDeleteOpen={setDeleteOpen}
+                  setValidateFailureProducts={setValidateFailureProducts}
+                  setValidateSuccessProducts={setValidateSuccessProducts}
+                  isB2BUser={isB2BUser}
+                  customColor={primaryColor}
+                  isCanEditShoppingList={isCanEditShoppingList}
+                  role={role}
+                  backendValidationEnabled={backendValidationEnabled}
+                />
+              )}
           </Box>
 
           <Grid
@@ -509,25 +528,6 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
             )}
           </Grid>
         </Grid>
-
-        {!isReadForApprove &&
-          (allowJuniorPlaceOrder || productQuoteEnabled || !isJuniorApprove) && (
-            <ShoppingDetailFooter
-              shoppingListInfo={shoppingListInfo}
-              allowJuniorPlaceOrder={allowJuniorPlaceOrder}
-              checkedArr={checkedArr}
-              selectedSubTotal={calculateSubTotal(checkedArr)}
-              setLoading={setIsRequestLoading}
-              setDeleteOpen={setDeleteOpen}
-              setValidateFailureProducts={setValidateFailureProducts}
-              setValidateSuccessProducts={setValidateSuccessProducts}
-              isB2BUser={isB2BUser}
-              customColor={primaryColor}
-              isCanEditShoppingList={isCanEditShoppingList}
-              role={role}
-              backendValidationEnabled={backendValidationEnabled}
-            />
-          )}
       </Box>
 
       <ReAddToCart

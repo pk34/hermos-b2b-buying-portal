@@ -1,7 +1,8 @@
 import { useContext, useRef, useState } from 'react';
+import type { SVGProps } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowDropDown, Delete } from '@mui/icons-material';
-import { Box, Grid, Menu, MenuItem, Typography } from '@mui/material';
+import { Box, Menu, MenuItem, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import Cookies from 'js-cookie';
 import { v1 as uuid } from 'uuid';
 
@@ -83,6 +84,29 @@ const mapToProductsFailedArray = (items: ProductsProps[]) => {
   });
 };
 
+const TrashCanIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg width={24} height={24} viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path
+      d="M19 7.05397L18.1327 19.2892C18.0579 20.3438 17.187 21.1608 16.1378 21.1608H7.86224C6.81296 21.1608 5.94208 20.3438 5.86732 19.2892L5 7.05397M10 11.0845V17.1303M14 11.0845V17.1303M15 7.05397V4.03107C15 3.47457 14.5523 3.02344 14 3.02344H10C9.44772 3.02344 9 3.47457 9 4.03107V7.05397M4 7.05397H20"
+      stroke="#F70000"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const DropdownIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg width={20} height={20} viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M5.29289 7.34786C5.68342 6.95436 6.31658 6.95436 6.70711 7.34786L10 10.6659L13.2929 7.34786C13.6834 6.95436 14.3166 6.95436 14.7071 7.34786C15.0976 7.74137 15.0976 8.37937 14.7071 8.77288L10.7071 12.8034C10.3166 13.1969 9.68342 13.1969 9.29289 12.8034L5.29289 8.77288C4.90237 8.37937 4.90237 7.74137 5.29289 7.34786Z"
+      fill="white"
+    />
+  </svg>
+);
+
 function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
   const [isMobile] = useMobile();
   const b3Lang = useB3Lang();
@@ -92,7 +116,6 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
   const {
     state: { productQuoteEnabled = false },
   } = useContext(GlobalContext);
-  const isAgenting = useAppSelector(({ b2bFeatures }) => b2bFeatures.masqueradeCompany.isAgenting);
   const companyId = useAppSelector(({ company }) => company.companyInfo.id);
   const customerGroupId = useAppSelector(({ company }) => company.customer.customerGroupId);
   const {
@@ -104,15 +127,6 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const cartEntityId = Cookies.get('cartId');
-
-  const containerStyle = isMobile
-    ? {
-        alignItems: 'flex-start',
-        flexDirection: 'column',
-      }
-    : {
-        alignItems: 'center',
-      };
 
   const {
     shoppingListInfo,
@@ -570,196 +584,188 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
 
   const buttonList = allowButtonList();
 
+  const showDeleteButton =
+    !allowJuniorPlaceOrder && isCanEditShoppingList && b2bShoppingListActionsPermission;
+  const isDeleteDisabled = shoppingListInfo?.status === ShoppingListStatus.ReadyForApproval;
+  const sharedActionButtonStyles: SxProps<Theme> = {
+    width: isMobile ? '100%' : '186px',
+    height: '40px',
+    borderRadius: '5px',
+    padding: '10px',
+    backgroundColor: '#0067A0',
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '14px',
+    lineHeight: '20px',
+    color: '#FFFFFF',
+    textTransform: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    boxShadow: 'none',
+    whiteSpace: 'nowrap',
+    '&:hover': {
+      backgroundColor: '#00965E',
+    },
+    '&:focus-visible': {
+      backgroundColor: '#00965E',
+    },
+    '&:active': {
+      backgroundColor: '#00965E',
+    },
+    '& .MuiButton-endIcon': {
+      marginLeft: '10px',
+      '& svg': {
+        width: '20px',
+        height: '20px',
+      },
+    },
+  };
+
   return (
-    <Grid
+    <Box
       sx={{
-        position: 'fixed',
-        bottom: isMobile && isAgenting ? '52px' : 0,
-        left: 0,
-        backgroundColor: '#fff',
         width: '100%',
-        padding: isMobile ? '0 0 1rem 0' : '0 40px 1rem 40px',
-        height: isMobile ? '8rem' : 'auto',
-        marginLeft: 0,
+        backgroundColor: '#FFFFFF',
+        boxShadow: '0px 4px 22px 5px #0000001A',
         display: 'flex',
-        flexWrap: 'nowrap',
-        zIndex: '999',
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        justifyContent: isMobile ? 'flex-start' : 'space-between',
+        padding: isMobile ? '12px 16px' : '0 24px',
+        minHeight: '59px',
+        height: isMobile ? 'auto' : '59px',
+        gap: isMobile ? '12px' : 0,
+        marginTop: 0,
       }}
-      container
-      spacing={2}
     >
-      <Grid
-        item
+      <Typography
         sx={{
-          display: isMobile ? 'none' : 'block',
-          width: '290px',
-          paddingLeft: '20px',
+          fontFamily: 'Lato, sans-serif',
+          fontWeight: 600,
+          fontSize: '16px',
+          lineHeight: '24px',
+          color: '#000000',
+          flexShrink: 0,
+          width: isMobile ? '100%' : 'auto',
         }}
-      />
-      <Grid
-        item
-        sx={
-          isMobile
-            ? {
-                flexBasis: '100%',
-              }
-            : {
-                flexBasis: '690px',
-                flexGrow: 1,
-              }
-        }
       >
-        <Box
+        {b3Lang('shoppingList.footer.selectedProducts', {
+          quantity: checkedArr.length,
+        })}
+      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginLeft: isMobile ? 0 : 'auto',
+          marginRight: isMobile ? 0 : 'auto',
+          flex: isMobile ? '1 1 100%' : '0 1 auto',
+        }}
+      >
+        <Typography
           sx={{
-            width: '100%',
-            pr: '20px',
-            display: 'flex',
-            zIndex: '999',
-            justifyContent: 'space-between',
-            ...containerStyle,
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 700,
+            fontSize: '16px',
+            lineHeight: '24px',
+            color: '#000000',
+            textAlign: 'center',
           }}
         >
-          <Typography
-            sx={{
-              color: '#000000',
-              fontSize: '16px',
-              fontWeight: '400',
-            }}
-          >
-            {b3Lang('shoppingList.footer.selectedProducts', {
-              quantity: checkedArr.length,
-            })}
-          </Typography>
+          {b3Lang('shoppingList.footer.subtotal', {
+            subtotal: currencyFormat(selectedSubTotal),
+          })}
+        </Typography>
+        {showDeleteButton && (
           <Box
+            component="button"
+            type="button"
+            disabled={isDeleteDisabled}
+            onClick={() => {
+              if (!isDeleteDisabled) {
+                setDeleteOpen(true);
+              }
+            }}
             sx={{
+              marginLeft: '18px',
+              border: 0,
+              padding: 0,
+              backgroundColor: 'transparent',
               display: 'flex',
               alignItems: 'center',
-              flexWrap: isMobile ? 'wrap' : 'nowrap',
+              cursor: isDeleteDisabled ? 'not-allowed' : 'pointer',
+              opacity: isDeleteDisabled ? 0.4 : 1,
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{
-                fontSize: '16px',
-                fontWeight: '700',
-                color: '#000000',
-              }}
-            >
-              {b3Lang('shoppingList.footer.subtotal', {
-                subtotal: currencyFormat(selectedSubTotal),
-              })}
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                marginTop: isMobile ? '0.5rem' : 0,
-                width: isMobile ? '100%' : 'auto',
-              }}
-            >
-              {!allowJuniorPlaceOrder &&
-                isCanEditShoppingList &&
-                b2bShoppingListActionsPermission && (
-                  <CustomButton
-                    sx={{
-                      padding: '5px',
-                      border: `1px solid ${customColor || '#1976d2'}`,
-                      margin: isMobile ? '0 1rem 0 0' : '0 1rem',
-                      minWidth: 'auto',
-                    }}
-                    disabled={shoppingListInfo?.status === ShoppingListStatus.ReadyForApproval}
-                  >
-                    <Delete
-                      color="primary"
-                      sx={{
-                        color: customColor,
-                      }}
-                      onClick={() => {
-                        setDeleteOpen(true);
-                      }}
-                    />
-                  </CustomButton>
-                )}
-              {buttonList.length ? (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginTop: isMobile ? '0.5rem' : 0,
-                    marginLeft: isMobile ? 0 : '20px',
-                    width: isMobile ? '100%' : 'auto',
+            <TrashCanIcon />
+          </Box>
+        )}
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: isMobile ? 'flex-start' : 'flex-end',
+          width: isMobile ? '100%' : 'auto',
+          marginLeft: isMobile ? 0 : '16px',
+          gap: isMobile ? '12px' : '16px',
+          flexShrink: 0,
+        }}
+      >
+        {buttonList.length ? (
+          <>
+            {buttonList.length === 1 && buttonList[0] && (
+              <CustomButton
+                variant="contained"
+                onClick={buttonList[0].handleClick}
+                disabled={buttonList[0].isDisabled}
+                sx={sharedActionButtonStyles}
+              >
+                {buttonList[0].name}
+              </CustomButton>
+            )}
+            {buttonList.length > 1 && (
+              <>
+                <CustomButton
+                  variant="contained"
+                  onClick={handleOpenBtnList}
+                  ref={ref}
+                  sx={sharedActionButtonStyles}
+                  endIcon={<DropdownIcon />}
+                >
+                  {b3Lang('shoppingList.footer.addSelectedTo')}
+                </CustomButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={ref.current}
+                  open={isOpen}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
                   }}
                 >
-                  {buttonList.length === 1 && buttonList[0] && (
-                    <CustomButton
-                      variant="contained"
-                      onClick={buttonList[0].handleClick}
-                      sx={{
-                        marginRight: isMobile ? '1rem' : 0,
-                        width: isMobile ? '100%' : 'auto',
-                      }}
-                    >
-                      {buttonList[0].name}
-                    </CustomButton>
-                  )}
-                  {buttonList.length === 2 && (
-                    <>
-                      <CustomButton
-                        variant="contained"
-                        onClick={handleOpenBtnList}
-                        ref={ref}
-                        sx={{
-                          marginRight: isMobile ? '1rem' : 0,
-                          width: isMobile ? '100%' : 'auto',
-                        }}
-                        endIcon={<ArrowDropDown />}
-                      >
-                        {b3Lang('shoppingList.footer.addSelectedTo')}
-                      </CustomButton>
-                      <Menu
-                        id="basic-menu"
-                        anchorEl={ref.current}
-                        open={isOpen}
-                        onClose={handleClose}
-                        MenuListProps={{
-                          'aria-labelledby': 'basic-button',
+                  {buttonList.length > 1 &&
+                    buttonList.map((button) => (
+                      <MenuItem
+                        key={button.key}
+                        onClick={() => {
+                          handleClose();
+                          button.handleClick();
                         }}
                       >
-                        {buttonList.length > 1 &&
-                          buttonList.map((button) => (
-                            <MenuItem
-                              key={button.key}
-                              onClick={() => {
-                                button.handleClick();
-                              }}
-                            >
-                              {button.name}
-                            </MenuItem>
-                          ))}
-                      </Menu>
-                    </>
-                  )}
-                </Box>
-              ) : null}
-            </Box>
-          </Box>
-        </Box>
-      </Grid>
-      <Grid
-        item
-        sx={
-          isMobile
-            ? {
-                flexBasis: '100%',
-                display: isMobile ? 'none' : 'block',
-              }
-            : {
-                flexBasis: '340px',
-                display: isMobile ? 'none' : 'block',
-              }
-        }
-      />
-    </Grid>
+                        {button.name}
+                      </MenuItem>
+                    ))}
+                </Menu>
+              </>
+            )}
+          </>
+        ) : null}
+      </Box>
+    </Box>
   );
 }
 
