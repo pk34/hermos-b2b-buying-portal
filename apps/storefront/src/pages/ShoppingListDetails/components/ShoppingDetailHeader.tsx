@@ -188,15 +188,16 @@ function ShoppingDetailHeader(props: ShoppingDetailHeaderProps) {
               flexDirection: isMobile ? 'column' : 'row',
             }}
           >
-            <Typography
-              variant="h4"
-              sx={{
-                marginRight: '1rem',
-                wordBreak: 'break-all',
-                fontFamily: 'Lato, sans-serif',
-                fontWeight: 600,
-                fontSize: '30px',
-                lineHeight: '38px',
+          <Typography
+            variant="h4"
+            sx={{
+              marginRight: '1rem',
+              marginBottom: '20px',
+              wordBreak: 'break-all',
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '30px',
+              lineHeight: '38px',
                 color: '#0067A0',
               }}
             >
