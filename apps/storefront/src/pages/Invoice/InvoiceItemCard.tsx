@@ -170,6 +170,9 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
 
   const isOverdue = currentDate > dueDate * 1000 && status !== 2;
 
+  const formatDisplayDate = (value: number | string | null | undefined) =>
+    value ? `${displayFormat(Number(value))}` : '–';
+
   const mobileDetails = [
     {
       key: 'orderNumber',
@@ -195,9 +198,7 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
       key: 'createdAt',
       label: b3Lang('invoice.invoiceItemCardHeader.quoteDate'),
       value: (
-        <Typography sx={mobileValueStyles}>
-          {item.createdAt ? displayFormat(Number(item.createdAt)) : '–'}
-        </Typography>
+        <Typography sx={mobileValueStyles}>{formatDisplayDate(item.createdAt)}</Typography>
       ),
     },
     {
@@ -210,7 +211,7 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
             color: isOverdue ? '#D32F2F' : mobileValueStyles.color,
           }}
         >
-          {item.dueDate ? displayFormat(Number(item.dueDate)) : '–'}
+          {formatDisplayDate(item.dueDate)}
         </Typography>
       ),
     },
