@@ -4,6 +4,7 @@ import { MoreHoriz as MoreHorizIcon } from '@mui/icons-material';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { rolePermissionSelector, useAppSelector } from '@/store';
 import { InvoiceList } from '@/types/invoice';
@@ -57,6 +58,7 @@ function B3Pulldown({
   const ref = useRef<HTMLButtonElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isPay, setIsPay] = useState<boolean>(true);
+  const [isMobile] = useMobile();
 
   const navigate = useNavigate();
 
@@ -176,8 +178,18 @@ function B3Pulldown({
         ref={ref}
         aria-label={b3Lang('invoice.actions.moreActions')}
         aria-haspopup="menu"
+        sx={
+          isMobile
+            ? {
+                color: '#0067A0',
+                '& .MuiSvgIcon-root': {
+                  color: '#0067A0',
+                },
+              }
+            : undefined
+        }
       >
-        <MoreHorizIcon />
+        <MoreHorizIcon sx={isMobile ? { color: '#0067A0' } : undefined} />
       </IconButton>
       <StyledMenu
         id="basic-menu"
@@ -193,9 +205,9 @@ function B3Pulldown({
         }}
         transformOrigin={{
           vertical: 'top',
-      horizontal: 'right',
-    }}
-  >
+          horizontal: 'right',
+        }}
+      >
         <StyledMenuItem
           key="view-invoice-pdf"
           onClick={() =>

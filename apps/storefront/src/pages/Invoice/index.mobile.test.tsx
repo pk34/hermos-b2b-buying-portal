@@ -148,7 +148,7 @@ it('renders all invoices in the table', async () => {
 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
-  const dates = screen.getAllByText('Quote date:');
+  const dates = screen.getAllByText('Invoice date:');
 
   expect(dates).toHaveLength(10);
 });
