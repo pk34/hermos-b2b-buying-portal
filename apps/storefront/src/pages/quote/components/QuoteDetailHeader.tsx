@@ -249,7 +249,7 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
                 {b3Lang('quoteDetail.header.issuedOn')}
               </Typography>
               <Typography component="span" sx={valueTypographySx}>
-                {issuedAt ? displayFormat(Number(issuedAt)) : ''}
+                {issuedAt ? `${displayFormat(Number(issuedAt))}` : ''}
               </Typography>
             </StyledCreateName>
             <StyledCreateName>
@@ -257,7 +257,7 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
                 {b3Lang('quoteDetail.header.expirationDate')}
               </Typography>
               <Typography component="span" sx={valueTypographySx}>
-                {expirationDate ? displayFormat(Number(expirationDate)) : ''}
+                {expirationDate ? `${displayFormat(Number(expirationDate))}` : ''}
               </Typography>
             </StyledCreateName>
             {currency?.currencyCode && (
