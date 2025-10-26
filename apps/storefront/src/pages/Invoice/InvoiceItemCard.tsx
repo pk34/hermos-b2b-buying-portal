@@ -10,6 +10,7 @@ import { currencyFormat, displayFormat } from '@/utils';
 
 import B3Pulldown from './components/B3Pulldown';
 import InvoiceStatus from './components/InvoiceStatus';
+import PrintTemplate from './components/PrintTemplate';
 
 interface InvoiceItemCardProps {
   item: any;
@@ -17,7 +18,7 @@ interface InvoiceItemCardProps {
   handleViewInvoice: (id: string, status: string | number, invoiceCompanyId: string) => void;
   setIsRequestLoading: (bool: boolean) => void;
   setInvoiceId: (id: string) => void;
-  handleOpenHistoryModal: (bool: boolean) => void;
+  handleOpenDetails: (invoiceId: string) => void;
   selectedPay: CustomFieldItems | InvoiceListNode[];
   addBottom: boolean;
   isCurrentCompany: boolean;
@@ -38,7 +39,7 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
     handleViewInvoice,
     setIsRequestLoading,
     setInvoiceId,
-    handleOpenHistoryModal,
+    handleOpenDetails,
     selectedPay = [],
     addBottom,
     isCurrentCompany,
@@ -185,15 +186,15 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
             </Typography>
           </Box>
           <Box sx={{ mb: '0.5rem' }}>
-            <B3Pulldown
-              row={item}
-              setInvoiceId={setInvoiceId}
-              handleOpenHistoryModal={handleOpenHistoryModal}
-              setIsRequestLoading={setIsRequestLoading}
-              isCurrentCompany={isCurrentCompany}
-              invoicePay={invoicePay}
-            />
-          </Box>
+          <B3Pulldown
+            row={item}
+            setInvoiceId={setInvoiceId}
+            handleOpenDetails={handleOpenDetails}
+            setIsRequestLoading={setIsRequestLoading}
+            isCurrentCompany={isCurrentCompany}
+            invoicePay={invoicePay}
+          />
+        </Box>
         </Box>
         <Box sx={{ mb: '1rem' }}>
           <InvoiceStatus code={statusCode} />
@@ -229,6 +230,11 @@ export function InvoiceItemCard(props: InvoiceItemCardProps) {
           </Box>
         ))}
       </CardContent>
+      {item?.isCollapse && (
+        <Box sx={{ padding: '0 16px 16px' }}>
+          <PrintTemplate row={item} />
+        </Box>
+      )}
     </Card>
   );
 }

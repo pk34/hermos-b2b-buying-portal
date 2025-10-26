@@ -837,7 +837,7 @@ describe('when using the action menu', () => {
     const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
     await userEvent.click(moreActionsButton);
 
-    await userEvent.click(screen.getByRole('menuitem', { name: 'View invoice' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: 'View invoice PDF' }));
 
     await waitFor(() => {
       expect(window.open).toHaveBeenCalledWith(
@@ -883,7 +883,7 @@ describe('when using the action menu', () => {
     const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
     await userEvent.click(moreActionsButton);
 
-    await userEvent.click(screen.getByRole('menuitem', { name: 'View order' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: 'View Order' }));
 
     expect(navigation).toHaveBeenCalledWith('/orderDetail/4444');
   });
@@ -924,72 +924,14 @@ describe('when using the action menu', () => {
     const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
     await userEvent.click(moreActionsButton);
 
-    await userEvent.click(screen.getByRole('menuitem', { name: 'Download' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Download XML' }));
 
     expect(triggerPdfDownload).toHaveBeenCalledWith('https://example.com/invoice.pdf', 'file.pdf');
   });
 
-  it('prints an invoice', async () => {
+  it('opens invoice details when selecting view history payment', async () => {
     const pdfFile = new Blob(['%PDF-1.4 Mock PDF Content'], { type: 'application/pdf' });
     const getInvoicePDFUrlResponse = vi.fn();
-
-    server.use(
-      graphql.query('GetInvoices', () =>
-        HttpResponse.json(
-          buildInvoicesResponseWith({
-            data: {
-              invoices: {
-                edges: [buildInvoiceWith({ node: { id: '3344', invoiceNumber: '3322' } })],
-              },
-            },
-          }),
-        ),
-      ),
-      graphql.query('GetInvoiceStats', () =>
-        HttpResponse.json(buildInvoiceStatsResponseWith('WHATEVER_VALUES')),
-      ),
-      graphql.mutation('GetInvoicePDFUrl', ({ query }) =>
-        HttpResponse.json(getInvoicePDFUrlResponse(query)),
-      ),
-      http.get('https://example.com/invoice.pdf', async () =>
-        HttpResponse.arrayBuffer(await pdfFile.arrayBuffer(), {
-          headers: { 'Content-Type': 'application/pdf' },
-        }),
-      ),
-    );
-
-    vi.spyOn(window, 'open').mockImplementation(vi.fn());
-
-    when(window.URL.createObjectURL)
-      .calledWith(pdfFile)
-      .thenReturn('https://localhost:3000/mock-blob-url');
-
-    when(getInvoicePDFUrlResponse)
-      .calledWith(stringContainingAll('invoiceId: 3344'))
-      .thenReturn({ data: { invoicePdf: { url: 'https://example.com/invoice.pdf' } } });
-
-    renderWithProviders(<Invoice />, { preloadedState });
-
-    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-
-    const row = screen.getByRole('row', { name: /3322/ });
-
-    const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
-    await userEvent.click(moreActionsButton);
-
-    await userEvent.click(screen.getByRole('menuitem', { name: 'Print' }));
-
-    await waitFor(() => {
-      expect(window.open).toHaveBeenCalledWith(
-        'https://localhost:3000/mock-blob-url',
-        '_blank',
-        'fullscreen=yes',
-      );
-    });
-  });
-
-  it('opens the payment history dialog', async () => {
-    const getInvoicePaymentHistory = vi.fn();
 
     server.use(
       graphql.query('GetInvoices', () =>
@@ -1014,71 +956,39 @@ describe('when using the action menu', () => {
       graphql.query('GetInvoiceStats', () =>
         HttpResponse.json(buildInvoiceStatsResponseWith('WHATEVER_VALUES')),
       ),
-      graphql.query('GetInvoicePaymentHistory', ({ query }) =>
-        HttpResponse.json(getInvoicePaymentHistory(query)),
+      graphql.mutation('GetInvoicePDFUrl', ({ query }) =>
+        HttpResponse.json(getInvoicePDFUrlResponse(query)),
+      ),
+      http.get('https://example.com/invoice.pdf', async () =>
+        HttpResponse.arrayBuffer(await pdfFile.arrayBuffer(), {
+          headers: { 'Content-Type': 'application/pdf' },
+        }),
       ),
     );
 
-    when(getInvoicePaymentHistory)
-      .calledWith(stringContainingAll('invoiceId: "3344"'))
-      .thenReturn(
-        buildInvoicePaymentHistoryResponseWith({
-          data: {
-            allReceiptLines: {
-              totalCount: 2,
-              edges: [
-                buildInvoicePaymentNodeWith({
-                  node: {
-                    createdAt: getUnixTime(new Date('23 July 2025')),
-                    amount: { code: 'USD', value: '50.5' },
-                    referenceNumber: '1234',
-                    paymentType: 'visa ending in 1111',
-                    transactionType: 'Foo Bar',
-                  },
-                }),
-                buildInvoicePaymentNodeWith({
-                  node: {
-                    createdAt: getUnixTime(new Date('14 July 2025')),
-                    amount: { code: 'USD', value: '30.5' },
-                    referenceNumber: '3222',
-                    paymentType: 'visa ending in 1212',
-                    transactionType: 'Bar Baz',
-                  },
-                }),
-              ],
-            },
-          },
-        }),
-      );
+    when(getInvoicePDFUrlResponse)
+      .calledWith(stringContainingAll('invoiceId: 3344'))
+      .thenReturn({ data: { invoicePdf: { url: 'https://example.com/invoice.pdf' } } });
+
+    when(window.URL.createObjectURL)
+      .calledWith(pdfFile)
+      .thenReturn('https://localhost:3000/mock-blob-url');
 
     renderWithProviders(<Invoice />, { preloadedState });
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
     const row = screen.getByRole('row', { name: /3322/ });
+
+    expect(within(row).getByTestId('KeyboardArrowRightIcon')).toBeInTheDocument();
+
     const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
     await userEvent.click(moreActionsButton);
 
-    await userEvent.click(screen.getByRole('menuitem', { name: 'View payment history' }));
-
-    const dialog = await screen.findByRole('dialog', { name: 'Payments history' });
-
-    expect(within(dialog).getByText('23 July 2025')).toBeInTheDocument();
-    expect(within(dialog).getByText('Foo Bar')).toBeInTheDocument();
-    expect(within(dialog).getByText('visa ending in 1111')).toBeInTheDocument();
-    expect(within(dialog).getByText('1234')).toBeInTheDocument();
-    expect(within(dialog).getByText('$50.50')).toBeInTheDocument();
-
-    expect(within(dialog).getByText('14 July 2025')).toBeInTheDocument();
-    expect(within(dialog).getByText('Bar Baz')).toBeInTheDocument();
-    expect(within(dialog).getByText('visa ending in 1212')).toBeInTheDocument();
-    expect(within(dialog).getByText('3222')).toBeInTheDocument();
-    expect(within(dialog).getByText('$30.50')).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole('button', { name: 'ok' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: 'View history payment' }));
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'Payments history' })).not.toBeInTheDocument();
+      expect(within(row).getByTestId('KeyboardArrowDownIcon')).toBeInTheDocument();
     });
   });
 
@@ -1114,7 +1024,7 @@ describe('when using the action menu', () => {
     await userEvent.click(moreActionsButton);
 
     expect(
-      screen.queryByRole('menuitem', { name: 'View payment history' }),
+      screen.queryByRole('menuitem', { name: 'View history payment' }),
     ).not.toBeInTheDocument();
   });
 
