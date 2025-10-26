@@ -142,7 +142,7 @@ const shoppingListModalFieldBaseSx = {
   marginBottom: '24px',
   '& .MuiFilledInput-root': {
     borderRadius: '5px',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F7F7F7',
     padding: 0,
     '&:before': {
       borderBottom: '2px solid #231F20',
@@ -151,10 +151,10 @@ const shoppingListModalFieldBaseSx = {
       borderBottom: '2px solid #231F20',
     },
     '&:hover': {
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#F7F7F7',
     },
     '&.Mui-focused': {
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#F7F7F7',
     },
   },
   '& .MuiFilledInput-input': {
@@ -164,6 +164,7 @@ const shoppingListModalFieldBaseSx = {
     lineHeight: '24px',
     color: '#000000',
     padding: '10px',
+    paddingBottom: '0px !important',
   },
   '& .MuiInputLabel-root': {
     fontFamily: "'Lato', sans-serif",
@@ -196,14 +197,12 @@ const shoppingListModalDescriptionFieldSx = {
   '& .MuiFilledInput-input': {
     ...shoppingListModalFieldBaseSx['& .MuiFilledInput-input'],
     height: '83px',
+    paddingTop: '20px !important',
   },
   '& .MuiFilledInput-inputMultiline': {
-    fontFamily: "'Lato', sans-serif",
-    fontWeight: 600,
-    fontSize: '16px',
-    lineHeight: '24px',
-    color: '#000000',
+    ...shoppingListModalFieldBaseSx['& .MuiFilledInput-input'],
     padding: '10px',
+    paddingTop: '20px !important',
     height: '83px',
     boxSizing: 'border-box',
   },

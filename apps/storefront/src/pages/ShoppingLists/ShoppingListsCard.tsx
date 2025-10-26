@@ -218,7 +218,8 @@ function ShoppingListsCard(props: OrderItemCardProps) {
     <Card
       key={shoppingList.id}
       sx={{
-        width: '389px',
+        width: '100%',
+        maxWidth: '389px',
         height: '231px',
         background: '#FFFFFF',
         borderRadius: '10px',
