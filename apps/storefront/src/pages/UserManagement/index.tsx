@@ -312,6 +312,12 @@ function UserManagement() {
               padding: '25px',
               boxShadow: '0px 4px 22px 5px #0000001A',
               maxHeight: 'calc(100vh - 32px)',
+              '@media (max-width: 600px)': {
+                width: '95vw',
+                maxWidth: '95vw',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              },
             },
             '& .MuiDialogTitle-root': {
               fontFamily: "'Lato', sans-serif",
@@ -334,6 +340,9 @@ function UserManagement() {
               columnGap: '33px',
               gap: '33px',
               padding: 0,
+              '& > :not(style) ~ :not(style)': {
+                marginLeft: 0,
+              },
               '@media (max-width: 600px)': {
                 width: '100%',
                 flexDirection: 'column-reverse',
@@ -390,6 +399,12 @@ function UserManagement() {
               padding: '25px',
               boxShadow: '0px 4px 22px 5px #0000001A',
               maxHeight: 'calc(100vh - 32px)',
+              '@media (max-width: 600px)': {
+                width: '95vw',
+                maxWidth: '95vw',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              },
             },
             '& .MuiDialogTitle-root': {
               fontFamily: "'Lato', sans-serif",
@@ -411,6 +426,9 @@ function UserManagement() {
               borderTop: 'none',
               justifyContent: 'center',
               padding: 0,
+              '& > :not(style) ~ :not(style)': {
+                marginLeft: 0,
+              },
               '@media (max-width: 600px)': {
                 width: '100%',
                 flexDirection: 'column',
