@@ -1,4 +1,13 @@
-import { ChangeEvent, FC, MouseEvent, ReactElement, ReactNode, useContext, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
@@ -164,6 +173,10 @@ function Row<Row>({
   const { isCollapse = false, disableCurrentCheckbox } = node;
 
   const [open, setOpen] = useState<boolean>(isCollapse || false);
+
+  useEffect(() => {
+    setOpen(Boolean(isCollapse));
+  }, [isCollapse]);
 
   return (
     <>

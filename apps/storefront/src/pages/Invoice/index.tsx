@@ -54,9 +54,9 @@ interface FilterSearchProps {
 }
 
 interface PaginationTableRefProps extends HTMLInputElement {
-  getList: () => void;
-  getCacheList: () => void;
-  setCacheAllList: (items?: InvoiceList[]) => void;
+  getList: () => InvoiceListNode[];
+  getCacheList: () => InvoiceListNode[];
+  setCacheAllList: (items?: InvoiceListNode[]) => void;
   setList: (items?: InvoiceListNode[]) => void;
   getSelectedValue: () => void;
 }
@@ -341,6 +341,40 @@ function Invoice() {
     } finally {
       setIsRequestLoading(false);
     }
+  };
+
+  const handleOpenInvoiceDetails = (invoiceId: string) => {
+    const table = paginationTableRef.current;
+    if (!table) {
+      return;
+    }
+
+    const applyCollapseState = (items: InvoiceListNode[] = []) =>
+      items.map((invoiceNode) => {
+        if (!invoiceNode?.node) {
+          return invoiceNode;
+        }
+
+        return {
+          ...invoiceNode,
+          node: {
+            ...invoiceNode.node,
+            isCollapse: invoiceNode.node.id === invoiceId,
+          },
+        };
+      });
+
+    const listItems = table.getList?.();
+    if (listItems) {
+      table.setList?.(applyCollapseState(listItems));
+    }
+
+    const cachedItems = table.getCacheList?.();
+    if (cachedItems) {
+      table.setCacheAllList?.(applyCollapseState(cachedItems));
+    }
+
+    setCurrentInvoiceId(invoiceId);
   };
 
   
@@ -644,7 +678,7 @@ function Invoice() {
           <B3Pulldown
             row={actionRow}
             setInvoiceId={setCurrentInvoiceId}
-            handleOpenHistoryModal={setIsOpenHistory}
+            handleOpenDetails={handleOpenInvoiceDetails}
             setIsRequestLoading={setIsRequestLoading}
             isCurrentCompany={Number(currentCompanyId) === Number(companyInfo.companyId)}
             invoicePay={
@@ -815,18 +849,18 @@ function Invoice() {
             hover
             isAutoRefresh={false}
             renderItem={(row, index, checkBox) => (
-              <InvoiceItemCard
-                item={row}
-                checkBox={checkBox}
-                handleViewInvoice={handleViewInvoice}
-                setIsRequestLoading={setIsRequestLoading}
-                setInvoiceId={setCurrentInvoiceId}
-                handleOpenHistoryModal={setIsOpenHistory}
-                selectedPay={selectedPay}
-                addBottom={list.length - 1 === index}
-                isCurrentCompany={Number(currentCompanyId) === Number(row.companyInfo.companyId)}
-                invoicePay={
-                  Number(currentCompanyId) === Number(row.companyInfo.companyId)
+            <InvoiceItemCard
+              item={row}
+              checkBox={checkBox}
+              handleViewInvoice={handleViewInvoice}
+              setIsRequestLoading={setIsRequestLoading}
+              setInvoiceId={setCurrentInvoiceId}
+              handleOpenDetails={handleOpenInvoiceDetails}
+              selectedPay={selectedPay}
+              addBottom={list.length - 1 === index}
+              isCurrentCompany={Number(currentCompanyId) === Number(row.companyInfo.companyId)}
+              invoicePay={
+                Number(currentCompanyId) === Number(row.companyInfo.companyId)
                     ? invoicePayPermission
                     : invoiceSubPayPermission
                 }
