@@ -15,7 +15,8 @@ import QuoteStatus from './QuoteStatus';
 const StyledCreateName = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
-  marginTop: '0.5rem',
+  marginTop: 0,
+  gap: '8px',
 }));
 
 interface QuoteDetailHeaderProps {
@@ -27,6 +28,7 @@ interface QuoteDetailHeaderProps {
   printQuote: () => Promise<void>;
   role: string | number;
   salesRepInfo: { [key: string]: string };
+  currency?: CurrencyProps;
 }
 
 function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
@@ -42,6 +44,7 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
     printQuote,
     role,
     salesRepInfo,
+    currency,
   } = props;
 
   const {
@@ -63,6 +66,23 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
       : {
           xs,
         };
+
+  const labelTypographySx = {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    marginRight: '0.5rem',
+  } as const;
+
+  const valueTypographySx = {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+  } as const;
 
   return (
     <>
@@ -219,31 +239,37 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
               </span>
             </StyledCreateName>
           )}
-          <Box>
+          <Box
+            sx={{
+              marginTop: '30px',
+            }}
+          >
             <StyledCreateName>
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  marginRight: '0.5rem',
-                  fontSize: '16px',
-                }}
-              >
+              <Typography sx={labelTypographySx}>
                 {b3Lang('quoteDetail.header.issuedOn')}
               </Typography>
-              <span>{`${issuedAt ? displayFormat(Number(issuedAt)) : ''}`}</span>
+              <Typography component="span" sx={valueTypographySx}>
+                {issuedAt ? displayFormat(Number(issuedAt)) : ''}
+              </Typography>
             </StyledCreateName>
             <StyledCreateName>
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  marginRight: '0.5rem',
-                  fontSize: '16px',
-                }}
-              >
+              <Typography sx={labelTypographySx}>
                 {b3Lang('quoteDetail.header.expirationDate')}
               </Typography>
-              <span>{`${expirationDate ? displayFormat(Number(expirationDate)) : ''}`}</span>
+              <Typography component="span" sx={valueTypographySx}>
+                {expirationDate ? displayFormat(Number(expirationDate)) : ''}
+              </Typography>
             </StyledCreateName>
+            {currency?.currencyCode && (
+              <StyledCreateName>
+                <Typography sx={labelTypographySx}>
+                  {b3Lang('quoteDetail.header.currency')}
+                </Typography>
+                <Typography component="span" sx={valueTypographySx}>
+                  {currency.currencyCode}
+                </Typography>
+              </StyledCreateName>
+            )}
           </Box>
         </Grid>
       </Grid>

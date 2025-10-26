@@ -649,6 +649,7 @@
   "quoteDetail.header.salesRep": "Sales rep:",
   "quoteDetail.header.issuedOn": "Issued on:",
   "quoteDetail.header.expirationDate": "Expiration date:",
+  "quoteDetail.header.currency": "Currency:",
   "quoteDetail.header.print": "Print",
   "quoteDetail.header.downloadPDF": "DownLoad pdf",
   "quoteDetail.summary.quoteSummary": "Quote summary",
