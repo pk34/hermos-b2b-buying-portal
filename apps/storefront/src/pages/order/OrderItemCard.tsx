@@ -6,7 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
 import { isB2BUserSelector, useAppSelector } from '@/store';
-import { currencyFormat, displayFormat } from '@/utils';
+import { currencyFormat, displayFormat, ordersCurrencyFormat } from '@/utils';
 
 import OrderStatus from './components/OrderStatus';
 
@@ -18,11 +18,14 @@ interface ListItem {
   status: string;
   totalIncTax: string;
   createdAt: string;
+  money?: string;
+  currencyCode?: string;
 }
 
 interface OrderItemCardProps {
   goToDetail: () => void;
   item: ListItem;
+  isCompanyOrder?: boolean;
 }
 
 const Flex = styled('div')(() => ({
@@ -33,7 +36,55 @@ const Flex = styled('div')(() => ({
   },
 }));
 
-export function OrderItemCard({ item, goToDetail }: OrderItemCardProps) {
+const DetailsRow = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  width: '100%',
+  marginBottom: '12px',
+  '&:last-of-type': {
+    marginBottom: 0,
+  },
+}));
+
+const DetailsTitle = styled(Typography)(() => ({
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 700,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+}));
+
+const DetailsValue = styled(Typography)(() => ({
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 400,
+  fontSize: '16px',
+  lineHeight: '24px',
+  textAlign: 'right',
+  color: '#000000',
+}));
+
+const getCurrencyDisplay = (currencyCode?: string, money?: string) => {
+  if (currencyCode) {
+    return currencyCode;
+  }
+
+  if (!money || typeof money !== 'string') {
+    return '–';
+  }
+
+  try {
+    const parsedMoney = JSON.parse(JSON.parse(money)) as {
+      currency_code?: string;
+      currency_token?: string;
+    };
+
+    return parsedMoney.currency_code || parsedMoney.currency_token || '–';
+  } catch {
+    return '–';
+  }
+};
+
+export function OrderItemCard({ item, goToDetail, isCompanyOrder = false }: OrderItemCardProps) {
   const theme = useTheme();
   const isB2BUser = useAppSelector(isB2BUserSelector);
   const customer = useAppSelector(({ company }) => company.customer);
@@ -44,6 +95,89 @@ export function OrderItemCard({ item, goToDetail }: OrderItemCardProps) {
     }
     return `by ${customer.firstName} ${customer.lastName}`;
   };
+
+  const getCreatorName = (order: ListItem) => {
+    if (order.firstName || order.lastName) {
+      return `${order.firstName ?? ''} ${order.lastName ?? ''}`.trim() || '–';
+    }
+
+    if (isB2BUser) {
+      return '–';
+    }
+
+    const fallbackName = `${customer.firstName ?? ''} ${customer.lastName ?? ''}`.trim();
+    return fallbackName || '–';
+  };
+
+  const getTotalDisplay = (order: ListItem) => {
+    if (order.money) {
+      try {
+        return ordersCurrencyFormat(JSON.parse(JSON.parse(order.money)), order.totalIncTax);
+      } catch {
+        return currencyFormat(order.totalIncTax);
+      }
+    }
+
+    return currencyFormat(order.totalIncTax);
+  };
+
+  if (isCompanyOrder) {
+    return (
+      <Card
+        key={item.orderId}
+        sx={{
+          border: '0.2px solid #000000',
+          boxShadow: '0px 4px 22px 5px #0000001A',
+          borderRadius: '12px',
+          cursor: 'pointer',
+        }}
+      >
+        <CardContent sx={{ padding: theme.spacing(3) }} onClick={goToDetail}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography
+              sx={{
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#000000',
+                marginBottom: '16px',
+              }}
+            >
+              {item.orderId}
+            </Typography>
+
+            <Box sx={{ marginBottom: '20px' }}>
+              <OrderStatus code={item.status} />
+            </Box>
+
+            <Box>
+              <DetailsRow>
+                <DetailsTitle>Reference</DetailsTitle>
+                <DetailsValue>{item.poNumber || '–'}</DetailsValue>
+              </DetailsRow>
+              <DetailsRow>
+                <DetailsTitle>Total</DetailsTitle>
+                <DetailsValue>{getTotalDisplay(item)}</DetailsValue>
+              </DetailsRow>
+              <DetailsRow>
+                <DetailsTitle>Created by</DetailsTitle>
+                <DetailsValue>{getCreatorName(item)}</DetailsValue>
+              </DetailsRow>
+              <DetailsRow>
+                <DetailsTitle>Creation date</DetailsTitle>
+                <DetailsValue>{displayFormat(item.createdAt)}</DetailsValue>
+              </DetailsRow>
+              <DetailsRow>
+                <DetailsTitle>Currency</DetailsTitle>
+                <DetailsValue>{getCurrencyDisplay(item.currencyCode, item.money)}</DetailsValue>
+              </DetailsRow>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card key={item.orderId}>
