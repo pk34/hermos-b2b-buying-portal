@@ -20,8 +20,8 @@ const StatusTag = styled(B3Tag)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Lato', sans-serif;
-  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
   font-size: 16px;
   line-height: 24px;
   text-align: center;

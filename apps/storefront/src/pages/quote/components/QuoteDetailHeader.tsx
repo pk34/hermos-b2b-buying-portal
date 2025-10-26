@@ -4,7 +4,7 @@ import { ArrowBackIosNew } from '@mui/icons-material';
 import { Box, Grid, styled, Typography, useTheme } from '@mui/material';
 
 import CustomButton from '@/components/button/CustomButton';
-import { b3HexToRgb, getContrastColor } from '@/components/outSideComponents/utils/b3CustomStyles';
+import { getContrastColor } from '@/components/outSideComponents/utils/b3CustomStyles';
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { CustomStyleContext } from '@/shared/customStyleButton';
@@ -117,7 +117,7 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
       >
         <Grid
           item
-          {...gridOptions(8)}
+          {...gridOptions(12)}
           sx={{
             color: customColor,
           }}
@@ -125,15 +125,18 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
           <Box
             sx={{
               display: 'flex',
-              alignItems: isMobile ? 'start' : 'center',
+              alignItems: isMobile ? 'flex-start' : 'center',
               flexDirection: isMobile ? 'column' : 'row',
+              flexWrap: isMobile ? 'wrap' : 'nowrap',
             }}
           >
             <Typography
               sx={{
-                marginRight: '10px',
-                fontSize: '34px',
-                color: b3HexToRgb(customColor, 0.87),
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '24px',
+                lineHeight: '28px',
+                color: '#0067A0',
               }}
             >
               {b3Lang('quoteDetail.header.quoteNumber', {
@@ -141,7 +144,62 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
               })}
             </Typography>
 
-            <QuoteStatus code={status} />
+            <Box
+              sx={{
+                marginLeft: isMobile ? 0 : '100px',
+                marginTop: isMobile ? '16px' : '0',
+              }}
+            >
+              <QuoteStatus code={status} />
+            </Box>
+            {Number(role) !== 100 && (
+              <>
+                <CustomButton
+                  variant="outlined"
+                  sx={{
+                    height: '39px',
+                    marginLeft: isMobile ? 0 : '60px',
+                    marginTop: isMobile ? '16px' : '0',
+                    borderRadius: '5px',
+                    padding: '10px',
+                    border: '1px solid #FF810E',
+                    color: '#FF810E',
+                    fontFamily: 'Roboto, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '16px',
+                    displayPrint: 'none',
+                    '&:hover': {
+                      borderColor: '#00965E',
+                    },
+                  }}
+                  onClick={printQuote}
+                >
+                  {b3Lang('quoteDetail.header.print')}
+                </CustomButton>
+                <CustomButton
+                  variant="outlined"
+                  sx={{
+                    height: '39px',
+                    marginLeft: isMobile ? 0 : '60px',
+                    marginTop: isMobile ? '16px' : '0',
+                    borderRadius: '5px',
+                    padding: '10px',
+                    border: '1px solid #FF810E',
+                    color: '#FF810E',
+                    fontFamily: 'Roboto, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '16px',
+                    displayPrint: 'none',
+                    '&:hover': {
+                      borderColor: '#00965E',
+                    },
+                  }}
+                  onClick={exportPdf}
+                >
+                  {b3Lang('quoteDetail.header.downloadPDF')}
+                </CustomButton>
+              </>
+            )}
           </Box>
           {(salesRepInfo?.salesRepName || salesRepInfo?.salesRepEmail) && (
             <StyledCreateName>
@@ -188,32 +246,6 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
             </StyledCreateName>
           </Box>
         </Grid>
-        {Number(role) !== 100 && (
-          <Grid
-            item
-            sx={{
-              textAlign: isMobile ? 'none' : 'end',
-              displayPrint: 'none',
-            }}
-            {...gridOptions(4)}
-          >
-            <Box>
-              <CustomButton
-                variant="outlined"
-                sx={{
-                  marginRight: '1rem',
-                  displayPrint: 'none',
-                }}
-                onClick={printQuote}
-              >
-                {b3Lang('quoteDetail.header.print')}
-              </CustomButton>
-              <CustomButton variant="outlined" onClick={exportPdf}>
-                {b3Lang('quoteDetail.header.downloadPDF')}
-              </CustomButton>
-            </Box>
-          </Grid>
-        )}
       </Grid>
     </>
   );
