@@ -101,7 +101,12 @@ export default function B3Layout({ children }: { children: ReactNode }) {
     return {};
   }, [location]);
 
-  const pagesWithCustomMobileTitle = ['/addresses', '/user-management', '/accountSettings'];
+  const pagesWithCustomMobileTitle = [
+    '/addresses',
+    '/company-orders',
+    '/user-management',
+    '/accountSettings',
+  ];
   const isCustomMobileTitlePage = pagesWithCustomMobileTitle.includes(location.pathname);
 
   const mobileTitleSx = useMemo<SxProps<Theme> | undefined>(() => {

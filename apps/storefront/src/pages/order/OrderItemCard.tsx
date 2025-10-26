@@ -162,7 +162,7 @@ export function OrderItemCard({ item, goToDetail, isCompanyOrder = false }: Orde
             </Typography>
 
             <Box sx={{ marginBottom: '20px' }}>
-              <OrderStatus code={item.status} />
+              <OrderStatus code={item.status} align="left" />
             </Box>
 
             <Box>
