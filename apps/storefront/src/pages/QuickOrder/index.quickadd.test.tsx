@@ -154,7 +154,7 @@ it('renders the quick add section', () => {
 it('increases the number of input rows when clicking -show more rows- button', async () => {
   renderWithProviders(<QuickOrderPad />, { preloadedState });
 
-  const showMoreRowsButton = screen.getByRole('button', { name: 'Show more rows' });
+  const showMoreRowsButton = screen.getByRole('button', { name: 'Add more lines' });
 
   expect(screen.getAllByRole('textbox', { name: 'SKU#' })).toHaveLength(3);
   expect(screen.getAllByRole('spinbutton', { name: 'Qty' })).toHaveLength(3);

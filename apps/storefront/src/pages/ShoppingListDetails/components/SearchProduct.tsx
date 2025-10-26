@@ -1,6 +1,5 @@
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
-import { Search as SearchIcon } from '@mui/icons-material';
-import { Box, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, InputBase, Typography } from '@mui/material';
 
 import CustomButton from '@/components/button/CustomButton';
 import B3Spin from '@/components/spin/B3Spin';
@@ -167,47 +166,139 @@ export default function SearchProduct({
         margin: '24px 0',
       }}
     >
-      <Typography>{b3Lang('global.searchProductAddProduct.searchBySkuOrName')}</Typography>
-      <TextField
-        hiddenLabel
-        placeholder={b3Lang(`global.searchProduct.placeholder.${type}`)}
-        variant="filled"
-        fullWidth
-        size="small"
-        value={searchText}
-        onChange={handleSearchTextChange}
-        onKeyDown={handleSearchTextKeyDown}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
+      <Typography
         sx={{
-          margin: '12px 0',
-          '& input': {
-            padding: '12px 12px 12px 0',
-          },
+          fontFamily: 'Lato, sans-serif',
+          fontWeight: 600,
+          fontSize: '16px',
+          lineHeight: '24px',
+          color: '#000000',
         }}
-      />
+      >
+        {b3Lang('shoppingList.addToShoppingList.searchBySku')}
+      </Typography>
+      <Box
+        sx={{
+          marginTop: '12px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            backgroundColor: '#EFEFEF',
+            borderBottom: '2px solid #000000',
+            borderRadius: '5px',
+            width: '100%',
+            maxWidth: '327px',
+            height: '44px',
+            padding: '0 10px',
+            boxSizing: 'border-box',
+            alignSelf: 'flex-start',
+          }}
+        >
+          <Box
+            component="svg"
+            width="20"
+            height="22"
+            viewBox="0 0 20 22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            sx={{ flexShrink: 0, width: '20px', height: '20px' }}
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M8 4.95472C5.79086 4.95472 4 6.75925 4 8.98525C4 11.2112 5.79086 13.0158 8 13.0158C10.2091 13.0158 12 11.2112 12 8.98525C12 6.75925 10.2091 4.95472 8 4.95472ZM2 8.98525C2 5.64625 4.68629 2.93945 8 2.93945C11.3137 2.93945 14 5.64625 14 8.98525C14 10.291 13.5892 11.5 12.8907 12.4883L17.7071 17.3414C18.0976 17.7349 18.0976 18.3729 17.7071 18.7664C17.3166 19.16 16.6834 19.16 16.2929 18.7664L11.4765 13.9133C10.4957 14.6171 9.29583 15.031 8 15.031C4.68629 15.031 2 12.3242 2 8.98525Z"
+              fill="#0A0A0A"
+            />
+          </Box>
+          <InputBase
+            placeholder={b3Lang(`global.searchProduct.placeholder.${type}`)}
+            value={searchText}
+            onChange={handleSearchTextChange}
+            onKeyDown={handleSearchTextKeyDown}
+            sx={{
+              flex: 1,
+              height: '100%',
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '16px',
+              lineHeight: '24px',
+              color: '#231F20',
+              '& .MuiInputBase-input': {
+                padding: 0,
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#231F20',
+                '&::placeholder': {
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                  color: '#231F20',
+                  opacity: 1,
+                },
+              },
+            }}
+          />
+        </Box>
       <CustomButton
-        variant="outlined"
-        fullWidth
+        variant="contained"
         disabled={isLoading}
         onClick={handleSearchButtonClicked}
+        sx={{
+          width: '100%',
+          maxWidth: '327px',
+          height: '44px',
+          borderRadius: '5px',
+          padding: '10px',
+          backgroundColor: '#0067A0',
+          textTransform: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          alignSelf: 'flex-start',
+          fontFamily: 'Lato, sans-serif',
+          fontWeight: 600,
+          fontSize: '16px',
+          lineHeight: '24px',
+          color: '#FFFFFF',
+          boxShadow: 'none',
+          '&:hover': {
+            backgroundColor: '#005987',
+            boxShadow: 'none',
+          },
+          '&:disabled': {
+            backgroundColor: '#0067A0',
+            opacity: 0.5,
+            color: '#FFFFFF',
+          },
+        }}
       >
         <B3Spin isSpinning={isLoading} tip="" size={16}>
           <Box
             sx={{
               flex: 1,
               textAlign: 'center',
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '16px',
+              lineHeight: '24px',
+              color: '#FFFFFF',
             }}
           >
             {b3Lang('global.searchProductAddProduct.searchProduct')}
           </Box>
         </B3Spin>
       </CustomButton>
+      </Box>
 
       <ProductListDialog
         isOpen={productListOpen}

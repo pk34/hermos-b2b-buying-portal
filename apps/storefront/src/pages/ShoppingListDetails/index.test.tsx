@@ -531,7 +531,7 @@ describe('when the user clicks on a product name', () => {
   });
 });
 
-it('shows "Add to list" panel for draft shopping lists', async () => {
+it('shows "Add to the list" panel for draft shopping lists', async () => {
   vitest.mocked(useParams).mockReturnValue({ id: '272989' });
 
   const draftStatusCode = 30;
@@ -558,10 +558,10 @@ it('shows "Add to list" panel for draft shopping lists', async () => {
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
   expect(screen.getByText('Shopping List 1')).toBeInTheDocument();
-  expect(screen.getByText(/add to list/i)).toBeInTheDocument();
+  expect(screen.getByText(/add to the list/i)).toBeInTheDocument();
 });
 
-it('hides "Add to list" panel from b2b users for rejected shopping lists', async () => {
+it('hides "Add to the list" panel from b2b users for rejected shopping lists', async () => {
   vitest.mocked(useParams).mockReturnValue({ id: '272989' });
 
   const rejectedStatusCode = 50;
@@ -588,12 +588,12 @@ it('hides "Add to list" panel from b2b users for rejected shopping lists', async
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
   expect(screen.getByText('Shopping List 1')).toBeInTheDocument();
-  expect(screen.queryByText(/add to list/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/add to the list/i)).not.toBeInTheDocument();
 });
 
 // Status code 20 was previously misused as Rejected in the frontend, which is actually Deleted
 // For now we treat Deleted as Rejected so that the shopping lists that were previously rejected remain the same behavior
-it('hides "Add to list" panel from b2b users for deleted shopping lists', async () => {
+it('hides "Add to the list" panel from b2b users for deleted shopping lists', async () => {
   vitest.mocked(useParams).mockReturnValue({ id: '272989' });
 
   const deletedStatusCode = 20;
@@ -620,7 +620,7 @@ it('hides "Add to list" panel from b2b users for deleted shopping lists', async 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
   expect(screen.getByText('Shopping List 1')).toBeInTheDocument();
-  expect(screen.queryByText(/add to list/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/add to the list/i)).not.toBeInTheDocument();
 });
 
 describe('when user approves a shopping list', () => {
@@ -918,7 +918,7 @@ describe('when the user updates the product notes', () => {
 });
 
 describe('when the shopping list is ready for approval', () => {
-  it('does not display the "add to list" section', async () => {
+  it('does not display the "add to the list" section', async () => {
     vitest.mocked(useParams).mockReturnValue({ id: '272989' });
 
     const readyForApprovalStatusCode = 40;
@@ -941,7 +941,7 @@ describe('when the shopping list is ready for approval', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
-    expect(screen.queryByRole('heading', { name: 'Add to list' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Add to the list' })).not.toBeInTheDocument();
   });
 });
 
@@ -1352,7 +1352,7 @@ describe('Add to quote', () => {
       initialGlobalContext: { productQuoteEnabled: true, shoppingListEnabled: true },
     });
 
-    await screen.findByRole('heading', { name: /add to list/i });
+    await screen.findByRole('heading', { name: /add to the list/i });
 
     const row = screen.getByRole('row', { name: /Lovely socks/ });
 
@@ -1482,7 +1482,7 @@ describe('Add to quote', () => {
       initialGlobalContext: { productQuoteEnabled: true, shoppingListEnabled: true },
     });
 
-    await screen.findByRole('heading', { name: /add to list/i });
+    await screen.findByRole('heading', { name: /add to the list/i });
 
     const row = screen.getByRole('row', { name: /Lovely socks/ });
 
@@ -1740,7 +1740,7 @@ describe('CSV upload and add to quote flow', () => {
       },
     });
 
-    await screen.findByRole('heading', { name: /add to list/i });
+    await screen.findByRole('heading', { name: /add to the list/i });
 
     const uploadButton = screen.getByRole('button', { name: /bulk upload csv/i });
     await userEvent.click(uploadButton);

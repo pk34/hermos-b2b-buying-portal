@@ -496,7 +496,7 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
                     flexBasis: '100%',
                   }
                 : {
-                    flexBasis: '340px',
+                    flexBasis: '362px',
                   }
             }
           >

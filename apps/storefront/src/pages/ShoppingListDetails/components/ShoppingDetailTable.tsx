@@ -101,7 +101,7 @@ interface PaginationTableRefProps extends HTMLInputElement {
 const StyledShoppingListTableContainer = styled('div')(() => ({
   backgroundColor: '#FFFFFF',
   padding: '1rem',
-  borderRadius: '4px',
+  borderRadius: '0px',
   borderWidth: '0px 0.3px 0.3px 0px',
   borderStyle: 'solid',
   borderColor: '#000000',

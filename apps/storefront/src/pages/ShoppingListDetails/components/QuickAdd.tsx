@@ -381,21 +381,20 @@ export default function QuickAdd(props: AddToListContentProps) {
       <Box sx={{ width: '100%' }}>
         <Grid
           container
+          alignItems="center"
+          justifyContent="space-between"
           sx={{
             margin: '16px 0',
           }}
         >
-          <Grid
-            item
-            sx={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
+          <Grid item>
             <Typography
               sx={{
-                color: '#000',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 400,
+                fontSize: '20px',
+                lineHeight: '28px',
+                color: '#000000',
               }}
               variant="body1"
             >
@@ -406,13 +405,42 @@ export default function QuickAdd(props: AddToListContentProps) {
             <CustomButton
               variant="text"
               sx={{
-                textTransform: 'initial',
-                ml: '-8px',
-                fontWeight: '400',
+                padding: 0,
+                textTransform: 'none',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#000000',
+                textDecoration: 'underline',
+                textDecorationStyle: 'solid',
+                textDecorationThickness: '0%',
+                textDecorationOffset: '0%',
+                textDecorationSkipInk: 'auto',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                verticalAlign: 'middle',
+                minWidth: 'unset',
               }}
               onClick={handleAddRowsClick}
             >
               {b3Lang('shoppingList.quickAdd.showMoreRows')}
+              <Box
+                component="svg"
+                width="6"
+                height="11"
+                viewBox="0 0 6 11"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M0.292894 9.78123C-0.0976307 9.38772 -0.0976307 8.74972 0.292894 8.35621L3.58579 5.03818L0.292893 1.72014C-0.0976311 1.32664 -0.0976311 0.688636 0.292893 0.29513C0.683417 -0.0983767 1.31658 -0.0983767 1.70711 0.29513L5.70711 4.32567C6.09763 4.71918 6.09763 5.35718 5.70711 5.75068L1.70711 9.78123C1.31658 10.1747 0.683418 10.1747 0.292894 9.78123Z"
+                  fill="#0A0A0A"
+                />
+              </Box>
             </CustomButton>
           </Grid>
         </Grid>
@@ -435,12 +463,37 @@ export default function QuickAdd(props: AddToListContentProps) {
         </Box>
 
         <CustomButton
-          variant="outlined"
-          fullWidth
+          variant="contained"
           disabled={isLoading}
           onClick={handleAddToList}
           sx={{
             margin: '20px 0',
+            width: '100%',
+            maxWidth: '327px',
+            height: '44px',
+            borderRadius: '5px',
+            padding: '10px',
+            backgroundColor: '#0067A0',
+            textTransform: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'flex-start',
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: '16px',
+            lineHeight: '24px',
+            color: '#FFFFFF',
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: '#005987',
+              boxShadow: 'none',
+            },
+            '&:disabled': {
+              backgroundColor: '#0067A0',
+              opacity: 0.5,
+              color: '#FFFFFF',
+            },
           }}
         >
           <B3Spin isSpinning={buttonLoading ? isLoading : false} tip="" size={16}>
@@ -448,6 +501,11 @@ export default function QuickAdd(props: AddToListContentProps) {
               sx={{
                 flex: 1,
                 textAlign: 'center',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#FFFFFF',
               }}
             >
               {buttonText}
