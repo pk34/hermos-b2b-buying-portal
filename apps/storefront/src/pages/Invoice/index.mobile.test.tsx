@@ -160,7 +160,7 @@ it('renders all invoices in the table', async () => {
 
   await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
-  const dates = screen.getAllByText('Invoice date:');
+  const dates = screen.getAllByText('Quote date:');
 
   expect(dates).toHaveLength(10);
 });
@@ -210,6 +210,7 @@ it('renders invoice information in the table', async () => {
   expect(within(group).getByText('13 October 2025')).toBeInTheDocument();
   expect(within(group).getByText('$922.00')).toBeInTheDocument();
   expect(within(group).getByText('$433.00')).toBeInTheDocument();
+  expect(within(group).getByText('USD')).toBeInTheDocument();
 
   expect(within(group).getByRole('button', { name: 'More actions' })).toBeInTheDocument();
 });

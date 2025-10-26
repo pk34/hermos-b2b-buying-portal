@@ -55,10 +55,10 @@ export const filterFormConfigsTranslationVariables: { [key: string]: string } = 
   overdue: 'invoice.filterStatus.overdue',
 };
 
-export const defaultSortKey = 'id';
+export const defaultSortKey = 'invoiceNumber';
 
 export const sortIdArr: { [key: string]: string } = {
-  id: 'invoiceNumber',
+  invoiceNumber: 'invoiceNumber',
   orderNumber: 'orderNumber',
   createdAt: 'createdAt',
   updatedAt: 'dueDate',
