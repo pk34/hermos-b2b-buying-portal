@@ -296,6 +296,12 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
         '& .MuiDialog-paper': {
           borderRadius: '0px',
           backgroundColor: '#FFFFFF',
+          '@media (max-width: 600px)': {
+            width: '95vw',
+            maxWidth: '95vw',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          },
         },
         '& .MuiDialogTitle-root': {
           fontFamily: "'Lato', sans-serif",
@@ -312,6 +318,9 @@ function AddEditUser({ companyId, renderList }: AddEditUserProps, ref: Ref<unkno
           display: 'flex',
           justifyContent: 'center',
           gap: '16px',
+          '& > :not(style) ~ :not(style)': {
+            marginLeft: 0,
+          },
           '@media (max-width: 600px)': {
             width: '100%',
             flexDirection: 'column-reverse',
