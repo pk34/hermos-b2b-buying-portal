@@ -41,7 +41,6 @@ interface ShoppingDetailFooterProps {
   setValidateFailureProducts: (arr: ProductsProps[]) => void;
   setValidateSuccessProducts: (arr: ProductsProps[]) => void;
   isB2BUser: boolean;
-  customColor: string;
   isCanEditShoppingList: boolean;
   role: string | number;
   backendValidationEnabled: boolean;
@@ -138,7 +137,6 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
     setValidateFailureProducts,
     setValidateSuccessProducts,
     isB2BUser,
-    customColor,
     isCanEditShoppingList,
     role,
     backendValidationEnabled,

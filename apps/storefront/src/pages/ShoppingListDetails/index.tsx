@@ -499,7 +499,6 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
                   setValidateFailureProducts={setValidateFailureProducts}
                   setValidateSuccessProducts={setValidateSuccessProducts}
                   isB2BUser={isB2BUser}
-                  customColor={primaryColor}
                   isCanEditShoppingList={isCanEditShoppingList}
                   role={role}
                   backendValidationEnabled={backendValidationEnabled}
