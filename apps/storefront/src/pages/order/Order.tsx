@@ -444,7 +444,12 @@ function Order({ isCompanyOrder = false }: OrderProps) {
           onPaginationChange={setPagination}
           isInfiniteScroll={isMobile}
           renderItem={(row, index) => (
-            <OrderItemCard key={row.orderId} goToDetail={() => goToDetail(row, index)} item={row} />
+            <OrderItemCard
+              key={row.orderId}
+              goToDetail={() => goToDetail(row, index)}
+              item={row}
+              isCompanyOrder={isCompanyOrder}
+            />
           )}
           onClickRow={goToDetail}
           sortDirection={orderBy.dir}

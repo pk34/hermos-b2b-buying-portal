@@ -9,10 +9,13 @@ import getOrderStatus from '../shared/getOrderStatus';
 
 type OrderStatusVariant = 'default' | 'orderDetailHeader' | 'orderDetailHistory';
 
+type OrderStatusAlignment = 'left' | 'center' | 'right';
+
 interface OrderStatusProps {
   code: string;
   text?: string;
   variant?: OrderStatusVariant;
+  align?: OrderStatusAlignment;
 }
 
 interface StatusTagProps {
@@ -60,7 +63,7 @@ const StatusTag = styled(B3Tag, {
 });
 
 export default function OrderStatus(props: OrderStatusProps) {
-  const { code, text, variant = 'default' } = props;
+  const { code, text, variant = 'default', align = 'center' } = props;
 
   const status = getOrderStatus(code);
 
@@ -68,17 +71,21 @@ export default function OrderStatus(props: OrderStatusProps) {
     return null;
   }
 
+  const justifyContent: CSSObject['justifyContent'] =
+    align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center';
+
   const containerStyles: SxProps<Theme> =
     variant === 'default'
       ? {
           width: '100%',
           display: 'flex',
-          justifyContent: 'center',
+          justifyContent,
           alignItems: 'center',
         }
       : {
           display: 'flex',
           alignItems: 'center',
+          justifyContent,
         };
 
   const textColor = variant === 'default' ? '#000000' : '#FFFFFF';
