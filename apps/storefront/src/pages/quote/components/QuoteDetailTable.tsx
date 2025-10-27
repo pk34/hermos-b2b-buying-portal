@@ -112,11 +112,21 @@ const StyledQuoteTableContainer = styled('div')(() => ({
   },
 }));
 
-const StyledImage = styled('img')(() => ({
-  maxWidth: '85px',
-  maxHeight: '85px',
-  height: 'auto',
+const StyledImageWrapper = styled('div')(() => ({
+  width: '85px',
+  height: '85px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   marginRight: '0.5rem',
+  flexShrink: 0,
+}));
+
+const StyledImage = styled('img')(() => ({
+  maxWidth: '100%',
+  maxHeight: '100%',
+  width: 'auto',
+  height: 'auto',
 }));
 
 const TABLE_DATA_TYPOGRAPHY_SX = {
@@ -181,11 +191,13 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
               alignItems: 'flex-start',
             }}
           >
-            <StyledImage
-              src={row.imageUrl || PRODUCT_DEFAULT_IMAGE}
-              alt="Product-img"
-              loading="lazy"
-            />
+            <StyledImageWrapper>
+              <StyledImage
+                src={row.imageUrl || PRODUCT_DEFAULT_IMAGE}
+                alt="Product-img"
+                loading="lazy"
+              />
+            </StyledImageWrapper>
             <Box>
               <Typography
                 variant="body1"
