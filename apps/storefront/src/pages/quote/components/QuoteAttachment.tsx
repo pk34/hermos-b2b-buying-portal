@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, Card, CardContent } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 
 import { B3CollapseContainer } from '@/components';
 import { useRole } from '@/hooks';
@@ -141,14 +141,40 @@ export default function QuoteAttachment(props: QuoteAttachmentProps) {
     return false;
   };
 
+  const attachmentTitle = (
+    <Typography
+      sx={{
+        fontFamily: 'Lato, sans-serif',
+        fontWeight: 600,
+        fontSize: '24px',
+        lineHeight: '28px',
+        color: '#000000',
+        marginBottom: '35px',
+      }}
+    >
+      {b3Lang('global.quoteAttachment.title')}
+    </Typography>
+  );
+
   return (
-    <Card>
+    <Card
+      sx={{
+        boxShadow: 'none',
+        borderWidth: '0px 0.3px 0.3px 0px',
+        borderStyle: 'solid',
+        borderColor: '#000000',
+        borderRadius: 0,
+      }}
+    >
       <CardContent
         sx={{
-          p: '16px !important',
+          padding: '20px',
+          '&:last-child': {
+            paddingBottom: '20px',
+          },
         }}
       >
-        <B3CollapseContainer title={b3Lang('global.quoteAttachment.title')}>
+        <B3CollapseContainer title={attachmentTitle}>
           <Box>
             <FileUpload
               ref={uploadRef}
