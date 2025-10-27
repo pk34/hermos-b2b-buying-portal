@@ -630,6 +630,9 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
     fontWeight: 600,
     fontSize: '16px',
     lineHeight: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   };
 
   return (
@@ -763,6 +766,18 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
                   onClose={handleClose}
                   MenuListProps={{
                     'aria-labelledby': 'basic-button',
+                    disablePadding: true,
+                    sx: {
+                      padding: 0,
+                    },
+                  }}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
                   }}
                 >
                   {buttonList.length > 1 &&
