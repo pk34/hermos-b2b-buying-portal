@@ -87,7 +87,7 @@ const TrashCanIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg width={24} height={24} viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M19 7.05397L18.1327 19.2892C18.0579 20.3438 17.187 21.1608 16.1378 21.1608H7.86224C6.81296 21.1608 5.94208 20.3438 5.86732 19.2892L5 7.05397M10 11.0845V17.1303M14 11.0845V17.1303M15 7.05397V4.03107C15 3.47457 14.5523 3.02344 14 3.02344H10C9.44772 3.02344 9 3.47457 9 4.03107V7.05397M4 7.05397H20"
-      stroke="#F70000"
+      stroke="currentColor"
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -696,6 +696,15 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
               alignItems: 'center',
               cursor: isDeleteDisabled ? 'not-allowed' : 'pointer',
               opacity: isDeleteDisabled ? 0.4 : 1,
+              color: '#F70000',
+              transition: 'color 0.2s ease-in-out',
+              '&:not(:disabled):hover': {
+                color: '#B00000',
+              },
+              '&:focus-visible': {
+                outline: '2px solid #B00000',
+                outlineOffset: '2px',
+              },
             }}
           >
             <TrashCanIcon />

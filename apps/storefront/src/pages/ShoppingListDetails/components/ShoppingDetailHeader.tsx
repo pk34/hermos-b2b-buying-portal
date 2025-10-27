@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowBackIosNew } from '@mui/icons-material';
 import { Box, Grid, styled, Typography } from '@mui/material';
+import SvgIcon, { type SvgIconProps } from '@mui/material/SvgIcon';
 
 import CustomButton from '@/components/button/CustomButton';
 import { getContrastColor } from '@/components/outSideComponents/utils/b3CustomStyles';
@@ -21,6 +21,17 @@ const StyledCreateName = styled('div')(() => ({
   alignItems: 'center',
 }));
 
+const BackArrowIcon = (props: SvgIconProps) => (
+  <SvgIcon viewBox="0 0 20 21" {...props}>
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M12.7071 5.33419C13.0976 5.7277 13.0976 6.3657 12.7071 6.7592L9.41421 10.0772L12.7071 13.3953C13.0976 13.7888 13.0976 14.4268 12.7071 14.8203C12.3166 15.2138 11.6834 15.2138 11.2929 14.8203L7.29289 10.7897C6.90237 10.3962 6.90237 9.75824 7.29289 9.36473L11.2929 5.33419C11.6834 4.94069 12.3166 4.94069 12.7071 5.33419Z"
+      fill="#0A0A0A"
+    />
+  </SvgIcon>
+);
+
 interface ShoppingDetailHeaderProps {
   shoppingListInfo: any;
   role: string | number;
@@ -33,7 +44,6 @@ interface ShoppingDetailHeaderProps {
   openAPPParams: {
     shoppingListBtn: string;
   };
-  customColor: string;
 }
 
 function ShoppingDetailHeader(props: ShoppingDetailHeaderProps) {
@@ -48,7 +58,6 @@ function ShoppingDetailHeader(props: ShoppingDetailHeaderProps) {
     isB2BUser,
     setOpenPage,
     openAPPParams,
-    customColor,
   } = props;
 
   const {
@@ -126,7 +135,7 @@ function ShoppingDetailHeader(props: ShoppingDetailHeaderProps) {
       >
         <Box
           sx={{
-            color: '#1976d2',
+            color: '#000000',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -143,19 +152,22 @@ function ShoppingDetailHeader(props: ShoppingDetailHeaderProps) {
             }
           }}
         >
-          <ArrowBackIosNew
-            fontSize="small"
+          <BackArrowIcon
             sx={{
-              fontSize: '12px',
+              fontSize: '20px',
               marginRight: '0.5rem',
-              color: customColor,
             }}
           />
           <Box
+            component="span"
             sx={{
               margin: 0,
-              color: customColor,
-              m: '0',
+              m: 0,
+              fontFamily: "'Lato', sans-serif",
+              fontWeight: 400,
+              fontSize: '14px',
+              lineHeight: '24px',
+              color: '#000000',
             }}
           >
             {openAPPParams.shoppingListBtn !== 'add'

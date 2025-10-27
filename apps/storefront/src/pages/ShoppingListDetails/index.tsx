@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Grid, useTheme } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 
 import B3Spin from '@/components/spin/B3Spin';
 import { useFeatureFlags, useMobile } from '@/hooks';
@@ -93,9 +93,6 @@ function useData() {
 
   const isAgenting = useAppSelector(({ b2bFeatures }) => b2bFeatures.masqueradeCompany.isAgenting);
 
-  const theme = useTheme();
-  const primaryColor = theme.palette.primary.main;
-
   const {
     shoppingListCreateActionsPermission,
     purchasabilityPermission,
@@ -130,7 +127,6 @@ function useData() {
     isB2BUser,
     role,
     isAgenting,
-    primaryColor,
     shoppingListCreateActionsPermission,
     submitShoppingListPermission,
     isCanAddToCart,
@@ -150,7 +146,6 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
     isB2BUser,
     role,
     isAgenting,
-    primaryColor,
     shoppingListCreateActionsPermission,
     submitShoppingListPermission,
     isCanAddToCart,
@@ -423,7 +418,6 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
           setOpenPage={setOpenPage}
           isAgenting={isAgenting}
           openAPPParams={openAPPParams}
-          customColor={primaryColor}
         />
 
         <Grid
