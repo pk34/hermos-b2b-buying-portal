@@ -76,7 +76,7 @@ const StyledQuoteTableContainer = styled('div')(() => ({
   borderRadius: 0,
 
   '& .MuiTableHead-root .MuiTableCell-root': {
-    fontFamily: 'Poppins',
+    fontFamily: 'Lato, sans-serif',
     fontWeight: 300,
     fontSize: '16px',
     color: '#000000',
@@ -84,7 +84,7 @@ const StyledQuoteTableContainer = styled('div')(() => ({
   },
 
   '& .MuiTableBody-root .MuiTableCell-root': {
-    fontFamily: 'Poppins',
+    fontFamily: 'Lato, sans-serif',
     fontWeight: 300,
     fontSize: '14px',
     color: '#000000',
@@ -130,7 +130,7 @@ const StyledImage = styled('img')(() => ({
 }));
 
 const TABLE_DATA_TYPOGRAPHY_SX = {
-  fontFamily: 'Poppins',
+  fontFamily: 'Lato, sans-serif',
   fontWeight: 300,
   fontSize: '14px',
   lineHeight: '21px',
@@ -427,7 +427,7 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
         <SectionTitle
           component="h2"
           sx={{
-            fontFamily: 'Poppins',
+            fontFamily: 'Lato, sans-serif',
             fontWeight: 500,
             fontSize: '18px',
             color: '#000000',
