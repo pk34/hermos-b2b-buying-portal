@@ -273,6 +273,26 @@ const buildVariantInfoResponseWith = builder<VariantInfoResponse>(() => ({
   },
 }));
 
+const selectAddToCartMenuOption = async () => {
+  const addToCartMenuItem = screen.queryByRole('menuitem', { name: /Add selected to cart/ });
+
+  if (addToCartMenuItem) {
+    await userEvent.click(addToCartMenuItem);
+
+    return;
+  }
+
+  const proceedToCheckoutMenuItem = screen.queryByRole('menuitem', { name: /Proceed to checkout/ });
+
+  if (proceedToCheckoutMenuItem) {
+    await userEvent.click(proceedToCheckoutMenuItem);
+
+    return;
+  }
+
+  throw new Error('No menu option available to simulate adding products to cart.');
+};
+
 const buildPrice = builder(() => ({
   asEntered: Number(faker.commerce.price()),
   enteredInclusive: faker.datatype.boolean(),
@@ -1044,7 +1064,7 @@ describe('when shopping list products verify inventory into add to cart', () => 
 
     await userEvent.click(screen.getByRole('button', { name: /Add selected to/ }));
 
-    await userEvent.click(screen.getByRole('menuitem', { name: /Add selected to cart/ }));
+    await selectAddToCartMenuOption();
 
     await screen.findByText('1 product(s) were not added to cart, please change the quantity');
 
@@ -1149,7 +1169,7 @@ describe('when shopping list products verify inventory into add to cart', () => 
 
     await userEvent.click(screen.getByRole('button', { name: /Add selected to/ }));
 
-    await userEvent.click(screen.getByRole('menuitem', { name: /Add selected to cart/ }));
+    await selectAddToCartMenuOption();
 
     await screen.findByText('1 product(s) were not added to cart, please change the quantity');
 
@@ -1258,7 +1278,7 @@ describe('when shopping list products verify inventory into add to cart', () => 
 
     await userEvent.click(screen.getByRole('button', { name: /Add selected to/ }));
 
-    await userEvent.click(screen.getByRole('menuitem', { name: /Add selected to cart/ }));
+    await selectAddToCartMenuOption();
 
     await screen.findByText('1 product(s) were not added to cart, please change the quantity');
 
@@ -1900,7 +1920,7 @@ describe('when backend validation is enabled', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Add selected to/ }));
 
-    await userEvent.click(screen.getByRole('menuitem', { name: /Add selected to cart/ }));
+    await selectAddToCartMenuOption();
 
     await screen.findByText('Lovely socks, out of stock');
     await screen.findByText('1 product(s) were not added to cart, please change the quantity');
@@ -2031,7 +2051,7 @@ describe('when backend validation is enabled', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Add selected to/ }));
 
-    await userEvent.click(screen.getByRole('menuitem', { name: /Add selected to cart/ }));
+    await selectAddToCartMenuOption();
 
     await screen.findByText(
       'Minimum Purchase: You can only purchase a minimum of 3 of the min product per order.',
@@ -2162,7 +2182,7 @@ describe('when backend validation is enabled', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Add selected to/ }));
 
-    await userEvent.click(screen.getByRole('menuitem', { name: /Add selected to cart/ }));
+    await selectAddToCartMenuOption();
 
     await screen.findByText('1 product(s) were not added to cart, please change the quantity');
     expect(screen.queryByText('1 product(s) were added to cart')).not.toBeInTheDocument();
@@ -2282,7 +2302,7 @@ describe('when backend validation is enabled', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Add selected to/ }));
 
-    await userEvent.click(screen.getByRole('menuitem', { name: /Add selected to cart/ }));
+    await selectAddToCartMenuOption();
 
     await screen.findByText('Lovely socks, out of stock');
     await screen.findByText('1 product(s) were not added to cart, please change the quantity');

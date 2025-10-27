@@ -620,6 +620,17 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
       },
     },
   };
+  const menuItemStyles: SxProps<Theme> = {
+    width: '352px',
+    height: '44px',
+    padding: '10px',
+    backgroundColor: '#F5F5F5',
+    boxShadow: '0px 4px 22px 5px #0000001A',
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+  };
 
   return (
     <Box
@@ -755,17 +766,27 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
                   }}
                 >
                   {buttonList.length > 1 &&
-                    buttonList.map((button) => (
-                      <MenuItem
-                        key={button.key}
-                        onClick={() => {
-                          handleClose();
-                          button.handleClick();
-                        }}
-                      >
-                        {button.name}
-                      </MenuItem>
-                    ))}
+                    buttonList
+                      .filter((button) => {
+                        if (button.key === 'add-selected-to-cart') {
+                          // Temporarily hide "Add selected to cart" option until design confirms usage.
+                          return false;
+                        }
+
+                        return true;
+                      })
+                      .map((button) => (
+                        <MenuItem
+                          key={button.key}
+                          onClick={() => {
+                            handleClose();
+                            button.handleClick();
+                          }}
+                          sx={menuItemStyles}
+                        >
+                          {button.name}
+                        </MenuItem>
+                      ))}
                 </Menu>
               </>
             )}
