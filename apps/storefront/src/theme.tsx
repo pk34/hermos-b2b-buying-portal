@@ -45,6 +45,9 @@ function B3ThemeProvider({ children }: Props) {
             main: primaryColor || '#1976d2',
           },
         },
+        typography: {
+          fontFamily: "'Lato', sans-serif",
+        },
       },
       (materialMultiLanguages as MaterialMultiLanguagesType)[MUI_LANG_MAP[lang] || 'enUS'],
     );
