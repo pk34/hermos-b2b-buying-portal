@@ -85,12 +85,23 @@ const messageBubbleStyles = {
   backgroundColor: '#BAD6F2',
   padding: '12px 16px',
   display: 'flex',
-  alignItems: 'center',
+  flexDirection: 'column' as const,
+  alignItems: 'flex-start',
   justifyContent: 'flex-start',
+  rowGap: '8px',
+} as const;
+
+const messageSentTimeStyles = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '12px',
+  lineHeight: '16px',
+  color: '#231F20',
+  textAlign: 'left' as const,
 } as const;
 
 const messageInputStyles = {
-  width: '318px',
+  width: 'auto',
   height: '59px',
   borderRadius: '5px',
   padding: '10px',
@@ -164,33 +175,25 @@ function ChatMessage({ msg, isEndMessage, isCustomer }: CustomerMessageProps) {
                 lineHeight: '20px',
                 color: '#231F20',
                 wordBreak: 'break-word',
+                textAlign: 'left',
+                width: '100%',
               }}
             >
               {msg.message}
             </Typography>
           </Tooltip>
+          {isEndMessage && msg?.sendTime && (
+            <Typography sx={messageSentTimeStyles}>
+              {`${b3Lang('quoteDetail.message.sent')} ${formatDistanceStrict(
+                new Date((msg.sendTime || 0) * 1000),
+                new Date(),
+                {
+                  addSuffix: true,
+                },
+              )}`}
+            </Typography>
+          )}
         </Box>
-      )}
-      {isEndMessage && msg?.sendTime && (
-        <Typography
-          sx={{
-            fontFamily: 'Lato, sans-serif',
-            fontWeight: 600,
-            fontSize: '12px',
-            lineHeight: '16px',
-            color: '#231F20',
-            marginTop: '8px',
-            textAlign: isCustomer ? 'right' : 'left',
-          }}
-        >
-          {`${b3Lang('quoteDetail.message.sent')} ${formatDistanceStrict(
-            new Date((msg.sendTime || 0) * 1000),
-            new Date(),
-            {
-              addSuffix: true,
-            },
-          )}`}
-        </Typography>
       )}
     </Box>
   );
@@ -467,12 +470,17 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
                   display: 'flex',
                   alignItems: 'center',
                   marginTop: '38px',
+                  marginBottom: '15px',
                 }}
               >
                 <Box
                   component="textarea"
                   onKeyDown={updateMessage}
-                  sx={messageInputStyles}
+                  sx={{
+                    ...messageInputStyles,
+                    flex: 1,
+                    minWidth: 0,
+                  }}
                   value={message}
                   onChange={(event) => {
                     setMessage(event.target.value);

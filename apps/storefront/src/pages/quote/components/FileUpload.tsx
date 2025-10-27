@@ -26,6 +26,7 @@ const FileListItem = styled(Box)((props: CustomFieldItems) => ({
     flex: 1,
     alignItems: 'center',
     columnGap: '12px',
+    minWidth: 0,
   },
   '& .fileList-name': {
     whiteSpace: 'nowrap',
@@ -39,6 +40,9 @@ const FileListItem = styled(Box)((props: CustomFieldItems) => ({
     fontFamily: 'Lato, sans-serif',
     fontWeight: 600,
     cursor: 'pointer',
+  },
+  '& .fileList-clip-icon': {
+    flexShrink: 0,
   },
 }));
 
@@ -60,6 +64,7 @@ const ClipIcon = () => (
     viewBox="0 0 26 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    className="fileList-clip-icon"
   >
     <path
       d="M13.0592 1.23666L2.81801 11.4779C0.393996 13.9019 0.393996 17.832 2.81801 20.256C5.24201 22.68 9.17213 22.68 11.5961 20.256L23.788 8.0641C25.404 6.44812 25.404 3.82804 23.788 2.212C22.172 0.596002 19.552 0.596002 17.9359 2.212L5.74409 14.4039C4.93607 15.2119 4.93607 16.5219 5.74409 17.3299C6.55205 18.1379 7.86209 18.1379 8.67011 17.3299L18.9113 7.08876"
@@ -300,7 +305,10 @@ function FileUpload(props: FileUploadProps, ref: Ref<unknown>) {
                 </Box>
                 {file.hasDelete && (
                   <Box
-                    sx={{ cursor: 'pointer' }}
+                    sx={{
+                      cursor: 'pointer',
+                      flexShrink: 0,
+                    }}
                     onClick={() => {
                       handleDelete(file?.id || '');
                     }}
