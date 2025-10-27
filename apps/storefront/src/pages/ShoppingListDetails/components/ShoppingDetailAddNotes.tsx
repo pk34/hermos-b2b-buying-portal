@@ -20,7 +20,7 @@ interface ShoppingDetailAddNotesProps {
 const addNotesDialogContentSx = {
   ...filterModalDialogContentSx,
   alignItems: 'stretch',
-  paddingTop: '16px',
+  paddingTop: '10px',
   paddingBottom: '16px',
 } as const;
 

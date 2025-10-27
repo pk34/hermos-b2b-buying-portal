@@ -96,6 +96,7 @@ const shoppingListDeleteDialogContentSx = {
   fontSize: '16px',
   lineHeight: '24px',
   color: '#000000',
+  paddingBottom: '10px',
 } as const;
 
 const shoppingListDeleteSuccessDialogSx = {

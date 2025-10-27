@@ -37,7 +37,7 @@ import ShoppingDetailAddNotes from './ShoppingDetailAddNotes';
 import ShoppingDetailCard from './ShoppingDetailCard';
 
 const NoteIcon = (props: SvgIconProps) => (
-  <SvgIcon viewBox="0 0 24 24" fill="none" {...props}>
+  <SvgIcon viewBox="0 0 24 24" {...props}>
     <path
       d="M9 12H15M9 16H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z"
       stroke="currentColor"
@@ -49,7 +49,7 @@ const NoteIcon = (props: SvgIconProps) => (
 );
 
 const DeleteIcon = (props: SvgIconProps) => (
-  <SvgIcon viewBox="0 0 24 25" fill="none" {...props}>
+  <SvgIcon viewBox="0 0 24 25" {...props}>
     <path
       d="M19 7.05397L18.1327 19.2892C18.0579 20.3438 17.187 21.1608 16.1378 21.1608H7.86224C6.81296 21.1608 5.94208 20.3438 5.86732 19.2892L5 7.05397M10 11.0845V17.1303M14 11.0845V17.1303M15 7.05397V4.03107C15 3.47457 14.5523 3.02344 14 3.02344H10C9.44772 3.02344 9 3.47457 9 4.03107V7.05397M4 7.05397H20"
       stroke="currentColor"
