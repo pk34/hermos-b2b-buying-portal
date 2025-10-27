@@ -132,6 +132,27 @@ interface RowProps<Row> {
   lastItemBorderBottom: string;
 }
 
+const LATO_FONT_FAMILY = 'Lato, sans-serif';
+
+const TABLE_PAGINATION_FONT_SX = {
+  fontFamily: LATO_FONT_FAMILY,
+  '& .MuiTablePagination-toolbar': {
+    fontFamily: LATO_FONT_FAMILY,
+  },
+  '& .MuiTablePagination-selectLabel': {
+    fontFamily: LATO_FONT_FAMILY,
+  },
+  '& .MuiTablePagination-displayedRows': {
+    fontFamily: LATO_FONT_FAMILY,
+  },
+  '& .MuiTablePagination-select': {
+    fontFamily: LATO_FONT_FAMILY,
+  },
+  '& .MuiInputBase-input': {
+    fontFamily: LATO_FONT_FAMILY,
+  },
+} as const;
+
 const MOUSE_POINTER_STYLE = {
   cursor: 'pointer',
 };
@@ -427,6 +448,7 @@ export function B3Table<Row>({
               labelRowsPerPage={labelRowsPerPage || b3Lang('global.pagination.perPage')}
               component="div"
               sx={{
+                ...TABLE_PAGINATION_FONT_SX,
                 color: isMobile ? b3HexToRgb(customColor, 0.87) : 'rgba(0, 0, 0, 0.87)',
                 marginTop: '1.5rem',
                 '::-webkit-scrollbar': {
@@ -469,6 +491,7 @@ export function B3Table<Row>({
               labelRowsPerPage={labelRowsPerPage || b3Lang('global.pagination.cardsPerPage')}
               component="div"
               sx={{
+                ...TABLE_PAGINATION_FONT_SX,
                 color: customColor,
                 marginTop: '1.5rem',
                 '::-webkit-scrollbar': {
@@ -613,6 +636,7 @@ export function B3Table<Row>({
               labelRowsPerPage={labelRowsPerPage || b3Lang('global.pagination.rowsPerPage')}
               component="div"
               sx={{
+                ...TABLE_PAGINATION_FONT_SX,
                 marginTop: '1.5rem',
                 '::-webkit-scrollbar': {
                   display: 'none',
