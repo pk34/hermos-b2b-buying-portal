@@ -586,7 +586,7 @@ function ShoppingDetailFooter(props: ShoppingDetailFooterProps) {
     !allowJuniorPlaceOrder && isCanEditShoppingList && b2bShoppingListActionsPermission;
   const isDeleteDisabled = shoppingListInfo?.status === ShoppingListStatus.ReadyForApproval;
   const sharedActionButtonStyles: SxProps<Theme> = {
-    width: isMobile ? '100%' : '186px',
+    width: isMobile ? '100%' : 'auto',
     height: '40px',
     borderRadius: '5px',
     padding: '10px',
