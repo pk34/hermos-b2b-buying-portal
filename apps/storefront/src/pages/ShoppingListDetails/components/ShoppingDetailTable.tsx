@@ -8,8 +8,9 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Delete, Edit, StickyNote2 } from '@mui/icons-material';
+import { Edit } from '@mui/icons-material';
 import { Box, Grid, styled, Typography } from '@mui/material';
+import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import cloneDeep from 'lodash-es/cloneDeep';
 
 import {
@@ -34,6 +35,30 @@ import B3FilterSearch from '../../../components/filter/B3FilterSearch';
 import ChooseOptionsDialog from './ChooseOptionsDialog';
 import ShoppingDetailAddNotes from './ShoppingDetailAddNotes';
 import ShoppingDetailCard from './ShoppingDetailCard';
+
+const NoteIcon = (props: SvgIconProps) => (
+  <SvgIcon viewBox="0 0 24 24" fill="none" {...props}>
+    <path
+      d="M9 12H15M9 16H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </SvgIcon>
+);
+
+const DeleteIcon = (props: SvgIconProps) => (
+  <SvgIcon viewBox="0 0 24 25" fill="none" {...props}>
+    <path
+      d="M19 7.05397L18.1327 19.2892C18.0579 20.3438 17.187 21.1608 16.1378 21.1608H7.86224C6.81296 21.1608 5.94208 20.3438 5.86732 19.2892L5 7.05397M10 11.0845V17.1303M14 11.0845V17.1303M15 7.05397V4.03107C15 3.47457 14.5523 3.02344 14 3.02344H10C9.44772 3.02344 9 3.47457 9 4.03107V7.05397M4 7.05397H20"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </SvgIcon>
+);
 
 interface ListItem {
   [key: string]: string;
@@ -787,10 +812,14 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
                       minWidth: '32px',
                     }}
                   >
-                    <StickyNote2
+                    <NoteIcon
                       sx={{
                         cursor: 'pointer',
-                        color: 'rgba(0, 0, 0, 0.54)',
+                        color: '#0067A0',
+                        transition: 'color 0.2s ease-in-out',
+                        '&:hover': {
+                          color: '#00965E',
+                        },
                       }}
                       onClick={() => {
                         setAddNoteOpen(true);
@@ -841,10 +870,14 @@ function ShoppingDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>)
                     {b2bAndBcShoppingListActionsPermissions &&
                       !isReadForApprove &&
                       !isJuniorApprove && (
-                        <Delete
+                        <DeleteIcon
                           sx={{
                             cursor: 'pointer',
-                            color: 'rgba(0, 0, 0, 0.54)',
+                            color: '#F70000',
+                            transition: 'color 0.2s ease-in-out',
+                            '&:hover': {
+                              color: '#B00000',
+                            },
                           }}
                           onClick={() => {
                             setDeleteOpen(true);
