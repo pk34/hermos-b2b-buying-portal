@@ -135,6 +135,8 @@ export default function B3ControlTextField({ control, errors, ...rest }: Form.B3
     ...labelSx,
   };
 
+  const disabledColor = disabled ? 'rgba(0, 0, 0, 0.38)' : 'rgba(0, 0, 0, 0.6)';
+
   return ['text', 'number', 'password', 'multiline'].includes(fieldType) ? (
     <>
       {labelDisplay && (
@@ -149,12 +151,28 @@ export default function B3ControlTextField({ control, errors, ...rest }: Form.B3
               key={textField.name}
               {...textField}
               {...rest}
-              sx={{
-                color: disabled ? 'rgba(0, 0, 0, 0.38)' : 'rgba(0, 0, 0, 0.6)',
-                '& input': {
-                  ...newExtraPadding,
-                },
-              }}
+              sx={
+                Array.isArray(sx)
+                  ? [
+                      ...sx,
+                      {
+                        color: disabledColor,
+                        '& input': {
+                          ...newExtraPadding,
+                        },
+                      },
+                    ]
+                  : {
+                      ...(sx as Record<string, any>),
+                      color: disabledColor,
+                      '& input': {
+                        ...((sx && typeof sx === 'object' && !Array.isArray(sx)
+                          ? (sx as Record<string, any>)['& input']
+                          : {}) as Record<string, any>),
+                        ...newExtraPadding,
+                      },
+                    }
+              }
               allowarrow={allowArrow ? 1 : 0}
               inputProps={muiAttributeProps}
               error={!!errors[name]}
@@ -168,7 +186,7 @@ export default function B3ControlTextField({ control, errors, ...rest }: Form.B3
               {...textField}
               {...rest}
               sx={{
-                color: disabled ? 'rgba(0, 0, 0, 0.38)' : 'rgba(0, 0, 0, 0.6)',
+                color: disabledColor,
                 ...sx,
                 '& input': {
                   ...newExtraPadding,
