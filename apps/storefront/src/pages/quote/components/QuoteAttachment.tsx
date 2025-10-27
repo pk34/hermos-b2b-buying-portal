@@ -149,7 +149,6 @@ export default function QuoteAttachment(props: QuoteAttachmentProps) {
         fontSize: '24px',
         lineHeight: '28px',
         color: '#000000',
-        marginBottom: '35px',
       }}
     >
       {b3Lang('global.quoteAttachment.title')}
@@ -175,7 +174,7 @@ export default function QuoteAttachment(props: QuoteAttachmentProps) {
         }}
       >
         <B3CollapseContainer title={attachmentTitle}>
-          <Box>
+          <Box sx={{ marginTop: '35px' }}>
             <FileUpload
               ref={uploadRef}
               requestType={roleText !== 'b2b' ? 'customerQuoteAttachedFile' : 'quoteAttachedFile'}
