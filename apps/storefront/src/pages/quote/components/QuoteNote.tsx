@@ -47,41 +47,73 @@ export default function QuoteNote(props: QuoteNoteProps) {
     if (quoteNotes) setDefaultOpen(true);
   }, [quoteNotes]);
 
+  const noteTitle =
+    quoteStatus && quoteStatus === 'Draft'
+      ? b3Lang('global.quoteNote.message')
+      : b3Lang('global.quoteNote.notes');
+
   return (
-    <Card>
+    <Card
+      sx={{
+        boxShadow: 'none',
+        borderWidth: '0px 0.3px 0.3px 0px',
+        borderStyle: 'solid',
+        borderColor: '#000000',
+        borderRadius: 0,
+      }}
+    >
       <CardContent
         sx={{
-          p: '16px !important',
+          padding: '20px',
+          '&:last-child': {
+            paddingBottom: '20px',
+          },
         }}
       >
         <B3CollapseContainer
           title={
-            quoteStatus && quoteStatus === 'Draft'
-              ? b3Lang('global.quoteNote.message')
-              : b3Lang('global.quoteNote.notes')
+            <Typography
+              sx={{
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '24px',
+                lineHeight: '28px',
+                color: '#000000',
+                marginBottom: '6px',
+              }}
+            >
+              {noteTitle}
+            </Typography>
           }
           defaultOpen={defaultOpen}
         >
           <Box
             sx={{
-              padding: '16px 0',
+              padding: '20px 0 0',
             }}
           >
             {quoteStatus && quoteStatus === 'Draft' && (
-              <Box
+              <Typography
                 sx={{
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
                   fontSize: '16px',
-                  color: 'rgba(0, 0, 0, 0.38)',
-                  mb: '16px',
+                  lineHeight: '24px',
+                  color: '#000000',
+                  marginBottom: '16px',
                 }}
               >
                 {b3Lang('global.quoteNote.messageNote')}
-              </Box>
+              </Typography>
             )}
             {quoteNotes ? (
               <Typography
-                variant="body1"
-                style={{
+                sx={{
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                  color: '#000000',
                   whiteSpace: 'pre-line',
                   maxHeight: '400px',
                   overflow: 'auto',
