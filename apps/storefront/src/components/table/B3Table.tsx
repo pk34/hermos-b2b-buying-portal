@@ -4,7 +4,6 @@ import {
   MouseEvent,
   ReactElement,
   ReactNode,
-  useContext,
   useEffect,
   useState,
 } from 'react';
@@ -29,11 +28,13 @@ import {
 import IconButton from '@mui/material/IconButton';
 import TableSortLabel from '@mui/material/TableSortLabel';
 
-import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
-import { CustomStyleContext } from '@/shared/customStyleButton';
 
-import { b3HexToRgb, getContrastColor } from '../outSideComponents/utils/b3CustomStyles';
+import {
+  TABLE_PAGINATION_SELECT_PROPS,
+  TABLE_PAGINATION_SX,
+  TablePaginationActions,
+} from './paginationStyles';
 
 import B3NoData from './B3NoData';
 
@@ -131,27 +132,6 @@ interface RowProps<Row> {
   clickableRowStyles?: { [key: string]: string };
   lastItemBorderBottom: string;
 }
-
-const LATO_FONT_FAMILY = 'Lato, sans-serif';
-
-const TABLE_PAGINATION_FONT_SX = {
-  fontFamily: LATO_FONT_FAMILY,
-  '& .MuiTablePagination-toolbar': {
-    fontFamily: LATO_FONT_FAMILY,
-  },
-  '& .MuiTablePagination-selectLabel': {
-    fontFamily: LATO_FONT_FAMILY,
-  },
-  '& .MuiTablePagination-displayedRows': {
-    fontFamily: LATO_FONT_FAMILY,
-  },
-  '& .MuiTablePagination-select': {
-    fontFamily: LATO_FONT_FAMILY,
-  },
-  '& .MuiInputBase-input': {
-    fontFamily: LATO_FONT_FAMILY,
-  },
-} as const;
 
 const MOUSE_POINTER_STYLE = {
   cursor: 'pointer',
@@ -352,16 +332,6 @@ export function B3Table<Row>({
   orderBy = '',
   customRenderFooter,
 }: TableProps<Row>) {
-  const {
-    state: {
-      portalStyle: { backgroundColor = '#FEF9F5' },
-    },
-  } = useContext(CustomStyleContext);
-
-  const customColor = getContrastColor(backgroundColor);
-
-  const [isMobile] = useMobile();
-
   const b3Lang = useB3Lang();
 
   const { offset, count, first } = pagination;
@@ -448,16 +418,14 @@ export function B3Table<Row>({
               labelRowsPerPage={labelRowsPerPage || b3Lang('global.pagination.perPage')}
               component="div"
               sx={{
-                ...TABLE_PAGINATION_FONT_SX,
-                color: isMobile ? b3HexToRgb(customColor, 0.87) : 'rgba(0, 0, 0, 0.87)',
+                ...TABLE_PAGINATION_SX,
                 marginTop: '1.5rem',
                 '::-webkit-scrollbar': {
                   display: 'none',
                 },
-                '& svg': {
-                  color: isMobile ? b3HexToRgb(customColor, 0.87) : 'rgba(0, 0, 0, 0.87)',
-                },
               }}
+              SelectProps={TABLE_PAGINATION_SELECT_PROPS}
+              ActionsComponent={TablePaginationActions}
               count={count}
               rowsPerPage={first}
               page={first === 0 ? 0 : offset / first}
@@ -491,16 +459,14 @@ export function B3Table<Row>({
               labelRowsPerPage={labelRowsPerPage || b3Lang('global.pagination.cardsPerPage')}
               component="div"
               sx={{
-                ...TABLE_PAGINATION_FONT_SX,
-                color: customColor,
+                ...TABLE_PAGINATION_SX,
                 marginTop: '1.5rem',
                 '::-webkit-scrollbar': {
                   display: 'none',
                 },
-                '& svg': {
-                  color: customColor,
-                },
               }}
+              SelectProps={TABLE_PAGINATION_SELECT_PROPS}
+              ActionsComponent={TablePaginationActions}
               count={count}
               rowsPerPage={first}
               page={first === 0 ? 0 : offset / first}
@@ -636,12 +602,14 @@ export function B3Table<Row>({
               labelRowsPerPage={labelRowsPerPage || b3Lang('global.pagination.rowsPerPage')}
               component="div"
               sx={{
-                ...TABLE_PAGINATION_FONT_SX,
+                ...TABLE_PAGINATION_SX,
                 marginTop: '1.5rem',
                 '::-webkit-scrollbar': {
                   display: 'none',
                 },
               }}
+              SelectProps={TABLE_PAGINATION_SELECT_PROPS}
+              ActionsComponent={TablePaginationActions}
               count={count}
               rowsPerPage={first}
               page={first === 0 ? 0 : offset / first}
