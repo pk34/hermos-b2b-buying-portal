@@ -40,19 +40,44 @@ interface ShoppingDetailTableProps {
 
 const StyledQuoteTableContainer = styled('div')(() => ({
   backgroundColor: '#FFFFFF',
-  padding: '0',
+  padding: '1rem',
   width: '100%',
+  borderWidth: '0px 0.3px 0.3px 0px',
+  borderStyle: 'solid',
+  borderColor: '#000000',
+  boxShadow: 'none',
+  borderRadius: 0,
+
+  '& .MuiTableHead-root .MuiTableCell-root': {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 300,
+    fontSize: '16px',
+    color: '#000000',
+    borderBottom: '0.5px solid #000000',
+  },
+
+  '& .MuiTableBody-root .MuiTableCell-root': {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 300,
+    fontSize: '14px',
+    color: '#000000',
+    borderBottom: '0.5px solid #000000 !important',
+  },
+
+  '& .MuiTableBody-root .MuiTableRow-root:last-of-type .MuiTableCell-root': {
+    borderBottom: '0.5px solid #000000 !important',
+  },
 
   '& tbody': {
     '& tr': {
       '& td': {
         verticalAlign: 'top',
       },
-      '& td: first-of-type': {
+      '& td:first-of-type': {
         verticalAlign: 'inherit',
       },
     },
-    '& tr: hover': {
+    '& tr:hover': {
       '& #shoppingList-actionList': {
         opacity: 1,
       },
@@ -473,10 +498,19 @@ function QuoteTable(props: ShoppingDetailTableProps) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          margin: '0.5rem 0 1rem',
+          margin: '0.5rem 0 1rem 0',
         }}
       >
-        <SectionTitle component="h2">
+        <SectionTitle
+          component="h2"
+          sx={{
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 500,
+            fontSize: '18px',
+            color: '#000000',
+            marginLeft: 0,
+          }}
+        >
           {b3Lang('quoteDraft.quoteTable.totalProducts', { total: total || 0 })}
         </SectionTitle>
       </Box>
