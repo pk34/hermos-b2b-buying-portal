@@ -763,6 +763,22 @@ function QuoteDetail() {
                 status={quoteDetail.status}
                 defaultFileList={fileList}
               />
+
+              {quoteConvertToOrderPermission &&
+                quotePurchasabilityPermission &&
+                Number(quoteDetail.status) !== 4 &&
+                isShowFooter &&
+                quoteDetail?.allowCheckout &&
+                isAutoEnableQuoteCheckout &&
+                isEnableProductShowCheckout() && (
+                  <QuoteDetailFooter
+                    quoteId={quoteDetail.id}
+                    role={role}
+                    isAgenting={isAgenting}
+                    status={quoteDetail.status}
+                    proceedingCheckoutFn={proceedingCheckoutFn}
+                  />
+                )}
             </Box>
 
             {quoteDetail.legalTerms && (
@@ -776,22 +792,6 @@ function QuoteDetail() {
             )}
           </Grid>
         </Grid>
-
-        {quoteConvertToOrderPermission &&
-          quotePurchasabilityPermission &&
-          Number(quoteDetail.status) !== 4 &&
-          isShowFooter &&
-          quoteDetail?.allowCheckout &&
-          isAutoEnableQuoteCheckout &&
-          isEnableProductShowCheckout() && (
-            <QuoteDetailFooter
-              quoteId={quoteDetail.id}
-              role={role}
-              isAgenting={isAgenting}
-              status={quoteDetail.status}
-              proceedingCheckoutFn={proceedingCheckoutFn}
-            />
-          )}
       </Box>
     </B3Spin>
   );
