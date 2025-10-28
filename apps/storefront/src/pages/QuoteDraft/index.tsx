@@ -1,7 +1,7 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowBackIosNew } from '@mui/icons-material';
-import { Box, Checkbox, FormControlLabel, Stack, Typography } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid, Typography, useTheme } from '@mui/material';
 import { cloneDeep, concat, uniq } from 'lodash-es';
 import { v4 as uuid } from 'uuid';
 
@@ -57,7 +57,6 @@ import AddToQuote from '../quote/components/AddToQuote';
 import ContactInfo from '../quote/components/ContactInfo';
 import QuoteAddress from '../quote/components/QuoteAddress';
 import QuoteAttachment from '../quote/components/QuoteAttachment';
-import QuoteInfo from '../quote/components/QuoteInfo';
 import QuoteNote from '../quote/components/QuoteNote';
 import QuoteStatus from '../quote/components/QuoteStatus';
 import QuoteSubmissionResponse from '../quote/components/QuoteSubmissionResponse';
@@ -177,6 +176,7 @@ function QuoteDraft({ setOpenPage }: PageProps) {
   const b3Lang = useB3Lang();
 
   const [isMobile] = useMobile();
+  const theme = useTheme();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -348,19 +348,6 @@ function QuoteDraft({ setOpenPage }: PageProps) {
     // disabling as we only need to run this once and values at starting render are good enough
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectCompanyHierarchyId, isAddressCompanyHierarchy]);
-
-  const quoteAndExtraFieldsInfo = useMemo(() => {
-    const contactInfo: CustomFieldItems = quoteInfoOrigin.contactInfo || {};
-
-    return {
-      info: {
-        quoteTitle: contactInfo?.quoteTitle || '',
-        referenceNumber: quoteInfoOrigin?.referenceNumber || '',
-      },
-      extraFields: quoteInfoOrigin.extraFields || [],
-      recipients: quoteInfoOrigin.recipients || [],
-    };
-  }, [quoteInfoOrigin]);
 
   const getAddress = () => {
     const addressSaveInfo = {
@@ -766,7 +753,7 @@ function QuoteDraft({ setOpenPage }: PageProps) {
         >
           <Box
             sx={{
-              color: 'primary.main',
+              color: theme.palette.primary.main,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -788,103 +775,203 @@ function QuoteDraft({ setOpenPage }: PageProps) {
               sx={{
                 fontSize: '12px',
                 marginRight: '0.5rem',
+                color: theme.palette.primary.main,
               }}
             />
-            <p
-              style={{
-                margin: '0',
+            <Typography
+              component="p"
+              sx={{
+                margin: 0,
+                color: theme.palette.primary.main,
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
               }}
             >
               {backText()}
-            </p>
+            </Typography>
           </Box>
         </Box>
-        <Box
+        <Grid
+          container
+          spacing={2}
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
+            flexDirection: isMobile ? 'column' : 'row',
+            mb: isMobile ? '16px' : '24px',
           }}
         >
-          <Box
+          <Grid
+            item
+            xs={12}
             sx={{
-              display: 'flex',
-              mb: '24px',
-              flexDirection: isMobile ? 'column' : 'row',
-              alignItems: isMobile ? 'flex-start' : 'center',
+              color: getContrastColor(backgroundColor),
             }}
           >
-            <Typography
-              component="h3"
+            <Box
               sx={{
-                fontSize: '34px',
-                mr: '1rem',
-                mb: isMobile ? '1rem' : '0',
-                color: getContrastColor(backgroundColor),
+                display: 'flex',
+                alignItems: isMobile ? 'flex-start' : 'center',
+                flexDirection: isMobile ? 'column' : 'row',
+                flexWrap: isMobile ? 'wrap' : 'nowrap',
               }}
             >
-              {b3Lang('quoteDraft.title.Quote')}
-            </Typography>
-            <QuoteStatus code="0" />
-          </Box>
-          {quotesActionsPermission && (
-            <Box>
-              {isMobile ? (
-                <Box
+              <Typography
+                component="h1"
+                sx={{
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  lineHeight: '28px',
+                  color: '#0067A0',
+                }}
+              >
+                {b3Lang('quoteDraft.title.Quote')}
+              </Typography>
+
+              <Box
+                sx={{
+                  marginLeft: isMobile ? 0 : '100px',
+                  marginTop: isMobile ? '16px' : '0',
+                }}
+              >
+                <QuoteStatus code="0" />
+              </Box>
+            </Box>
+          </Grid>
+
+          {!isMobile && (
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                gap: '16px',
+              }}
+            >
+              {!isEdit && (
+                <CustomButton
+                  variant="outlined"
+                  onClick={handleEditInfoClick}
                   sx={{
-                    position: 'fixed',
-                    left: 0,
-                    bottom: 0,
-                    background: '#FFF',
-                    width: '100%',
-                    display: 'flex',
-                    p: '8px 0',
-                    zIndex: 100,
-                    justifyContent: 'center',
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    padding: '10px 22px',
+                    borderRadius: '5px',
+                    textTransform: 'none',
+                    borderColor: '#FF810E',
+                    color: '#FF810E',
+                    '&:hover': {
+                      borderColor: '#00965E',
+                      color: '#00965E',
+                    },
                   }}
                 >
-                  <CustomButton
-                    variant="contained"
-                    size="small"
-                    disabled={loading}
-                    sx={{
-                      height: '38px',
-                      width: '90%',
-                    }}
-                    onClick={handleSubmit}
-                  >
-                    {b3Lang('quoteDraft.button.submit')}
-                  </CustomButton>
-                </Box>
-              ) : (
+                  {b3Lang('global.quoteInfo.editInfo')}
+                </CustomButton>
+              )}
+              {quotesActionsPermission && (
                 <CustomButton
                   variant="contained"
-                  size="small"
                   disabled={loading}
-                  sx={{
-                    padding: '8px 22px',
-                    alignSelf: 'center',
-                    marginBottom: '24px',
-                  }}
                   onClick={handleSubmit}
+                  sx={{
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    padding: '10px 22px',
+                    borderRadius: '5px',
+                    textTransform: 'none',
+                    backgroundColor: theme.palette.primary.main,
+                    '&:hover': {
+                      backgroundColor: '#00965E',
+                    },
+                  }}
                 >
                   {b3Lang('quoteDraft.button.submit')}
                 </CustomButton>
               )}
-            </Box>
+            </Grid>
           )}
-        </Box>
+        </Grid>
+
+        {isMobile && quotesActionsPermission && (
+          <Box
+            sx={{
+              position: 'fixed',
+              left: 0,
+              bottom: 0,
+              background: '#FFF',
+              width: '100%',
+              display: 'flex',
+              p: '8px 0',
+              zIndex: 100,
+              justifyContent: 'center',
+            }}
+          >
+            <CustomButton
+              variant="contained"
+              disabled={loading}
+              sx={{
+                height: '42px',
+                width: '90%',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                borderRadius: '5px',
+                textTransform: 'none',
+                backgroundColor: theme.palette.primary.main,
+                '&:hover': {
+                  backgroundColor: '#00965E',
+                },
+              }}
+              onClick={handleSubmit}
+            >
+              {b3Lang('quoteDraft.button.submit')}
+            </CustomButton>
+          </Box>
+        )}
+
+        {isMobile && !isEdit && (
+          <Box
+            sx={{
+              mb: '16px',
+            }}
+          >
+            <CustomButton
+              variant="outlined"
+              fullWidth
+              onClick={handleEditInfoClick}
+              sx={{
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                padding: '10px 22px',
+                borderRadius: '5px',
+                textTransform: 'none',
+                borderColor: '#FF810E',
+                color: '#FF810E',
+                '&:hover': {
+                  borderColor: '#00965E',
+                  color: '#00965E',
+                },
+              }}
+            >
+              {b3Lang('global.quoteInfo.editInfo')}
+            </CustomButton>
+          </Box>
+        )}
 
         <Box>
-          {!isEdit && (
-            <QuoteInfo
-              quoteAndExtraFieldsInfo={quoteAndExtraFieldsInfo}
-              status="Draft"
-              contactInfo={quoteInfoOrigin?.contactInfo}
-              shippingAddress={quoteInfoOrigin?.shippingAddress}
-              billingAddress={quoteInfoOrigin?.billingAddress || {}}
-              handleEditInfoClick={handleEditInfoClick}
-            />
-          )}
           {isEdit && (
             <Container flexDirection="column">
               <ContactInfo
@@ -963,58 +1050,90 @@ function QuoteDraft({ setOpenPage }: PageProps) {
             </Container>
           )}
         </Box>
-        <Box
+        <Grid
+          container
+          spacing={isMobile ? 2 : 0}
+          rowSpacing={0}
           sx={{
-            mt: '20px',
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            alignItems: 'flex-start',
+            overflow: 'auto',
+            flexWrap: isMobile ? 'wrap' : 'nowrap',
+            paddingBottom: '20px',
+            marginBottom: isMobile ? '6rem' : 0,
+            marginTop: isMobile ? 0 : '24px',
           }}
         >
-          <Container
-            flexDirection="column"
-            xs={{
-              flexBasis: isMobile ? '100%' : '680px',
-              flexGrow: 2,
-              marginRight: '20px',
-              marginBottom: '20px',
-              boxShadow:
-                '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 1px 3px rgba(0, 0, 0, 0.12)',
-              borderRadius: '4px',
-            }}
+          <Grid
+            item
+            xs={isMobile ? 12 : 8}
+            sx={
+              isMobile
+                ? {
+                    flexBasis: '100%',
+                  }
+                : {
+                    pr: '16px',
+                  }
+            }
           >
-            <QuoteTable
-              updateSummary={updateSummary}
-              total={draftQuoteList.length}
-              items={draftQuoteList}
-            />
-          </Container>
-
-          <Container
-            flexDirection="column"
-            xs={{
-              flexBasis: isMobile ? '100%' : '340px',
-              marginBottom: '20px',
-              backgroundColor: 'transparent',
-              padding: 0,
-              flexGrow: 1,
-            }}
-          >
-            <Stack
-              spacing={2}
+            <Box
               sx={{
-                width: '100%',
+                marginBottom: '1rem',
+              }}
+            >
+              <QuoteTable
+                updateSummary={updateSummary}
+                total={draftQuoteList.length}
+                items={draftQuoteList}
+              />
+            </Box>
+          </Grid>
+
+          <Grid
+            item
+            xs={isMobile ? 12 : 4}
+            sx={
+              isMobile
+                ? {
+                    flexBasis: '100%',
+                  }
+                : {
+                    pl: '16px',
+                  }
+            }
+          >
+            <Box
+              sx={{
+                marginBottom: '1rem',
               }}
             >
               <QuoteSummary ref={quoteSummaryRef} />
+            </Box>
+            <Box
+              sx={{
+                marginBottom: '1rem',
+              }}
+            >
               <AddToQuote updateList={updateSummary} addToQuote={addToQuote} />
-
+            </Box>
+            <Box
+              sx={{
+                marginBottom: '1rem',
+              }}
+            >
               <QuoteNote quoteStatus="Draft" />
+            </Box>
 
-              {role !== 100 && <QuoteAttachment status={0} />}
-            </Stack>
-          </Container>
-        </Box>
+            {role !== 100 && (
+              <Box
+                sx={{
+                  marginBottom: '1rem',
+                }}
+              >
+                <QuoteAttachment status={0} />
+              </Box>
+            )}
+          </Grid>
+        </Grid>
       </Box>
       <QuoteSubmissionResponse
         isOpen={quoteSubmissionResponseOpen}
