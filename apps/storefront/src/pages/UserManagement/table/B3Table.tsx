@@ -1,10 +1,12 @@
-import { ChangeEvent, MouseEvent, ReactElement, useContext } from 'react';
+import { ChangeEvent, MouseEvent, ReactElement } from 'react';
 import { Grid, TablePagination } from '@mui/material';
 
-import { b3HexToRgb, getContrastColor } from '@/components/outSideComponents/utils/b3CustomStyles';
-import { useMobile } from '@/hooks';
+import {
+  TABLE_PAGINATION_SELECT_PROPS,
+  TABLE_PAGINATION_SX,
+  TablePaginationActions,
+} from '@/components/table/paginationStyles';
 import { useB3Lang } from '@/lib/lang';
-import { CustomStyleContext } from '@/shared/customStyleButton';
 
 import B3NoData from './B3NoData';
 
@@ -53,16 +55,6 @@ export function B3Table<Row>({
   itemXs,
   showRowsPerPageOptions,
 }: TableProps<Row>) {
-  const {
-    state: {
-      portalStyle: { backgroundColor = '#FEF9F5' },
-    },
-  } = useContext(CustomStyleContext);
-
-  const customColor = getContrastColor(backgroundColor);
-
-  const [isMobile] = useMobile();
-
   const b3Lang = useB3Lang();
 
   const { offset, count, first } = pagination;
@@ -113,15 +105,14 @@ export function B3Table<Row>({
             labelRowsPerPage={b3Lang('global.pagination.perPage')}
             component="div"
             sx={{
-              color: isMobile ? b3HexToRgb(customColor, 0.87) : 'rgba(0, 0, 0, 0.87)',
+              ...TABLE_PAGINATION_SX,
               marginTop: '1.5rem',
               '::-webkit-scrollbar': {
                 display: 'none',
               },
-              '& svg': {
-                color: isMobile ? b3HexToRgb(customColor, 0.87) : 'rgba(0, 0, 0, 0.87)',
-              },
             }}
+            SelectProps={TABLE_PAGINATION_SELECT_PROPS}
+            ActionsComponent={TablePaginationActions}
             count={count}
             rowsPerPage={first}
             page={first === 0 ? 0 : offset / first}
@@ -153,15 +144,14 @@ export function B3Table<Row>({
             labelRowsPerPage={b3Lang('global.pagination.cardsPerPage')}
             component="div"
             sx={{
-              color: customColor,
+              ...TABLE_PAGINATION_SX,
               marginTop: '1.5rem',
               '::-webkit-scrollbar': {
                 display: 'none',
               },
-              '& svg': {
-                color: customColor,
-              },
             }}
+            SelectProps={TABLE_PAGINATION_SELECT_PROPS}
+            ActionsComponent={TablePaginationActions}
             count={count}
             rowsPerPage={first}
             page={first === 0 ? 0 : offset / first}
