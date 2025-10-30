@@ -84,6 +84,26 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
     color: '#000000',
   } as const;
 
+  const actionButtonSx = {
+    height: '39px',
+    marginLeft: isMobile ? 0 : '60px',
+    marginTop: isMobile ? '16px' : '0',
+    borderRadius: '5px',
+    padding: '10px',
+    border: `1px solid ${primaryColor}`,
+    color: '#000000',
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    textTransform: 'capitalize' as const,
+    displayPrint: 'none',
+    '&:hover': {
+      borderColor: primaryColor,
+      color: '#000000',
+      backgroundColor: 'transparent',
+    },
+  };
+
   return (
     <>
       {Number(role) !== 100 && (
@@ -176,44 +196,14 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
               <>
                 <CustomButton
                   variant="outlined"
-                  sx={{
-                    height: '39px',
-                    marginLeft: isMobile ? 0 : '60px',
-                    marginTop: isMobile ? '16px' : '0',
-                    borderRadius: '5px',
-                    padding: '10px',
-                    border: '1px solid #FF810E',
-                    color: '#FF810E',
-                    fontFamily: 'Lato, sans-serif',
-                    fontWeight: 400,
-                    fontSize: '16px',
-                    displayPrint: 'none',
-                    '&:hover': {
-                      borderColor: '#00965E',
-                    },
-                  }}
+                  sx={actionButtonSx}
                   onClick={printQuote}
                 >
                   {b3Lang('quoteDetail.header.print')}
                 </CustomButton>
                 <CustomButton
                   variant="outlined"
-                  sx={{
-                    height: '39px',
-                    marginLeft: isMobile ? 0 : '60px',
-                    marginTop: isMobile ? '16px' : '0',
-                    borderRadius: '5px',
-                    padding: '10px',
-                    border: '1px solid #FF810E',
-                    color: '#FF810E',
-                    fontFamily: 'Lato, sans-serif',
-                    fontWeight: 400,
-                    fontSize: '16px',
-                    displayPrint: 'none',
-                    '&:hover': {
-                      borderColor: '#00965E',
-                    },
-                  }}
+                  sx={actionButtonSx}
                   onClick={exportPdf}
                 >
                   {b3Lang('quoteDetail.header.downloadPDF')}
