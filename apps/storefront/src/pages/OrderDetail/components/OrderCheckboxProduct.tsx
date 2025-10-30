@@ -1,6 +1,7 @@
 import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { Box, Checkbox, FormControlLabel, TextField, Typography } from '@mui/material';
 
+import { filterModalFieldBaseSx } from '@/components/filter/styles';
 import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
@@ -16,6 +17,30 @@ import {
   ProductImage,
   ProductOptionText,
 } from '../styled';
+import { orderDialogBodyTextSx, orderDialogSecondaryTextSx } from './dialogStyles';
+
+const getQuantityFieldSx = (isMobile: boolean) => ({
+  ...filterModalFieldBaseSx,
+  width: isMobile ? '60%' : '80px',
+  minWidth: isMobile ? '60%' : '80px',
+  '& .MuiFilledInput-root': {
+    ...filterModalFieldBaseSx['& .MuiFilledInput-root'],
+    width: '100%',
+  },
+  '& .MuiFilledInput-input': {
+    ...filterModalFieldBaseSx['& .MuiFilledInput-input'],
+    textAlign: 'center',
+  },
+  '& .MuiFormHelperText-root': {
+    marginLeft: 0,
+    marginRight: 0,
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 400,
+    fontSize: '12px',
+    lineHeight: '16px',
+    color: orderDialogSecondaryTextSx.color,
+  },
+});
 
 interface ReturnListProps {
   returnId: number;
@@ -153,7 +178,14 @@ export default function OrderCheckboxProduct(props: OrderCheckboxProductProps) {
   }, [returnList]);
 
   return products.length > 0 ? (
-    <Box>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+      }}
+    >
       {!isMobile && (
         <Flex isHeader isMobile={isMobile}>
           <Checkbox checked={list.length === products.length} onChange={handleSelectAllChange} />
@@ -180,6 +212,9 @@ export default function OrderCheckboxProduct(props: OrderCheckboxProductProps) {
           }
           sx={{
             paddingLeft: '0.6rem',
+            '& .MuiFormControlLabel-label': {
+              ...orderDialogBodyTextSx,
+            },
           }}
         />
       )}
@@ -204,10 +239,15 @@ export default function OrderCheckboxProduct(props: OrderCheckboxProductProps) {
                 marginLeft: '16px',
               }}
             >
-              <Typography variant="body1" color="#212121" id={`group-label-${product.id}`}>
+              <Typography
+                variant="body1"
+                color="#212121"
+                id={`group-label-${product.id}`}
+                sx={orderDialogBodyTextSx}
+              >
                 {product.name}
               </Typography>
-              <Typography variant="body1" color="#616161">
+              <Typography variant="body1" color="#616161" sx={orderDialogSecondaryTextSx}>
                 {product.sku}
               </Typography>
               {(product.product_options || []).map((option: OrderProductOption) => (
@@ -232,13 +272,7 @@ export default function OrderCheckboxProduct(props: OrderCheckboxProductProps) {
               onKeyDown={handleNumberInputKeyDown}
               onBlur={handleNumberInputBlur(product)}
               size="small"
-              sx={{
-                width: isMobile ? '60%' : '80px',
-                '& .MuiFormHelperText-root': {
-                  marginLeft: '0',
-                  marginRight: '0',
-                },
-              }}
+              sx={getQuantityFieldSx(isMobile)}
               error={!!product.helperText}
               helperText={product.helperText}
             />

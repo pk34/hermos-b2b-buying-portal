@@ -6,6 +6,10 @@ import Cookies from 'js-cookie';
 
 import { B3CustomForm } from '@/components';
 import B3Dialog from '@/components/B3Dialog';
+import {
+  filterModalLeftButtonSx,
+  filterModalRightButtonSx,
+} from '@/components/filter/styles';
 import { CART_URL } from '@/constants';
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
@@ -26,6 +30,11 @@ import getReturnFormFields from '../shared/config';
 import CreateShoppingList from './CreateShoppingList';
 import OrderCheckboxProduct from './OrderCheckboxProduct';
 import OrderShoppingList from './OrderShoppingList';
+import {
+  orderDialogBodyTextSx,
+  orderDialogContentSx,
+  orderDialogSx,
+} from './dialogStyles';
 
 interface ReturnListProps {
   returnId: number;
@@ -396,11 +405,14 @@ export default function OrderDialog({
           rightSizeBtn={currentDialogData?.confirmText || 'Save'}
           maxWidth="md"
           loading={isRequestLoading}
+          isShowBordered={false}
+          leftStyleBtn={filterModalLeftButtonSx}
+          rightStyleBtn={filterModalRightButtonSx}
+          dialogSx={orderDialogSx}
+          dialogContentSx={orderDialogContentSx}
         >
           <Typography
-            sx={{
-              margin: isMobile ? '0 0 1rem' : '1rem 0',
-            }}
+            sx={orderDialogBodyTextSx}
           >
             {currentDialogData?.description || ''}
           </Typography>
@@ -417,9 +429,7 @@ export default function OrderDialog({
             <>
               <Typography
                 variant="body1"
-                sx={{
-                  margin: '20px 0',
-                }}
+                sx={orderDialogBodyTextSx}
               >
                 {b3Lang('purchasedProducts.orderDialog.additionalInformation')}
               </Typography>
