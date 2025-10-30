@@ -101,16 +101,8 @@ export default function B3Layout({ children }: { children: ReactNode }) {
     return {};
   }, [location]);
 
-  const pagesWithCustomMobileTitle = [
-    '/addresses',
-    '/company-orders',
-    '/user-management',
-    '/accountSettings',
-  ];
-  const isCustomMobileTitlePage = pagesWithCustomMobileTitle.includes(location.pathname);
-
   const mobileTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
-    if (!isMobile || !isCustomMobileTitlePage) {
+    if (!isMobile || !title) {
       return undefined;
     }
 
@@ -124,7 +116,7 @@ export default function B3Layout({ children }: { children: ReactNode }) {
       width: '100%',
       marginTop: '24px',
     };
-  }, [isCustomMobileTitlePage, isMobile]);
+  }, [isMobile, title]);
 
   return (
     <Box>
