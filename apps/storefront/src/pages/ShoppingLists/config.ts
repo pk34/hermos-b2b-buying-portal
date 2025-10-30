@@ -138,7 +138,7 @@ export const useGetFilterMoreList = () => {
 };
 
 const shoppingListModalFieldBaseSx = {
-  width: '90%',
+  width: '100%',
   marginBottom: '24px',
   '& .MuiFilledInput-root': {
     borderRadius: '5px',
