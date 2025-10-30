@@ -3,6 +3,7 @@ import type { SxProps, Theme } from '@mui/material/styles';
 import {
   filterModalDialogContentSx,
   filterModalDialogSx,
+  filterModalRightButtonSx,
 } from '@/components/filter/styles';
 
 export const orderDialogSx: SxProps<Theme> = {
@@ -50,4 +51,24 @@ export const orderDialogSecondaryTextSx = {
   fontSize: '14px',
   lineHeight: '20px',
   color: '#616161',
+} as const;
+
+const filterModalMobileButtonSx =
+  filterModalRightButtonSx['@media (max-width: 600px)'] ?? {
+    width: '90%',
+    alignSelf: 'center',
+    boxSizing: 'border-box',
+  };
+
+export const orderDialogPrimaryButtonSx = {
+  ...filterModalRightButtonSx,
+  width: 'auto',
+  minWidth: 'auto',
+  display: 'inline-flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  '@media (max-width: 600px)': {
+    ...filterModalMobileButtonSx,
+    display: 'inline-flex',
+  },
 } as const;

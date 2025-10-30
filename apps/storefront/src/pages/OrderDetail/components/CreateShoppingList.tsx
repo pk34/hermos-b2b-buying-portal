@@ -7,13 +7,16 @@ import B3Dialog from '@/components/B3Dialog';
 import {
   filterModalFieldBaseSx,
   filterModalLeftButtonSx,
-  filterModalRightButtonSx,
 } from '@/components/filter/styles';
 import { LangFormatFunction, useB3Lang } from '@/lib/lang';
 import { isB2BUserSelector, useAppSelector } from '@/store';
 import createShoppingList from '@/utils/b3ShoppingList/b3ShoppingList';
 
-import { orderDialogContentSx, orderDialogSx } from './dialogStyles';
+import {
+  orderDialogContentSx,
+  orderDialogPrimaryButtonSx,
+  orderDialogSx,
+} from './dialogStyles';
 
 const getList = (b3Lang: LangFormatFunction) => [
   {
@@ -105,7 +108,7 @@ function CreateShoppingList({ open, onChange, onClose }: CreateShoppingListProps
         handRightClick={handleConfirm}
         isShowBordered={false}
         leftStyleBtn={filterModalLeftButtonSx}
-        rightStyleBtn={filterModalRightButtonSx}
+        rightStyleBtn={orderDialogPrimaryButtonSx}
         dialogSx={orderDialogSx}
         dialogContentSx={orderDialogContentSx}
       >

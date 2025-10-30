@@ -6,10 +6,7 @@ import Cookies from 'js-cookie';
 
 import { B3CustomForm } from '@/components';
 import B3Dialog from '@/components/B3Dialog';
-import {
-  filterModalLeftButtonSx,
-  filterModalRightButtonSx,
-} from '@/components/filter/styles';
+import { filterModalLeftButtonSx } from '@/components/filter/styles';
 import { CART_URL } from '@/constants';
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
@@ -33,6 +30,7 @@ import OrderShoppingList from './OrderShoppingList';
 import {
   orderDialogBodyTextSx,
   orderDialogContentSx,
+  orderDialogPrimaryButtonSx,
   orderDialogSx,
 } from './dialogStyles';
 
@@ -407,7 +405,7 @@ export default function OrderDialog({
           loading={isRequestLoading}
           isShowBordered={false}
           leftStyleBtn={filterModalLeftButtonSx}
-          rightStyleBtn={filterModalRightButtonSx}
+          rightStyleBtn={orderDialogPrimaryButtonSx}
           dialogSx={orderDialogSx}
           dialogContentSx={orderDialogContentSx}
         >

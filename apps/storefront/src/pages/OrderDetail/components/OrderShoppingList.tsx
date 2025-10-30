@@ -4,10 +4,7 @@ import { Box, ListItemText, MenuItem, MenuList, useTheme } from '@mui/material';
 
 import B3Dialog from '@/components/B3Dialog';
 import CustomButton from '@/components/button/CustomButton';
-import {
-  filterModalLeftButtonSx,
-  filterModalRightButtonSx,
-} from '@/components/filter/styles';
+import { filterModalLeftButtonSx } from '@/components/filter/styles';
 import { b3HexToRgb } from '@/components/outSideComponents/utils/b3CustomStyles';
 import B3Spin from '@/components/spin/B3Spin';
 import { useMobile } from '@/hooks';
@@ -17,7 +14,12 @@ import { isB2BUserSelector, rolePermissionSelector, useAppSelector } from '@/sto
 import { ShoppingListItem, ShoppingListStatus } from '@/types/shoppingList';
 import { channelId } from '@/utils';
 
-import { orderDialogBodyTextSx, orderDialogListContentSx, orderDialogSx } from './dialogStyles';
+import {
+  orderDialogBodyTextSx,
+  orderDialogListContentSx,
+  orderDialogPrimaryButtonSx,
+  orderDialogSx,
+} from './dialogStyles';
 
 interface OrderShoppingListProps {
   isOpen: boolean;
@@ -126,7 +128,7 @@ export default function OrderShoppingList(props: OrderShoppingListProps) {
       rightSizeBtn={confirmText}
       isShowBordered={false}
       leftStyleBtn={filterModalLeftButtonSx}
-      rightStyleBtn={filterModalRightButtonSx}
+      rightStyleBtn={orderDialogPrimaryButtonSx}
       dialogSx={orderDialogSx}
       dialogContentSx={orderDialogListContentSx}
     >
