@@ -1,3 +1,5 @@
+import { filterModalFieldBaseSx } from '@/components/filter/styles';
+
 const getReturnFormFields = () => [
   {
     name: 'return_reason',
@@ -8,6 +10,7 @@ const getReturnFormFields = () => [
     size: 'small',
     fieldType: 'dropdown',
     default: '',
+    sx: filterModalFieldBaseSx,
     options: [
       {
         label: 'Received Wrong Product',
@@ -36,6 +39,7 @@ const getReturnFormFields = () => [
     size: 'small',
     fieldType: 'dropdown',
     default: '',
+    sx: filterModalFieldBaseSx,
     options: [
       {
         label: 'Repair',
@@ -61,6 +65,7 @@ const getReturnFormFields = () => [
     size: 'small',
     fieldType: 'multiline',
     default: '',
+    sx: filterModalFieldBaseSx,
   },
 ];
 

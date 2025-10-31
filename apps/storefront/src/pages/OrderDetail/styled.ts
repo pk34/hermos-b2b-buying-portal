@@ -57,13 +57,27 @@ const FlexItem = styled('div')(
     flexBasis,
     width,
     padding,
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    '& span': {
+      fontFamily: "'Lato', sans-serif",
+      fontWeight: 600,
+      fontSize: '14px',
+      lineHeight: '20px',
+      color: '#000000',
+    },
   }),
 );
 
 const ProductHead = styled('div')(() => ({
-  fontSize: '0.875rem',
-  lineHeight: '1.5',
-  color: '#263238',
+  fontFamily: "'Lato', sans-serif",
+  fontWeight: 600,
+  fontSize: '14px',
+  lineHeight: '20px',
+  color: '#000000',
 }));
 
 const ProductImage = styled('img')(() => ({
@@ -73,9 +87,11 @@ const ProductImage = styled('img')(() => ({
 }));
 
 const ProductOptionText = styled('div')(() => ({
-  fontSize: '0.75rem',
-  lineHeight: '1.5',
-  color: '#455A64',
+  fontFamily: "'Lato', sans-serif",
+  fontWeight: 400,
+  fontSize: '14px',
+  lineHeight: '20px',
+  color: '#616161',
 }));
 
 const defaultItemStyle = {

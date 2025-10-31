@@ -4,9 +4,19 @@ import { Box } from '@mui/material';
 
 import { B3CustomForm } from '@/components';
 import B3Dialog from '@/components/B3Dialog';
+import {
+  filterModalFieldBaseSx,
+  filterModalLeftButtonSx,
+} from '@/components/filter/styles';
 import { LangFormatFunction, useB3Lang } from '@/lib/lang';
 import { isB2BUserSelector, useAppSelector } from '@/store';
 import createShoppingList from '@/utils/b3ShoppingList/b3ShoppingList';
+
+import {
+  orderDialogContentSx,
+  orderDialogPrimaryButtonSx,
+  orderDialogSx,
+} from './dialogStyles';
 
 const getList = (b3Lang: LangFormatFunction) => [
   {
@@ -19,6 +29,7 @@ const getList = (b3Lang: LangFormatFunction) => [
     variant: 'filled',
     size: 'small',
     maxLength: 200,
+    sx: filterModalFieldBaseSx,
   },
   {
     name: 'description',
@@ -31,6 +42,7 @@ const getList = (b3Lang: LangFormatFunction) => [
     size: 'small',
     rows: 4,
     maxLength: 200,
+    sx: filterModalFieldBaseSx,
   },
 ];
 
@@ -94,12 +106,18 @@ function CreateShoppingList({ open, onChange, onClose }: CreateShoppingListProps
         loading={loading}
         handleLeftClick={handleClose}
         handRightClick={handleConfirm}
+        isShowBordered={false}
+        leftStyleBtn={filterModalLeftButtonSx}
+        rightStyleBtn={orderDialogPrimaryButtonSx}
+        dialogSx={orderDialogSx}
+        dialogContentSx={orderDialogContentSx}
       >
         <Box
           sx={{
             minHeight: 'auto',
             display: 'flex',
             alignItems: 'flex-start',
+            width: '100%',
           }}
         >
           <B3CustomForm
@@ -108,6 +126,11 @@ function CreateShoppingList({ open, onChange, onClose }: CreateShoppingListProps
             control={control}
             getValues={getValues}
             setValue={setValue}
+            containerProps={{
+              sx: {
+                width: '100%',
+              },
+            }}
           />
         </Box>
       </B3Dialog>
