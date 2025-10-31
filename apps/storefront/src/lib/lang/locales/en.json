@@ -671,6 +671,7 @@
   "quoteDetail.table.perPage": "Per page:",
   "quoteDetail.table.noProducts": "No products found",
   "quoteDetail.table.totalProducts": "{total} products",
+  "quoteDetail.table.productsTitle": "Products",
   "quoteDetail.tableCard.price": "Price:",
   "quoteDetail.tableCard.total": "Total:",
   "quoteDetail.tableCard.qty": "Qty: {quantity}",

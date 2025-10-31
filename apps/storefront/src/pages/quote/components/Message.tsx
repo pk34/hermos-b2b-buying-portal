@@ -12,6 +12,7 @@ import { format, formatDistanceStrict } from 'date-fns';
 
 import { B3CollapseContainer } from '@/components';
 import B3Spin from '@/components/spin/B3Spin';
+import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { GlobalContext } from '@/shared/global';
 import { updateQuote } from '@/shared/service/b2b';
@@ -115,6 +116,7 @@ const messageInputStyles = {
   color: '#000000',
   resize: 'none' as const,
   outline: 'none',
+  marginBottom: '15px',
 } as const;
 
 const sendButtonContainerStyles = {
@@ -210,6 +212,7 @@ function DateMessage({ msg }: DateMessageProps) {
 }
 
 function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
+  const [isMobile] = useMobile();
   const { dispatch: globalDispatch } = useContext(GlobalContext);
 
   const theme = useTheme();
@@ -468,9 +471,13 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
               <Box
                 sx={{
                   display: 'flex',
-                  alignItems: 'center',
+                  alignItems: isMobile ? 'flex-end' : 'center',
+                  justifyContent: isMobile ? 'flex-start' : 'flex-start',
+                  flexWrap: isMobile ? 'wrap' : 'nowrap',
+                  gap: '16px',
                   marginTop: '38px',
                   marginBottom: '15px',
+                  width: '100%',
                 }}
               >
                 <Box
@@ -478,7 +485,8 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
                   onKeyDown={updateMessage}
                   sx={{
                     ...messageInputStyles,
-                    flex: 1,
+                    flex: isMobile ? '0 1 60%' : '1 1 auto',
+                    width: isMobile ? '60%' : 'auto',
                     minWidth: 0,
                   }}
                   value={message}
@@ -490,7 +498,10 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
                 />
                 <Box
                   onClick={() => updateMsgs(message)}
-                  sx={sendButtonContainerStyles}
+                  sx={{
+                    ...sendButtonContainerStyles,
+                    marginLeft: isMobile ? 'auto' : '24px',
+                  }}
                 >
                   <SendMessageIcon />
                 </Box>

@@ -85,24 +85,37 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
   } as const;
 
   const actionButtonSx = {
+    width: '185px',
     height: '39px',
-    marginLeft: isMobile ? 0 : '60px',
-    marginTop: isMobile ? '16px' : '0',
     borderRadius: '5px',
     padding: '10px',
-    border: `1px solid ${primaryColor}`,
-    color: '#000000',
+    border: '1px solid #0067A0',
+    color: '#0067A0',
     fontFamily: 'Lato, sans-serif',
-    fontWeight: 400,
+    fontWeight: 600,
     fontSize: '16px',
+    lineHeight: '24px',
     textTransform: 'capitalize' as const,
     displayPrint: 'none',
+    flex: '1 1 185px',
+    minWidth: 0,
     '&:hover': {
-      borderColor: primaryColor,
-      color: '#000000',
+      borderColor: '#00965E',
+      color: '#00965E',
       backgroundColor: 'transparent',
     },
-  };
+  } as const;
+
+  const actionsContainerSx = {
+    display: 'flex',
+    flexDirection: 'row' as const,
+    gap: '10px',
+    width: '100%',
+    flexWrap: 'nowrap' as const,
+    justifyContent: isMobile ? 'space-between' : 'flex-start',
+    alignItems: 'center',
+    marginTop: isMobile ? '24px' : '32px',
+  } as const;
 
   return (
     <>
@@ -145,16 +158,7 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
         </Box>
       )}
 
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexDirection: isMobile ? 'column' : 'row',
-          mb: isMobile ? '16px' : '',
-        }}
-      >
+      <Grid container spacing={2} sx={{ mb: isMobile ? '16px' : '' }}>
         <Grid
           item
           {...gridOptions(12)}
@@ -165,100 +169,108 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
           <Box
             sx={{
               display: 'flex',
-              alignItems: isMobile ? 'flex-start' : 'center',
-              flexDirection: isMobile ? 'column' : 'row',
-              flexWrap: isMobile ? 'wrap' : 'nowrap',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              width: '100%',
             }}
           >
-            <Typography
-              sx={{
-                fontFamily: 'Lato, sans-serif',
-                fontWeight: 600,
-                fontSize: '24px',
-                lineHeight: '28px',
-                color: '#0067A0',
-              }}
-            >
-              {b3Lang('quoteDetail.header.quoteNumber', {
-                quoteNumber: quoteNumber || '',
-              })}
-            </Typography>
-
             <Box
               sx={{
-                marginLeft: isMobile ? 0 : '100px',
-                marginTop: isMobile ? '16px' : '0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%',
+                flexWrap: 'nowrap',
+                gap: '12px',
               }}
             >
-              <QuoteStatus code={status} />
-            </Box>
-            {Number(role) !== 100 && (
-              <>
-                <CustomButton
-                  variant="outlined"
-                  sx={actionButtonSx}
-                  onClick={printQuote}
-                >
-                  {b3Lang('quoteDetail.header.print')}
-                </CustomButton>
-                <CustomButton
-                  variant="outlined"
-                  sx={actionButtonSx}
-                  onClick={exportPdf}
-                >
-                  {b3Lang('quoteDetail.header.downloadPDF')}
-                </CustomButton>
-              </>
-            )}
-          </Box>
-          {(salesRepInfo?.salesRepName || salesRepInfo?.salesRepEmail) && (
-            <StyledCreateName>
               <Typography
-                variant="subtitle2"
                 sx={{
-                  marginRight: '0.5rem',
-                  fontSize: '16px',
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  lineHeight: '28px',
+                  color: '#0067A0',
+                  flex: '1 1 auto',
+                  minWidth: 0,
+                  wordBreak: 'break-word',
                 }}
               >
-                {b3Lang('quoteDetail.header.salesRep')}
+                {b3Lang('quoteDetail.header.quoteNumber', {
+                  quoteNumber: quoteNumber || '',
+                })}
               </Typography>
-              <span>
-                {salesRepInfo?.salesRepEmail !== ''
-                  ? `${salesRepInfo?.salesRepName}(${salesRepInfo?.salesRepEmail})`
-                  : salesRepInfo?.salesRepName}
-              </span>
-            </StyledCreateName>
-          )}
-          <Box
-            sx={{
-              marginTop: '30px',
-            }}
-          >
-            <StyledCreateName>
-              <Typography sx={labelTypographySx}>
-                {b3Lang('quoteDetail.header.issuedOn')}
-              </Typography>
-              <Typography component="span" sx={valueTypographySx}>
-                {issuedAt ? `${displayFormat(Number(issuedAt))}` : ''}
-              </Typography>
-            </StyledCreateName>
-            <StyledCreateName>
-              <Typography sx={labelTypographySx}>
-                {b3Lang('quoteDetail.header.expirationDate')}
-              </Typography>
-              <Typography component="span" sx={valueTypographySx}>
-                {expirationDate ? `${displayFormat(Number(expirationDate))}` : ''}
-              </Typography>
-            </StyledCreateName>
-            {currency?.currencyCode && (
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  flexShrink: 0,
+                }}
+              >
+                <QuoteStatus code={status} />
+              </Box>
+            </Box>
+            {(salesRepInfo?.salesRepName || salesRepInfo?.salesRepEmail) && (
+              <StyledCreateName>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    marginRight: '0.5rem',
+                    fontSize: '16px',
+                  }}
+                >
+                  {b3Lang('quoteDetail.header.salesRep')}
+                </Typography>
+                <span>
+                  {salesRepInfo?.salesRepEmail !== ''
+                    ? `${salesRepInfo?.salesRepName}(${salesRepInfo?.salesRepEmail})`
+                    : salesRepInfo?.salesRepName}
+                </span>
+              </StyledCreateName>
+            )}
+            <Box
+              sx={{
+                marginTop: '30px',
+                width: '100%',
+              }}
+            >
               <StyledCreateName>
                 <Typography sx={labelTypographySx}>
-                  {b3Lang('quoteDetail.header.currency')}
+                  {b3Lang('quoteDetail.header.issuedOn')}
                 </Typography>
                 <Typography component="span" sx={valueTypographySx}>
-                  {currency.currencyCode}
+                  {issuedAt ? `${displayFormat(Number(issuedAt))}` : ''}
                 </Typography>
               </StyledCreateName>
+              <StyledCreateName>
+                <Typography sx={labelTypographySx}>
+                  {b3Lang('quoteDetail.header.expirationDate')}
+                </Typography>
+                <Typography component="span" sx={valueTypographySx}>
+                  {expirationDate ? `${displayFormat(Number(expirationDate))}` : ''}
+                </Typography>
+              </StyledCreateName>
+              {currency?.currencyCode && (
+                <StyledCreateName>
+                  <Typography sx={labelTypographySx}>
+                    {b3Lang('quoteDetail.header.currency')}
+                  </Typography>
+                  <Typography component="span" sx={valueTypographySx}>
+                    {currency.currencyCode}
+                  </Typography>
+                </StyledCreateName>
+              )}
+            </Box>
+            {Number(role) !== 100 && (
+              <Box sx={actionsContainerSx}>
+                <CustomButton variant="outlined" sx={actionButtonSx} onClick={printQuote}>
+                  {b3Lang('quoteDetail.header.print')}
+                </CustomButton>
+                <CustomButton variant="outlined" sx={actionButtonSx} onClick={exportPdf}>
+                  {b3Lang('quoteDetail.header.downloadPDF')}
+                </CustomButton>
+              </Box>
             )}
           </Box>
         </Grid>
