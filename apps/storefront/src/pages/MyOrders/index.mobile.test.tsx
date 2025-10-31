@@ -171,9 +171,10 @@ describe('when a personal customer', () => {
       await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
       expect(screen.getByRole('heading', { name: '#66996' })).toBeInTheDocument();
-      expect(screen.getByText('Total')).toBeInTheDocument();
       expect(screen.getByText('$100.00')).toBeInTheDocument();
-      expect(screen.getByText('Currency: –')).toBeInTheDocument();
+      expect(screen.queryByText(/^Total$/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Currency:/)).not.toBeInTheDocument();
+      expect(screen.getByText('–')).toBeInTheDocument();
 
       expect(screen.getByText('0022')).toBeInTheDocument();
       expect(screen.getByText('Pending')).toBeInTheDocument();

@@ -199,7 +199,7 @@ export function OrderItemCard({ item, goToDetail, isCompanyOrder = false }: Orde
     <Card
       key={item.orderId}
       sx={{
-        borderTop: '0.2px solid #000000',
+        border: '0.2px solid #000000',
         boxShadow: '0px 4px 22px 5px #0000001A',
         borderRadius: '12px',
       }}
@@ -253,17 +253,6 @@ export function OrderItemCard({ item, goToDetail, isCompanyOrder = false }: Orde
           <Typography
             sx={{
               fontFamily: 'Lato, sans-serif',
-              fontWeight: 400,
-              fontSize: '16px',
-              lineHeight: '24px',
-              color: '#231F20',
-            }}
-          >
-            Total
-          </Typography>
-          <Typography
-            sx={{
-              fontFamily: 'Lato, sans-serif',
               fontWeight: 700,
               fontSize: '20px',
               lineHeight: '28px',
@@ -281,7 +270,7 @@ export function OrderItemCard({ item, goToDetail, isCompanyOrder = false }: Orde
               color: '#231F20',
             }}
           >
-            {`Currency: ${getCurrencyDisplay(item.currencyCode, item.money)}`}
+            {getCurrencyDisplay(item.currencyCode, item.money)}
           </Typography>
         </Box>
 
