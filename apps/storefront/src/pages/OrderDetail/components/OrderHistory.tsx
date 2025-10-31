@@ -27,6 +27,72 @@ const HistoryListContainer = styled('div')((): CSSObject => ({
   },
 }));
 
+const HistoryCardContainer = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>(({ isMobile }): CSSObject => ({
+  width: '100%',
+  backgroundColor: '#FFFFFF',
+  boxShadow: 'none',
+  borderWidth: '0px 0.3px 0.3px 0px',
+  borderStyle: 'solid',
+  borderColor: '#000000',
+  padding: isMobile ? '15px' : '20px',
+  paddingBottom: '15px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
+}));
+
+const HistoryTitle = styled('div')((): CSSObject => ({
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '20px',
+  lineHeight: '28px',
+  color: '#000000',
+}));
+
+const HistoryTableElement = styled('table')((): CSSObject => ({
+  width: '100%',
+  borderCollapse: 'collapse',
+}));
+
+const HistoryHeaderRow = styled('tr')((): CSSObject => ({
+  borderBottom: '0.5px solid #000000',
+}));
+
+const HistoryHeaderCell = styled('th')<{ align?: 'left' | 'right'; width?: string }>(
+  ({ align = 'left', width }): CSSObject => ({
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '14px',
+    lineHeight: '20px',
+    color: '#000000',
+    textAlign: align,
+    padding: '10px 0',
+    width,
+    maxWidth: width,
+  }),
+);
+
+const HistoryRow = styled('tr')((): CSSObject => ({
+  borderBottom: '0.5px solid #000000',
+}));
+
+const HistoryCell = styled('td')<{ align?: 'left' | 'right'; width?: string }>(
+  ({ align = 'left', width }): CSSObject => ({
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '14px',
+    lineHeight: '24px',
+    color: '#000000',
+    textAlign: align,
+    padding: '12px 0',
+    verticalAlign: 'middle',
+    width,
+    maxWidth: width,
+  }),
+);
+
 interface OrderHistoryProps {
   variant?: 'default' | 'orderDetail';
 }
@@ -77,73 +143,40 @@ export default function OrderHistory({ variant = 'default' }: OrderHistoryProps)
     },
   ];
 
-  const orderDetailColumns: TableColumnItem<OrderHistoryItem>[] = [
-    {
-      key: 'time',
-      title: b3Lang('orderDetail.history.dateHeader'),
-      style: {
-        fontFamily: 'Lato, sans-serif',
-        fontWeight: '600',
-        fontSize: '16px',
-        lineHeight: '24px',
-        color: '#000000',
-      },
-      render: (item: OrderHistoryItem) => (
-        <Typography
-          component="span"
-          sx={{
-            fontFamily: 'Lato, sans-serif',
-            fontWeight: 400,
-            fontSize: '16px',
-            lineHeight: '24px',
-            color: '#000000',
-          }}
-        >
-          {String(displayExtendedFormat(item.createdAt))}
-        </Typography>
-      ),
-    },
-    {
-      key: 'code',
-      title: b3Lang('orderDetail.history.statusHeader'),
-      style: {
-        fontFamily: 'Lato, sans-serif',
-        fontWeight: '600',
-        fontSize: '16px',
-        lineHeight: '24px',
-        color: '#000000',
-      },
-      render: (item: OrderHistoryItem) => (
-        <OrderStatus
-          code={item.status}
-          text={getOrderStatusLabel(item.status)}
-          variant="orderDetailHistory"
-        />
-      ),
-    },
-  ];
-
-  const columnItems = variant === 'orderDetail' ? orderDetailColumns : defaultColumns;
-
   if (variant === 'orderDetail') {
     return (
-      <Box>
-        <Typography
-          sx={{
-            fontFamily: 'Lato, sans-serif',
-            fontWeight: 600,
-            fontSize: '24px',
-            lineHeight: '28px',
-            color: '#000000',
-            marginBottom: '0px',
-          }}
-        >
-          {b3Lang('orderDetail.history.title')}
-        </Typography>
-        <HistoryListContainer>
-          <B3Table columnItems={columnItems} listItems={history} showPagination={false} showBorder={false} />
-        </HistoryListContainer>
-      </Box>
+      <HistoryCardContainer isMobile={isMobile}>
+        <HistoryTitle>{b3Lang('orderDetail.history.title')}</HistoryTitle>
+        <HistoryTableElement>
+          <thead>
+            <HistoryHeaderRow>
+              <HistoryHeaderCell width="50%">
+                {b3Lang('orderDetail.history.dateHeader')}
+              </HistoryHeaderCell>
+              <HistoryHeaderCell align="right" width="50%">
+                {b3Lang('orderDetail.history.statusHeader')}
+              </HistoryHeaderCell>
+            </HistoryHeaderRow>
+          </thead>
+          <tbody>
+            {history.map((item) => (
+              <HistoryRow key={item.id}>
+                <HistoryCell width="50%">
+                  {String(displayExtendedFormat(item.createdAt))}
+                </HistoryCell>
+                <HistoryCell align="right" width="50%">
+                  <OrderStatus
+                    code={item.status}
+                    text={getOrderStatusLabel(item.status)}
+                    variant="orderDetailHistory"
+                    align="right"
+                  />
+                </HistoryCell>
+              </HistoryRow>
+            ))}
+          </tbody>
+        </HistoryTableElement>
+      </HistoryCardContainer>
     );
   }
 
@@ -156,7 +189,7 @@ export default function OrderHistory({ variant = 'default' }: OrderHistoryProps)
       >
         <Typography variant="h5">{b3Lang('orderDetail.history.title')}</Typography>
         <HistoryListContainer>
-          <B3Table columnItems={columnItems} listItems={history} showPagination={false} />
+          <B3Table columnItems={defaultColumns} listItems={history} showPagination={false} />
         </HistoryListContainer>
       </CardContent>
     </Card>
