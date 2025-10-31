@@ -196,64 +196,114 @@ export function OrderItemCard({ item, goToDetail, isCompanyOrder = false }: Orde
   }
 
   return (
-    <Card key={item.orderId}>
-      <CardContent sx={{ color: 'rgba(0, 0, 0, 0.6)' }} onClick={goToDetail}>
+    <Card
+      key={item.orderId}
+      sx={{
+        border: '0.2px solid #000000',
+        boxShadow: '0px 4px 22px 5px #0000001A',
+        borderRadius: '12px',
+      }}
+    >
+      <CardContent
+        sx={{
+          color: '#231F20',
+          padding: theme.spacing(3),
+          cursor: 'pointer',
+        }}
+        onClick={goToDetail}
+      >
         <Flex className="between-flex">
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
+          <Box>
             <Typography
-              variant="h5"
+              component="h2"
               sx={{
-                color: 'rgba(0, 0, 0, 0.87)',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 700,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#231F20',
               }}
             >
-              {`# ${item.orderId}`}
+              {`#${item.orderId}`}
             </Typography>
             <Typography
               sx={{
-                ml: 1,
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#231F20',
               }}
-              variant="body2"
             >
               {item.poNumber ? item.poNumber : '–'}
             </Typography>
           </Box>
-          <Box>
-            <OrderStatus code={item.status} />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              flexGrow: 1,
+            }}
+          >
+            <OrderStatus code={item.status} align="right" />
           </Box>
         </Flex>
 
-        <Typography
-          variant="h6"
-          sx={{
-            marginBottom: theme.spacing(2.5),
-            mt: theme.spacing(1.5),
-            minHeight: '1.43em',
-          }}
-        >
-          {currencyFormat(item.totalIncTax)}
-        </Typography>
+        <Box sx={{ marginTop: theme.spacing(3) }}>
+          <Typography
+            sx={{
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 700,
+              fontSize: '20px',
+              lineHeight: '28px',
+              color: '#231F20',
+            }}
+          >
+            {getTotalDisplay(item)}
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 400,
+              fontSize: '16px',
+              lineHeight: '24px',
+              color: '#231F20',
+            }}
+          >
+            {getCurrencyDisplay(item.currencyCode, item.money)}
+          </Typography>
+        </Box>
 
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
+            marginTop: theme.spacing(3),
           }}
         >
           <Typography
-            variant="body2"
             sx={{
-              fontWeight: 'normal',
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 400,
+              fontSize: '14px',
+              lineHeight: '24px',
+              color: '#231F20',
               marginRight: theme.spacing(2),
             }}
           >
             {getName(item)}
           </Typography>
-          <Typography>{getCreatedAtDisplay(item.createdAt)}</Typography>
+          <Typography
+            sx={{
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 400,
+              fontSize: '16px',
+              lineHeight: '24px',
+              color: '#231F20',
+            }}
+          >
+            {getCreatedAtDisplay(item.createdAt)}
+          </Typography>
         </Box>
       </CardContent>
     </Card>

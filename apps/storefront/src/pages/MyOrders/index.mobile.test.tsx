@@ -124,8 +124,8 @@ describe('when a personal customer', () => {
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
-      expect(screen.getByRole('heading', { name: '# 66996' })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { name: '# 66986' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: '#66996' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: '#66986' })).toBeInTheDocument();
     });
 
     it('displays all the information associated with an order', async () => {
@@ -170,8 +170,11 @@ describe('when a personal customer', () => {
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
-      expect(screen.getByRole('heading', { name: '# 66996' })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { name: '$100.00' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: '#66996' })).toBeInTheDocument();
+      expect(screen.getByText('$100.00')).toBeInTheDocument();
+      expect(screen.queryByText(/^Total$/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Currency:/)).not.toBeInTheDocument();
+      expect(screen.getByText('–')).toBeInTheDocument();
 
       expect(screen.getByText('0022')).toBeInTheDocument();
       expect(screen.getByText('Pending')).toBeInTheDocument();
@@ -759,8 +762,10 @@ describe('when a company customer', () => {
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
-      expect(screen.getByRole('heading', { name: '# 66996' })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { name: '$100.00' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: '#66996' })).toBeInTheDocument();
+      expect(screen.getByText('Total')).toBeInTheDocument();
+      expect(screen.getByText('$100.00')).toBeInTheDocument();
+      expect(screen.getByText('Currency')).toBeInTheDocument();
 
       // TODO: Add company name to the UI
       // expect(screen.getByText('Monsters Inc.')).toBeInTheDocument();
@@ -1260,8 +1265,8 @@ describe('when a super admin is masquerading as a company customer', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
-    expect(screen.getByRole('heading', { name: '# 66996' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: '# 66986' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '#66996' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '#66986' })).toBeInTheDocument();
   });
 
   it('displays all the information associated with an order', async () => {
@@ -1315,8 +1320,7 @@ describe('when a super admin is masquerading as a company customer', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
-    expect(screen.getByRole('heading', { name: '# 66996' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: '$100.00' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '#66996' })).toBeInTheDocument();
 
     expect(screen.getByText('Pending')).toBeInTheDocument();
     expect(screen.getByText('13 March 2025')).toBeInTheDocument();
