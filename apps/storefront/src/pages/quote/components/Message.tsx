@@ -101,10 +101,11 @@ const messageSentTimeStyles = {
 } as const;
 
 const messageInputStyles = {
-  width: 'auto',
+  width: '246px',
   height: '59px',
   borderRadius: '5px',
   padding: '10px',
+  paddingBottom: '24px',
   border: 'none',
   borderBottom: '2px solid #000000',
   backgroundColor: '#EFEFEF',
@@ -115,6 +116,7 @@ const messageInputStyles = {
   color: '#000000',
   resize: 'none' as const,
   outline: 'none',
+  marginBottom: '15px',
 } as const;
 
 const sendButtonContainerStyles = {
@@ -123,7 +125,6 @@ const sendButtonContainerStyles = {
   borderRadius: '100px',
   padding: '10px',
   backgroundColor: '#BAD6F2',
-  marginLeft: '24px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -469,8 +470,12 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  flexWrap: 'nowrap',
+                  columnGap: '16px',
                   marginTop: '38px',
                   marginBottom: '15px',
+                  width: '100%',
                 }}
               >
                 <Box
@@ -478,8 +483,7 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
                   onKeyDown={updateMessage}
                   sx={{
                     ...messageInputStyles,
-                    flex: 1,
-                    minWidth: 0,
+                    flex: '0 0 246px',
                   }}
                   value={message}
                   onChange={(event) => {
@@ -490,7 +494,10 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
                 />
                 <Box
                   onClick={() => updateMsgs(message)}
-                  sx={sendButtonContainerStyles}
+                  sx={{
+                    ...sendButtonContainerStyles,
+                    marginLeft: 'auto',
+                  }}
                 >
                   <SendMessageIcon />
                 </Box>

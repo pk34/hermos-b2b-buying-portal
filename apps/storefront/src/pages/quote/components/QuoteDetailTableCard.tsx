@@ -34,10 +34,10 @@ const StyledImage = styled('img')(() => ({
 }));
 
 const TABLE_DATA_TYPOGRAPHY_SX = {
-  fontFamily: 'Poppins',
-  fontWeight: 300,
-  fontSize: '14px',
-  lineHeight: '21px',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 400,
+  fontSize: '16px',
+  lineHeight: '24px',
   color: '#000000',
 } as const;
 

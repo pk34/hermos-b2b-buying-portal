@@ -20,34 +20,36 @@ const StatusTag = styled(B3Tag)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 300;
+  font-family: 'Lato, sans-serif';
+  font-weight: 600;
   font-size: 16px;
   line-height: 24px;
   text-align: center;
   border-radius: 20px;
-  padding: 10px;
+  padding: 16px;
   height: 34px;
+  color: #231f20;
+  white-space: nowrap;
 `;
 
 const quoteStatus: QuoteStatusObj = {
   '0': {
-    textColor: 'rgba(0, 0, 0, 0.87)',
+    textColor: '#231F20',
     idLang: 'global.quoteStatusCode.draft',
     color: '#D8D6D1',
   },
   '1': {
-    textColor: 'rgba(0, 0, 0, 0.87)',
+    textColor: '#231F20',
     idLang: 'global.quoteStatusCode.open',
     color: '#F1C224',
   },
   '4': {
-    textColor: 'rgba(0, 0, 0, 0.87)',
+    textColor: '#231F20',
     idLang: 'global.quoteStatusCode.ordered',
     color: '#C4DD6C',
   },
   '5': {
-    textColor: '#fff',
+    textColor: '#231F20',
     idLang: 'global.quoteStatusCode.expired',
     color: '#BD3E1E',
   },

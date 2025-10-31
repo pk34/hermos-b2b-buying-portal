@@ -77,16 +77,18 @@ const StyledQuoteTableContainer = styled('div')(() => ({
 
   '& .MuiTableHead-root .MuiTableCell-root': {
     fontFamily: 'Lato, sans-serif',
-    fontWeight: 300,
+    fontWeight: 600,
     fontSize: '16px',
+    lineHeight: '24px',
     color: '#000000',
     borderBottom: '0.5px solid #000000',
   },
 
   '& .MuiTableBody-root .MuiTableCell-root': {
     fontFamily: 'Lato, sans-serif',
-    fontWeight: 300,
-    fontSize: '14px',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
     color: '#000000',
     borderBottom: '0.5px solid #000000 !important',
   },
@@ -131,9 +133,9 @@ const StyledImage = styled('img')(() => ({
 
 const TABLE_DATA_TYPOGRAPHY_SX = {
   fontFamily: 'Lato, sans-serif',
-  fontWeight: 300,
-  fontSize: '14px',
-  lineHeight: '21px',
+  fontWeight: 400,
+  fontSize: '16px',
+  lineHeight: '24px',
   color: '#000000',
 } as const;
 
@@ -420,7 +422,7 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
           margin: '0.5rem 0 1rem 0',
         }}
       >
@@ -428,13 +430,14 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
           component="h2"
           sx={{
             fontFamily: 'Lato, sans-serif',
-            fontWeight: 500,
+            fontWeight: 600,
             fontSize: '18px',
+            lineHeight: '24px',
             color: '#000000',
             marginLeft: 0,
           }}
         >
-          {b3Lang('quoteDetail.table.totalProducts', { total: total || 0 })}
+          {b3Lang('quoteDetail.table.productsTitle')}
         </SectionTitle>
       </Box>
       <B3PaginationTable
