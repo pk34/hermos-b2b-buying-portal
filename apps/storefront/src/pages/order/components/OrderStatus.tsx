@@ -51,8 +51,8 @@ const StatusTag = styled(B3Tag, {
   if (variant === 'orderDetailHistory') {
     return {
       ...baseStyles,
-      width: '194px',
-      minWidth: '194px',
+      width: 'auto',
+      minWidth: 'auto',
     };
   }
 
@@ -88,7 +88,7 @@ export default function OrderStatus(props: OrderStatusProps) {
           justifyContent,
         };
 
-  const textColor = variant === 'default' ? '#000000' : '#FFFFFF';
+  const textColor = '#000000';
 
   return (
     <Box sx={containerStyles}>

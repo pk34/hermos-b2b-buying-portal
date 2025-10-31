@@ -233,8 +233,10 @@ function OrderDetail() {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: '15px',
+              gap: isMobile ? '0px' : '15px',
               order: isMobile ? 1 : 0,
+              justifyContent: isMobile ? 'space-between' : 'flex-start',
+              width: isMobile ? '100%' : 'auto',
             }}
           >
             <Typography
@@ -249,11 +251,19 @@ function OrderDetail() {
             >
               {orderHeading}
             </Typography>
-            <OrderStatus
-              code={status}
-              text={getOrderStatusLabel(status)}
-              variant="orderDetailHeader"
-            />
+            <Box
+              sx={{
+                marginLeft: isMobile ? 'auto' : '15px',
+                flexShrink: 0,
+              }}
+            >
+              <OrderStatus
+                code={status}
+                text={getOrderStatusLabel(status)}
+                variant="orderDetailHeader"
+                align={isMobile ? 'right' : 'left'}
+              />
+            </Box>
           </Grid>
           <Grid
             container

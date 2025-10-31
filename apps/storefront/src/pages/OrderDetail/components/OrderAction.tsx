@@ -394,7 +394,7 @@ function OrderCard(props: OrderCardProps) {
           sx={{
             fontFamily: 'Lato, sans-serif',
             fontWeight: 600,
-            fontSize: '24px',
+            fontSize: '20px',
             lineHeight: '28px',
             color: '#000000',
           }}
