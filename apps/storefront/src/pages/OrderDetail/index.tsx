@@ -27,6 +27,20 @@ import { OrderDetailsContext, OrderDetailsProvider } from './context/OrderDetail
 import convertB2BOrderDetails from './shared/B2BOrderData';
 import { DetailPagination, OrderAction, OrderBilling, OrderShipping } from './components';
 
+const formatOrderHeading = (heading: string) => {
+  if (!heading) {
+    return heading;
+  }
+
+  const normalizedHeading = heading.replace(/n\s*\.?\s*[º°]\s*/gi, '#');
+
+  if (normalizedHeading.includes('#')) {
+    return normalizedHeading.replace(/\s*#\s*/, ' #');
+  }
+
+  return normalizedHeading;
+};
+
 function OrderDetail() {
   const isB2BUser = useAppSelector(isB2BUserSelector);
   const role = useAppSelector(({ company }) => company.customer.role);
@@ -80,6 +94,8 @@ function OrderDetail() {
   const [orderId, setOrderId] = useState('');
   const [isRequestLoading, setIsRequestLoading] = useState(false);
   const [isCurrentCompany, setIsCurrentCompany] = useState(false);
+
+  const orderHeading = formatOrderHeading(b3Lang('orderDetail.orderId', { orderId }));
 
   useEffect(() => {
     setOrderId(params.id || '');
@@ -231,7 +247,7 @@ function OrderDetail() {
                 color: '#0067A0',
               }}
             >
-              {b3Lang('orderDetail.orderId', { orderId })}
+              {orderHeading}
             </Typography>
             <OrderStatus
               code={status}
