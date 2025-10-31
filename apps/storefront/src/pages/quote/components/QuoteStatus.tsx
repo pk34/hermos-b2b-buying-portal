@@ -26,7 +26,7 @@ const StatusTag = styled(B3Tag)`
   line-height: 24px;
   text-align: center;
   border-radius: 20px;
-  padding: 10px;
+  padding: 16px;
   height: 34px;
   color: #231f20;
   white-space: nowrap;

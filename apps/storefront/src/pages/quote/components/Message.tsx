@@ -12,7 +12,6 @@ import { format, formatDistanceStrict } from 'date-fns';
 
 import { B3CollapseContainer } from '@/components';
 import B3Spin from '@/components/spin/B3Spin';
-import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { GlobalContext } from '@/shared/global';
 import { updateQuote } from '@/shared/service/b2b';
@@ -102,10 +101,11 @@ const messageSentTimeStyles = {
 } as const;
 
 const messageInputStyles = {
-  width: 'auto',
+  width: '246px',
   height: '59px',
   borderRadius: '5px',
   padding: '10px',
+  paddingBottom: '24px',
   border: 'none',
   borderBottom: '2px solid #000000',
   backgroundColor: '#EFEFEF',
@@ -125,7 +125,6 @@ const sendButtonContainerStyles = {
   borderRadius: '100px',
   padding: '10px',
   backgroundColor: '#BAD6F2',
-  marginLeft: '24px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -212,7 +211,6 @@ function DateMessage({ msg }: DateMessageProps) {
 }
 
 function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
-  const [isMobile] = useMobile();
   const { dispatch: globalDispatch } = useContext(GlobalContext);
 
   const theme = useTheme();
@@ -471,10 +469,10 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
               <Box
                 sx={{
                   display: 'flex',
-                  alignItems: isMobile ? 'flex-end' : 'center',
-                  justifyContent: isMobile ? 'flex-start' : 'flex-start',
-                  flexWrap: isMobile ? 'wrap' : 'nowrap',
-                  gap: '16px',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  flexWrap: 'nowrap',
+                  columnGap: '16px',
                   marginTop: '38px',
                   marginBottom: '15px',
                   width: '100%',
@@ -485,9 +483,7 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
                   onKeyDown={updateMessage}
                   sx={{
                     ...messageInputStyles,
-                    flex: isMobile ? '0 1 60%' : '1 1 auto',
-                    width: isMobile ? '60%' : 'auto',
-                    minWidth: 0,
+                    flex: '0 0 246px',
                   }}
                   value={message}
                   onChange={(event) => {
@@ -500,7 +496,7 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
                   onClick={() => updateMsgs(message)}
                   sx={{
                     ...sendButtonContainerStyles,
-                    marginLeft: isMobile ? 'auto' : '24px',
+                    marginLeft: 'auto',
                   }}
                 >
                   <SendMessageIcon />

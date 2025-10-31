@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowBackIosNew } from '@mui/icons-material';
-import { Box, Grid, styled, Typography, useTheme } from '@mui/material';
+import { Box, Grid, styled, Typography } from '@mui/material';
 
 import CustomButton from '@/components/button/CustomButton';
 import { getContrastColor } from '@/components/outSideComponents/utils/b3CustomStyles';
@@ -54,10 +54,6 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
   } = useContext(CustomStyleContext);
 
   const customColor = getContrastColor(backgroundColor);
-
-  const theme = useTheme();
-
-  const primaryColor = theme.palette.primary.main;
 
   const navigate = useNavigate();
   const gridOptions = (xs: number) =>
@@ -129,7 +125,7 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
         >
           <Box
             sx={{
-              color: '#1976d2',
+              color: '#000000',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -143,12 +139,12 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
               sx={{
                 fontSize: '12px',
                 marginRight: '0.5rem',
-                color: primaryColor,
+                color: '#000000',
               }}
             />
             <p
               style={{
-                color: primaryColor,
+                color: '#000000',
                 margin: '0',
               }}
             >
