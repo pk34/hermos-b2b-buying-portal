@@ -38,6 +38,8 @@ const StatusTag = styled(B3Tag, {
     borderRadius: '20px',
     padding: '10px',
     height: '34px',
+    width: 'auto',
+    minWidth: 'auto',
   };
 
   if (variant === 'orderDetailHeader') {
@@ -56,10 +58,7 @@ const StatusTag = styled(B3Tag, {
     };
   }
 
-  return {
-    ...baseStyles,
-    width: '166px',
-  };
+  return baseStyles;
 });
 
 export default function OrderStatus(props: OrderStatusProps) {
@@ -88,7 +87,7 @@ export default function OrderStatus(props: OrderStatusProps) {
           justifyContent,
         };
 
-  const textColor = variant === 'default' ? '#000000' : '#FFFFFF';
+  const textColor = variant === 'default' ? '#F7F7F7' : '#FFFFFF';
 
   return (
     <Box sx={containerStyles}>
