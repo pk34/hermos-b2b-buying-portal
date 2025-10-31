@@ -247,6 +247,7 @@ function OrderDetail() {
                 fontSize: '24px',
                 lineHeight: '28px',
                 color: '#0067A0',
+                paddingLeft: isMobile ? '15px' : 0,
               }}
             >
               {orderHeading}

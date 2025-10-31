@@ -37,6 +37,7 @@ const HistoryCardContainer = styled(Box, {
   borderStyle: 'solid',
   borderColor: '#000000',
   padding: isMobile ? '15px' : '20px',
+  paddingBottom: '15px',
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
@@ -59,8 +60,8 @@ const HistoryHeaderRow = styled('tr')((): CSSObject => ({
   borderBottom: '0.5px solid #000000',
 }));
 
-const HistoryHeaderCell = styled('th')<{ align?: 'left' | 'right' }>(
-  ({ align = 'left' }): CSSObject => ({
+const HistoryHeaderCell = styled('th')<{ align?: 'left' | 'right'; width?: string }>(
+  ({ align = 'left', width }): CSSObject => ({
     fontFamily: 'Lato, sans-serif',
     fontWeight: 600,
     fontSize: '14px',
@@ -68,6 +69,8 @@ const HistoryHeaderCell = styled('th')<{ align?: 'left' | 'right' }>(
     color: '#000000',
     textAlign: align,
     padding: '10px 0',
+    width,
+    maxWidth: width,
   }),
 );
 
@@ -75,8 +78,8 @@ const HistoryRow = styled('tr')((): CSSObject => ({
   borderBottom: '0.5px solid #000000',
 }));
 
-const HistoryCell = styled('td')<{ align?: 'left' | 'right' }>(
-  ({ align = 'left' }): CSSObject => ({
+const HistoryCell = styled('td')<{ align?: 'left' | 'right'; width?: string }>(
+  ({ align = 'left', width }): CSSObject => ({
     fontFamily: 'Lato, sans-serif',
     fontWeight: 400,
     fontSize: '14px',
@@ -85,6 +88,8 @@ const HistoryCell = styled('td')<{ align?: 'left' | 'right' }>(
     textAlign: align,
     padding: '12px 0',
     verticalAlign: 'middle',
+    width,
+    maxWidth: width,
   }),
 );
 
@@ -145,10 +150,10 @@ export default function OrderHistory({ variant = 'default' }: OrderHistoryProps)
         <HistoryTableElement>
           <thead>
             <HistoryHeaderRow>
-              <HistoryHeaderCell>
+              <HistoryHeaderCell width="50%">
                 {b3Lang('orderDetail.history.dateHeader')}
               </HistoryHeaderCell>
-              <HistoryHeaderCell align="right">
+              <HistoryHeaderCell align="right" width="50%">
                 {b3Lang('orderDetail.history.statusHeader')}
               </HistoryHeaderCell>
             </HistoryHeaderRow>
@@ -156,8 +161,10 @@ export default function OrderHistory({ variant = 'default' }: OrderHistoryProps)
           <tbody>
             {history.map((item) => (
               <HistoryRow key={item.id}>
-                <HistoryCell>{String(displayExtendedFormat(item.createdAt))}</HistoryCell>
-                <HistoryCell align="right">
+                <HistoryCell width="50%">
+                  {String(displayExtendedFormat(item.createdAt))}
+                </HistoryCell>
+                <HistoryCell align="right" width="50%">
                   <OrderStatus
                     code={item.status}
                     text={getOrderStatusLabel(item.status)}
