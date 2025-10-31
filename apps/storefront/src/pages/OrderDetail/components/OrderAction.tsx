@@ -44,7 +44,7 @@ const StyledCardActions = styled('div', {
   display: isShowButtons ? 'flex' : 'none',
   flexWrap: 'wrap',
   gap: '10px',
-  padding: isShowButtons ? '0 10px 10px' : '0',
+  padding: isShowButtons ? '0 10px 15px 10px' : '0',
   marginTop: topSpacing ?? '0',
 }));
 
@@ -162,7 +162,7 @@ const shoppingListButtonStyles: SxProps<Theme> = {
 };
 
 const invoiceButtonStyles: SxProps<Theme> = {
-  width: '218px',
+  width: '100%',
   height: '44px',
   borderRadius: '5px',
   padding: '10px',
@@ -314,6 +314,8 @@ function OrderCard(props: OrderCardProps) {
     return '0px';
   })();
 
+  const headerPaddingTop = itemKey === 'payment' || itemKey === 'order-comments' ? '15px' : '10px';
+
   let infoKey: string[] = [];
   let infoValue: string[] = [];
   if (typeof infos !== 'string') {
@@ -389,12 +391,12 @@ function OrderCard(props: OrderCardProps) {
 
   return (
     <Card sx={cardStyles}>
-      <Box sx={{ padding: '10px 10px 0 10px' }}>
+      <Box sx={{ padding: `${headerPaddingTop} 10px 0 10px` }}>
         <Typography
           sx={{
             fontFamily: 'Lato, sans-serif',
             fontWeight: 600,
-            fontSize: '24px',
+            fontSize: '20px',
             lineHeight: '28px',
             color: '#000000',
           }}
@@ -419,7 +421,8 @@ function OrderCard(props: OrderCardProps) {
       <CardBody>
         <CardContent
           sx={{
-            padding: isShowButtons ? '10px 10px 0 10px' : '10px',
+            padding: isShowButtons ? '10px 10px 0 10px' : '10px 10px 15px 10px',
+            paddingBottom: '15px',
             flexGrow: isShowButtons ? 0 : 1,
             display: 'flex',
             flexDirection: 'column',

@@ -53,8 +53,8 @@ const StatusTag = styled(B3Tag, {
   if (variant === 'orderDetailHistory') {
     return {
       ...baseStyles,
-      width: '194px',
-      minWidth: '194px',
+      width: 'auto',
+      minWidth: 'auto',
     };
   }
 

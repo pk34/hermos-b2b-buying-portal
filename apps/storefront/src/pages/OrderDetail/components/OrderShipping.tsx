@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react';
 import styled from '@emotion/styled';
 import type { CSSObject } from '@emotion/react';
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 
 import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
 import { useMobile } from '@/hooks';
@@ -14,59 +14,82 @@ import OrderHistory from './OrderHistory';
 
 import { MoneyFormat, OrderProductItem, OrderShippingsItem } from '../../../types';
 
-const CardContainer = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'isMobile',
-})<{ isMobile: boolean }>(({ isMobile }): CSSObject => ({
-  width: isMobile ? '100%' : '662px',
-  minHeight: isMobile ? 'auto' : '526px',
-  borderWidth: '0px 0.3px 0.3px 0px',
-  borderStyle: 'solid',
-  borderColor: '#000000',
-  padding: '15px',
+const CardBaseStyles: CSSObject = {
+  width: '100%',
   backgroundColor: '#FFFFFF',
   boxShadow: 'none',
   display: 'flex',
   flexDirection: 'column',
+};
+
+const ClientInfoCard = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>(({ isMobile }): CSSObject => ({
+  ...CardBaseStyles,
+  padding: isMobile ? '15px' : '20px',
+  border: 'none',
+  gap: '6px',
 }));
 
-const TitleLine = styled('div')((): CSSObject => ({
-  fontFamily: 'Lato, sans-serif',
-  fontWeight: 400,
-  fontSize: '20px',
-  lineHeight: '28px',
-  color: '#000000',
-}));
-
-const InfoText = styled('div')((): CSSObject => ({
-  fontFamily: 'Lato, sans-serif',
-  fontWeight: 600,
-  fontSize: '16px',
-  lineHeight: '24px',
-  color: '#000000',
-  marginTop: '5px',
-}));
-
-const StatusText = styled('div')((): CSSObject => ({
-  fontFamily: 'Lato, sans-serif',
-  fontWeight: 600,
-  fontSize: '16px',
-  lineHeight: '24px',
-  color: '#000000',
-  marginTop: '5px',
-}));
-
-const Divider = styled('hr')((): CSSObject => ({
-  width: '100%',
-  borderWidth: '0.5px',
+const ProductsCard = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'isMobile',
+})<{ isMobile: boolean }>(({ isMobile }): CSSObject => ({
+  ...CardBaseStyles,
+  padding: isMobile ? '15px' : '20px',
+  borderWidth: '0px 0.3px 0.3px 0px',
   borderStyle: 'solid',
   borderColor: '#000000',
-  marginTop: '20px',
-  marginBottom: '0px',
+  gap: '20px',
 }));
 
 const ProductsTableContainer = styled('div')((): CSSObject => ({
-  marginTop: '20px',
-  overflowX: 'auto',
+  width: '100%',
+  overflowX: 'hidden',
+}));
+
+const ClientInfoLine = styled('div')((): CSSObject => ({
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+  wordBreak: 'break-word',
+}));
+
+const MobileProductsList = styled('div')((): CSSObject => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '20px',
+}));
+
+const MobileProductRow = styled('div')((): CSSObject => ({
+  display: 'flex',
+  gap: '16px',
+  alignItems: 'flex-start',
+}));
+
+const MobileProductImage = styled('img')((): CSSObject => ({
+  width: '85px',
+  height: '85px',
+  borderRadius: '4px',
+  objectFit: 'contain',
+  flexShrink: 0,
+}));
+
+const MobileProductDetails = styled('div')((): CSSObject => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+  flex: 1,
+}));
+
+const MobileProductLine = styled('span')((): CSSObject => ({
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 400,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+  wordBreak: 'break-word',
 }));
 
 const StyledTable = styled('table')((): CSSObject => ({
@@ -116,8 +139,8 @@ const ProductInfo = styled('div')((): CSSObject => ({
 }));
 
 const ProductImage = styled('img')((): CSSObject => ({
-  maxWidth: '85px',
-  maxHeight: '85px',
+  width: '85px',
+  height: '85px',
   borderRadius: '4px',
   objectFit: 'contain',
   alignSelf: 'flex-start',
@@ -145,10 +168,6 @@ const ProductMeta = styled('span')((): CSSObject => ({
   color: '#000000',
 }));
 
-const HistoryWrapper = styled('div')((): CSSObject => ({
-  marginTop: '30px',
-}));
-
 type OrderShippingProps = {
   isCurrentCompany: boolean;
 };
@@ -164,6 +183,7 @@ export default function OrderShipping({ isCurrentCompany: _isCurrentCompany }: O
       products = [],
       billingAddress,
       history = [],
+      poNumber = '',
     },
   } = useContext(OrderDetailsContext);
 
@@ -256,39 +276,40 @@ export default function OrderShipping({ isCurrentCompany: _isCurrentCompany }: O
 
   const productList = products;
 
-  const showPaymentInfo = paymentLabel || totalLabel;
+  const nameLine = displayName
+    ? `${displayName}${displayCompanyName ? ` – ${displayCompanyName}` : ''}`
+    : '';
+  const poReference = poNumber ? `P.O.: ${poNumber}` : '';
+
+  const clientInfoLines = [
+    nameLine,
+    displayAddress,
+    poReference,
+    paymentLabel,
+    totalLabel,
+    statusText,
+  ].filter((line) => Boolean(line));
 
   return (
-    <CardContainer isMobile={isMobile}>
-      {displayName && (
-        <TitleLine>
-          {displayName}
-          {displayCompanyName ? ` – ${displayCompanyName}` : ''}
-        </TitleLine>
+    <Stack spacing={3}>
+      {clientInfoLines.length > 0 && (
+        <ClientInfoCard isMobile={isMobile}>
+          {clientInfoLines.map((line, index) => (
+            <ClientInfoLine key={`${line}-${index}`}>{line}</ClientInfoLine>
+          ))}
+        </ClientInfoCard>
       )}
-      {displayAddress && <TitleLine>{displayAddress}</TitleLine>}
-      {showPaymentInfo && (
-        <InfoText>
-          {paymentLabel}
-          {paymentLabel && totalLabel && <br />}
-          {totalLabel}
-        </InfoText>
-      )}
-      {statusText && <StatusText>{statusText}</StatusText>}
-      <Divider />
       {productList.length > 0 && (
-        <ProductsTable
-          products={productList}
-          money={money}
-          showInclusiveTaxPrice={showInclusiveTaxPrice}
-        />
+        <ProductsCard isMobile={isMobile}>
+          <ProductsTable
+            products={productList}
+            money={money}
+            showInclusiveTaxPrice={showInclusiveTaxPrice}
+          />
+        </ProductsCard>
       )}
-      {history.length > 0 && (
-        <HistoryWrapper>
-          <OrderHistory variant="orderDetail" />
-        </HistoryWrapper>
-      )}
-    </CardContainer>
+      {history.length > 0 && <OrderHistory variant="orderDetail" />}
+    </Stack>
   );
 }
 
@@ -300,6 +321,7 @@ interface ProductsTableProps {
 
 function ProductsTable({ products, money, showInclusiveTaxPrice }: ProductsTableProps) {
   const b3Lang = useB3Lang();
+  const [isMobile] = useMobile();
 
   const formatPrice = (value: number | string | undefined) => {
     if (value === undefined || value === null || value === '') {
@@ -314,6 +336,58 @@ function ProductsTable({ products, money, showInclusiveTaxPrice }: ProductsTable
 
     return money ? ordersCurrencyFormat(money, numericValue) : currencyFormat(numericValue);
   };
+
+  const getBatchNumber = (product: OrderProductItem) => {
+    const batchOption = (product.product_options || []).find((option) =>
+      option.display_name?.toLowerCase().includes('batch'),
+    );
+
+    return batchOption?.display_value || '';
+  };
+
+  if (isMobile) {
+    const priceLabel = b3Lang('global.searchProduct.price');
+    const quantityLabel = b3Lang('global.searchProduct.qty');
+    const totalLabel = b3Lang('global.searchProduct.total');
+
+    return (
+      <ProductsTableContainer>
+        <MobileProductsList>
+          {products.map((product) => {
+            const unitPriceValue = showInclusiveTaxPrice
+              ? product.price_inc_tax || product.base_price
+              : product.price_ex_tax || product.base_price;
+            const totalPriceValue = showInclusiveTaxPrice
+              ? product.total_inc_tax || product.base_total
+              : product.total_ex_tax || product.base_total;
+
+            const unitPrice = formatPrice(unitPriceValue);
+            const totalPrice = formatPrice(totalPriceValue);
+            const batchNumber = getBatchNumber(product);
+
+            return (
+              <MobileProductRow key={product.id}>
+                <MobileProductImage
+                  src={product.imageUrl || PRODUCT_DEFAULT_IMAGE}
+                  alt={product.name}
+                />
+                <MobileProductDetails>
+                  {product.name && <MobileProductLine>{product.name}</MobileProductLine>}
+                  {batchNumber && (
+                    <MobileProductLine>{`Batch number: ${batchNumber}`}</MobileProductLine>
+                  )}
+                  {product.sku && <MobileProductLine>{product.sku}</MobileProductLine>}
+                  <MobileProductLine>{`${priceLabel}: ${unitPrice}`}</MobileProductLine>
+                  <MobileProductLine>{`${quantityLabel}: ${product.quantity}`}</MobileProductLine>
+                  <MobileProductLine>{`${totalLabel}: ${totalPrice}`}</MobileProductLine>
+                </MobileProductDetails>
+              </MobileProductRow>
+            );
+          })}
+        </MobileProductsList>
+      </ProductsTableContainer>
+    );
+  }
 
   return (
     <ProductsTableContainer>
