@@ -81,7 +81,7 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
   } as const;
 
   const actionButtonSx = {
-    width: '185px',
+    width: isMobile ? '50%' : 'auto',
     height: '39px',
     borderRadius: '5px',
     padding: '10px',
@@ -93,13 +93,21 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
     lineHeight: '24px',
     textTransform: 'capitalize' as const,
     displayPrint: 'none',
-    flex: '1 1 185px',
+    flex: isMobile ? '1 1 50%' : '0 0 auto',
     minWidth: 0,
     '&:hover': {
       borderColor: '#00965E',
       color: '#00965E',
       backgroundColor: 'transparent',
     },
+  } as const;
+
+  const desktopActionsContainerSx = {
+    display: 'flex',
+    flexDirection: 'row' as const,
+    gap: '10px',
+    flexWrap: 'nowrap' as const,
+    alignItems: 'center',
   } as const;
 
   const actionsContainerSx = {
@@ -110,7 +118,7 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
     flexWrap: 'nowrap' as const,
     justifyContent: isMobile ? 'space-between' : 'flex-start',
     alignItems: 'center',
-    marginTop: isMobile ? '24px' : '32px',
+    marginTop: '24px',
   } as const;
 
   return (
@@ -202,9 +210,22 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
                   display: 'flex',
                   justifyContent: 'flex-end',
                   flexShrink: 0,
+                  alignItems: 'center',
+                  gap: isMobile ? 0 : '10px',
                 }}
               >
                 <QuoteStatus code={status} />
+
+                {!isMobile && Number(role) !== 100 && (
+                  <Box sx={desktopActionsContainerSx}>
+                    <CustomButton variant="outlined" sx={actionButtonSx} onClick={printQuote}>
+                      {b3Lang('quoteDetail.header.print')}
+                    </CustomButton>
+                    <CustomButton variant="outlined" sx={actionButtonSx} onClick={exportPdf}>
+                      {b3Lang('quoteDetail.header.downloadPDF')}
+                    </CustomButton>
+                  </Box>
+                )}
               </Box>
             </Box>
             {(salesRepInfo?.salesRepName || salesRepInfo?.salesRepEmail) && (
@@ -258,7 +279,7 @@ function QuoteDetailHeader(props: QuoteDetailHeaderProps) {
                 </StyledCreateName>
               )}
             </Box>
-            {Number(role) !== 100 && (
+            {Number(role) !== 100 && isMobile && (
               <Box sx={actionsContainerSx}>
                 <CustomButton variant="outlined" sx={actionButtonSx} onClick={printQuote}>
                   {b3Lang('quoteDetail.header.print')}
