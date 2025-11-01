@@ -1,9 +1,11 @@
 import { ReactElement } from 'react';
-import { Box, CardContent, styled, TextField, Typography } from '@mui/material';
+import { Box, CardContent, styled, Typography } from '@mui/material';
 
 import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
 import { useB3Lang } from '@/lib/lang';
 import { currencyFormat, displayFormat } from '@/utils';
+
+import QuickOrderQuantitySelector from './QuickOrderQuantitySelector';
 import b2bGetVariantImageByVariantInfo from '@/utils/b2bGetVariantImageByVariantInfo';
 
 interface QuickOrderCardProps {
@@ -13,10 +15,58 @@ interface QuickOrderCardProps {
 }
 
 const StyledImage = styled('img')(() => ({
-  maxWidth: '60px',
-  height: 'auto',
-  marginRight: '0.5rem',
+  width: '85px',
+  height: '85px',
+  objectFit: 'cover',
+  marginRight: '16px',
 }));
+
+const productInfoTextStyles = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '14px',
+  lineHeight: '20px',
+  color: '#000000',
+} as const;
+
+const optionTextStyles = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '12px',
+  lineHeight: '16px',
+  color: '#000000',
+} as const;
+
+const cardContentStyles = {
+  display: 'flex',
+  flexDirection: 'row',
+  padding: '16px',
+  paddingLeft: 0,
+  gap: '16px',
+  '@media (max-width: 900px)': {
+    flexDirection: 'row',
+    paddingLeft: '16px',
+  },
+} as const;
+
+const productDetailsWrapperStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+} as const;
+
+const quantityWrapperStyles = {
+  marginTop: '8px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+} as const;
+
+const cardContainerStyles = {
+  borderStyle: 'solid',
+  borderColor: '#000000',
+  borderWidth: '0px 0.3px 0.3px 0px',
+} as const;
 
 function QuickOrderCard(props: QuickOrderCardProps) {
   const { item: shoppingDetail, checkBox, handleUpdateProductQty } = props;
@@ -39,19 +89,8 @@ function QuickOrderCard(props: QuickOrderCardProps) {
   const currentImage = b2bGetVariantImageByVariantInfo(currentVariants, { variantId }) || imageUrl;
 
   return (
-    <Box
-      key={shoppingDetail.id}
-      sx={{
-        borderTop: '1px solid #D9DCE9',
-      }}
-    >
-      <CardContent
-        sx={{
-          color: '#313440',
-          display: 'flex',
-          pl: 0,
-        }}
-      >
+    <Box key={shoppingDetail.id} sx={cardContainerStyles}>
+      <CardContent sx={cardContentStyles}>
         <Box>{checkBox && checkBox()}</Box>
         <Box>
           <StyledImage
@@ -60,33 +99,14 @@ function QuickOrderCard(props: QuickOrderCardProps) {
             loading="lazy"
           />
         </Box>
-        <Box
-          sx={{
-            flex: 1,
-          }}
-        >
-          <Typography variant="body1" color="#212121">
-            {productName}
-          </Typography>
-          <Typography variant="body1" color="#616161">
-            {variantSku}
-          </Typography>
-          <Box
-            sx={{
-              margin: '1rem 0',
-            }}
-          >
+        <Box sx={{ flex: 1 }}>
+          <Typography sx={productInfoTextStyles}>{productName}</Typography>
+          <Typography sx={productInfoTextStyles}>{variantSku}</Typography>
+          <Box sx={productDetailsWrapperStyles}>
             {optionList.length > 0 && (
-              <Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {optionList.map((option: CustomFieldItems) => (
-                  <Typography
-                    sx={{
-                      fontSize: '0.75rem',
-                      lineHeight: '1.5',
-                      color: '#455A64',
-                    }}
-                    key={option.display_name}
-                  >
+                  <Typography sx={optionTextStyles} key={option.display_name}>
                     {`${option.display_name}: ${option.display_value}`}
                   </Typography>
                 ))}
@@ -94,46 +114,21 @@ function QuickOrderCard(props: QuickOrderCardProps) {
             )}
           </Box>
 
-          <Typography sx={{ fontSize: '14px' }}>
+          <Typography sx={productInfoTextStyles}>
             {b3Lang('purchasedProducts.quickOrderCard.price', {
               price: currencyFormat(price),
             })}
           </Typography>
-          <Box
-            sx={{
-              '& label': {
-                zIndex: 0,
-              },
-            }}
-          >
-            <TextField
-              size="small"
-              type="number"
-              variant="filled"
-              label="Qty"
-              inputProps={{
-                inputMode: 'numeric',
-                pattern: '[0-9]*',
-              }}
+          <Box sx={quantityWrapperStyles}>
+            <QuickOrderQuantitySelector
               value={quantity}
-              sx={{
-                margin: '1rem 0',
-                width: '60%',
-                maxWidth: '100px',
-                '& label': {
-                  fontSize: '14px',
-                },
-                '& input': {
-                  fontSize: '14px',
-                },
-              }}
-              onChange={(e) => {
-                handleUpdateProductQty(shoppingDetail.id, e.target.value);
+              onChange={(val) => {
+                handleUpdateProductQty(shoppingDetail.id, val);
               }}
             />
           </Box>
 
-          <Typography sx={{ fontSize: '14px' }}>
+          <Typography sx={productInfoTextStyles}>
             {b3Lang('purchasedProducts.quickOrderCard.lastOrdered', {
               lastOrderedAt: displayFormat(lastOrderedAt),
             })}
