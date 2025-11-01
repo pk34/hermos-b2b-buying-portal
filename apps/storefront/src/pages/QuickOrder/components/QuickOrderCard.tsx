@@ -115,9 +115,7 @@ function QuickOrderCard(props: QuickOrderCardProps) {
           </Box>
 
           <Typography sx={productInfoTextStyles}>
-            {b3Lang('purchasedProducts.quickOrderCard.price', {
-              price: currencyFormat(price),
-            })}
+            {`${b3Lang('purchasedProducts.price')}: ${currencyFormat(price)}`}
           </Typography>
           <Box sx={quantityWrapperStyles}>
             <QuickOrderQuantitySelector
@@ -129,9 +127,7 @@ function QuickOrderCard(props: QuickOrderCardProps) {
           </Box>
 
           <Typography sx={productInfoTextStyles}>
-            {b3Lang('purchasedProducts.quickOrderCard.lastOrdered', {
-              lastOrderedAt: displayFormat(lastOrderedAt),
-            })}
+            {`${b3Lang('purchasedProducts.lastOrdered')}: ${displayFormat(lastOrderedAt)}`}
           </Typography>
         </Box>
       </CardContent>

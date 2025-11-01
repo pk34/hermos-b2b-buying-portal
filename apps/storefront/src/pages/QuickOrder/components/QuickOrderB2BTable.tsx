@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { Box, styled, Typography } from '@mui/material';
 
 import B3Spin from '@/components/spin/B3Spin';
-import { SectionTitle } from '@/components';
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
 import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
@@ -433,22 +432,6 @@ function QuickOrderTable({
   return (
     <B3Spin isSpinning={isRequestLoading}>
       <StyleQuickOrderTable>
-        <SectionTitle
-          component="h2"
-          sx={{
-            fontFamily: 'Lato, sans-serif',
-            fontWeight: 600,
-            fontSize: isMobile ? '24px' : '30px',
-            lineHeight: isMobile ? '28px' : '38px',
-            color: '#0067A0',
-            textAlign: isMobile ? 'center' : 'left',
-            marginLeft: isMobile ? 0 : '31px',
-            marginBottom: isMobile ? '12px' : '16px',
-            width: '100%',
-          }}
-        >
-          {b3Lang('global.purchasedProducts.title')}
-        </SectionTitle>
         <Typography
           sx={{
             fontFamily: 'Lato, sans-serif',
@@ -457,11 +440,12 @@ function QuickOrderTable({
             lineHeight: isMobile ? '20px' : '28px',
             color: '#000000',
             textAlign: isMobile ? 'center' : 'left',
+            marginTop: isMobile ? '24px' : '32px',
             marginBottom: isMobile ? '16px' : '24px',
             width: '100%',
           }}
         >
-          {b3Lang('purchasedProducts.totalProductsLabel', { total })}
+          {b3Lang('purchasedProducts.totalProducts', { total })}
         </Typography>
         <Box
           sx={{
@@ -567,6 +551,9 @@ function QuickOrderTable({
                     fontSize: '16px',
                     lineHeight: '24px',
                     color: '#000000',
+                    '&.MuiInputLabel-shrink': {
+                      transform: 'translate(12px, 0px) scale(0.75)',
+                    },
                   },
                   '& .MuiInputLabel-root.Mui-focused': {
                     color: '#000000',
@@ -620,6 +607,9 @@ function QuickOrderTable({
                     fontSize: '16px',
                     lineHeight: '24px',
                     color: '#000000',
+                    '&.MuiInputLabel-shrink': {
+                      transform: 'translate(12px, 0px) scale(0.75)',
+                    },
                   },
                   '& .MuiInputLabel-root.Mui-focused': {
                     color: '#000000',

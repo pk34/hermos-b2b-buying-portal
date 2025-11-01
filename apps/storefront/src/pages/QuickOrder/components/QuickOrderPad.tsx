@@ -354,7 +354,12 @@ export default function QuickOrderPad() {
   }, [b3Lang, productData]);
 
   return (
-    <Card sx={{ marginBottom: isMobile ? '8.5rem' : '50px' }}>
+    <Card
+      sx={{
+        marginBottom: isMobile ? '8.5rem' : '50px',
+        boxShadow: 'none',
+      }}
+    >
       <CardContent>
         <Box>
           <Typography variant="h5" sx={{ marginBottom: '1rem' }}>
