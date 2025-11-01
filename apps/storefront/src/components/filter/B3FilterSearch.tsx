@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Clear as ClearIcon } from '@mui/icons-material';
 import { Box, InputBase, Paper } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 
 import { useDebounce } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
@@ -12,6 +13,7 @@ interface B3FilterSearchProps {
   placeholder?: string;
   h?: number | string;
   searchValue?: string;
+  inputSx?: SxProps<Theme>;
 }
 
 function B3FilterSearch({
@@ -20,6 +22,7 @@ function B3FilterSearch({
   h = 44,
   searchBGColor = '#EFEFEF',
   searchValue = '',
+  inputSx,
   ...restProps
 }: B3FilterSearchProps) {
   const [search, setSearch] = useState<string>('');
@@ -86,37 +89,44 @@ function B3FilterSearch({
         />
       </Box>
       <InputBase
-        sx={{
-          flex: 1,
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          fontFamily: 'Lato, sans-serif',
-          fontWeight: 300,
-          fontSize: '16px',
-          lineHeight: '100%',
-          color: '#000000',
-          height: '100%',
-          '& .MuiInputBase-input': {
-            pb: 0,
-            pt: 0,
-            pl: 0,
-            pr: 0,
+        sx={[
+          {
+            flex: 1,
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
             fontFamily: 'Lato, sans-serif',
             fontWeight: 300,
             fontSize: '16px',
             lineHeight: '100%',
             color: '#000000',
-            '&::placeholder': {
+            height: '100%',
+            '& .MuiInputBase-input': {
+              pb: 0,
+              pt: 0,
+              pl: 0,
+              pr: 0,
               fontFamily: 'Lato, sans-serif',
               fontWeight: 300,
               fontSize: '16px',
               lineHeight: '100%',
               color: '#000000',
-              opacity: 1,
+              '&::placeholder': {
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 300,
+                fontSize: '16px',
+                lineHeight: '100%',
+                color: '#000000',
+                opacity: 1,
+              },
             },
           },
-        }}
+          ...(Array.isArray(inputSx)
+            ? inputSx
+            : inputSx
+            ? [inputSx]
+            : []),
+        ]}
         size="small"
         value={search}
         placeholder={placeholder}

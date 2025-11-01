@@ -1,8 +1,7 @@
 import { Dispatch, SetStateAction, useRef, useState } from 'react';
-import { Box, styled, TextField, Typography } from '@mui/material';
+import { Box, styled, Typography } from '@mui/material';
 
 import B3Spin from '@/components/spin/B3Spin';
-import { SectionTitle } from '@/components';
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
 import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
@@ -22,12 +21,12 @@ import b2bGetVariantImageByVariantInfo from '@/utils/b2bGetVariantImageByVariant
 import { getDisplayPrice } from '@/utils/b3Product/b3Product';
 import { conversionProductsList } from '@/utils/b3Product/shared/config';
 
-import B3FilterMore from '../../../components/filter/B3FilterMore';
-import B3FilterPicker from '../../../components/filter/B3FilterPicker';
 import B3FilterSearch from '../../../components/filter/B3FilterSearch';
+import B3Picker from '../../../components/ui/B3Picker';
 import { CheckedProduct } from '../utils';
 
 import QuickOrderCard from './QuickOrderCard';
+import QuickOrderQuantitySelector from './QuickOrderQuantitySelector';
 
 interface ProductInfoProps {
   basePrice: number | string;
@@ -72,9 +71,10 @@ interface PaginationTableRefProps extends HTMLInputElement {
 }
 
 const StyledImage = styled('img')(() => ({
-  maxWidth: '60px',
-  height: 'auto',
-  marginRight: '0.5rem',
+  width: '85px',
+  height: '85px',
+  objectFit: 'cover',
+  marginRight: '16px',
 }));
 
 const StyleQuickOrderTable = styled(Box)(() => ({
@@ -82,30 +82,51 @@ const StyleQuickOrderTable = styled(Box)(() => ({
   flexDirection: 'column',
   width: '100%',
 
+  '& thead': {
+    '& th': {
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 300,
+      fontSize: '16px',
+      lineHeight: '100%',
+      color: '#000000',
+    },
+  },
+
   '& tbody': {
     '& tr': {
       '& td': {
         verticalAlign: 'top',
-      },
-      '& td: first-of-type': {
-        paddingTop: '25px',
+        fontFamily: 'Lato, sans-serif',
+        fontWeight: 600,
+        fontSize: '14px',
+        lineHeight: '20px',
+        color: '#000000',
       },
     },
   },
 }));
+
+const tableDataTypographySx = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '14px',
+  lineHeight: '20px',
+  color: '#000000',
+} as const;
+
+const tableOptionTextSx = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '12px',
+  lineHeight: '16px',
+  color: '#000000',
+} as const;
 
 interface QuickOrderTableProps {
   setIsRequestLoading: Dispatch<SetStateAction<boolean>>;
   setCheckedArr: (values: CheckedProduct[]) => void;
   isRequestLoading: boolean;
 }
-
-const StyledTextField = styled(TextField)(() => ({
-  '& input': {
-    paddingTop: '12px',
-    paddingRight: '6px',
-  },
-}));
 
 const defaultSortKey = 'lastOrderedAt';
 
@@ -238,18 +259,6 @@ function QuickOrderTable({
     setSearch(params);
   };
 
-  const handleFilterChange = (data: any) => {
-    const params = {
-      ...search,
-    };
-
-    params.beginDateAt = data.startValue;
-
-    params.endDateAt = data.endValue;
-
-    setSearch(params);
-  };
-
   const handleUpdateProductQty = (id: number | string, value: number | string) => {
     if (value !== '' && Number(value) <= 0) return;
     const listItems = paginationTableRef.current?.getList() || [];
@@ -323,6 +332,7 @@ function QuickOrderTable({
             sx={{
               display: 'flex',
               alignItems: 'flex-start',
+              gap: '16px',
             }}
           >
             <StyledImage
@@ -330,24 +340,13 @@ function QuickOrderTable({
               alt="Product-img"
               loading="lazy"
             />
-            <Box>
-              <Typography variant="body1" color="#212121">
-                {row.productName}
-              </Typography>
-              <Typography variant="body1" color="#616161">
-                {row.variantSku}
-              </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <Typography sx={tableDataTypographySx}>{row.productName}</Typography>
+              <Typography sx={tableDataTypographySx}>{row.variantSku}</Typography>
               {optionList.length > 0 && (
-                <Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   {optionList.map((option: any) => (
-                    <Typography
-                      sx={{
-                        fontSize: '0.75rem',
-                        lineHeight: '1.5',
-                        color: '#455A64',
-                      }}
-                      key={option.id}
-                    >
+                    <Typography sx={tableOptionTextSx} key={option.id}>
                       {`${option.display_name}: ${option.display_value}`}
                     </Typography>
                   ))}
@@ -380,12 +379,8 @@ function QuickOrderTable({
         const price = withTaxPrice * Number(qty);
 
         return (
-          <Typography
-            sx={{
-              padding: '12px 0',
-            }}
-          >
-            {`${showPrice(currencyFormat(price), row)}`}
+          <Typography sx={{ ...tableDataTypographySx, textAlign: 'right', width: '100%' }}>
+            {showPrice(currencyFormat(price), row)}
           </Typography>
         );
       },
@@ -401,24 +396,19 @@ function QuickOrderTable({
         const qty = handleSetCheckedQty(row);
 
         return (
-          <StyledTextField
-            size="small"
-            type="number"
-            variant="filled"
-            value={qty}
-            inputProps={{
-              inputMode: 'numeric',
-              pattern: '[0-9]*',
-            }}
-            onChange={(e) => {
-              handleUpdateProductQty(row.id, e.target.value);
-            }}
-          />
+          <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <QuickOrderQuantitySelector
+              value={qty}
+              onChange={(value) => {
+                handleUpdateProductQty(row.id, value);
+              }}
+            />
+          </Box>
         );
       },
       width: '15%',
       style: {
-        textAlign: 'right',
+        textAlign: 'center',
       },
     },
     {
@@ -426,11 +416,7 @@ function QuickOrderTable({
       title: b3Lang('purchasedProducts.lastOrdered'),
       render: (row: CustomFieldItems) => (
         <Box>
-          <Typography
-            sx={{
-              padding: '12px 0',
-            }}
-          >
+          <Typography sx={{ ...tableDataTypographySx, textAlign: 'right', width: '100%' }}>
             {`${displayFormat(Number(row.lastOrderedAt))}`}
           </Typography>
         </Box>
@@ -446,89 +432,193 @@ function QuickOrderTable({
   return (
     <B3Spin isSpinning={isRequestLoading}>
       <StyleQuickOrderTable>
-        <SectionTitle
-          component="h2"
+        <Typography
           sx={{
-            height: '50px',
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: isMobile ? '14px' : '24px',
+            lineHeight: isMobile ? '20px' : '28px',
+            color: '#000000',
+            textAlign: isMobile ? 'center' : 'left',
+            marginTop: isMobile ? '24px' : '32px',
+            marginBottom: isMobile ? '16px' : '24px',
+            width: '100%',
           }}
         >
           {b3Lang('purchasedProducts.totalProducts', { total })}
-        </SectionTitle>
+        </Typography>
         <Box
           sx={{
-            marginBottom: '5px',
             display: 'flex',
-            '& label': {
-              zIndex: 0,
-            },
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: isMobile ? 'center' : 'flex-end',
+            justifyContent: isMobile ? 'center' : 'flex-start',
+            gap: isMobile ? '16px' : '10px',
+            width: '100%',
+            marginBottom: isMobile ? '24px' : '32px',
           }}
         >
           <Box
             sx={{
-              width: isMobile ? '100%' : '40%',
-              mr: '20px',
-              display: 'flex',
-              justifyContent: isMobile ? 'space-between' : 'flex-start',
+              width: isMobile ? '100%' : '225px',
+              maxWidth: isMobile ? '100%' : '225px',
+              minWidth: isMobile ? '100%' : '225px',
+              margin: isMobile ? '0 auto' : 0,
             }}
           >
             <B3FilterSearch
-              h="48px"
-              searchBGColor="rgba(0, 0, 0, 0.06)"
+              w={isMobile ? '100%' : 225}
+              h={44}
+              searchBGColor="#EFEFEF"
+              inputSx={{
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#000000',
+                '& .MuiInputBase-input': {
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                  color: '#000000',
+                  '&::placeholder': {
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    color: '#000000',
+                    opacity: 1,
+                  },
+                },
+              }}
               handleChange={(e) => {
                 handleSearchProduct(e);
               }}
             />
-
-            {isMobile && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <B3FilterMore
-                  filterMoreInfo={[]}
-                  startPicker={{
-                    isEnabled: true,
-                    label: b3Lang('purchasedProducts.from'),
-                    defaultValue: search?.beginDateAt || '',
-                    pickerKey: 'start',
-                  }}
-                  endPicker={{
-                    isEnabled: true,
-                    label: b3Lang('purchasedProducts.to'),
-                    defaultValue: search?.endDateAt || '',
-                    pickerKey: 'end',
-                  }}
-                  isShowMore
-                  onChange={handleFilterChange}
-                />
-              </Box>
-            )}
           </Box>
-
-          {!isMobile && (
-            <B3FilterPicker
-              handleChange={handlePickerChange}
-              xs={{
-                mt: 0,
-                height: '50px',
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: isMobile ? '10%' : '10px',
+              justifyContent: isMobile ? 'space-between' : 'flex-start',
+              width: isMobile ? '100%' : 'auto',
+            }}
+          >
+            <Box
+              sx={{
+                width: isMobile ? '45%' : '167px',
+                minWidth: isMobile ? '45%' : '167px',
               }}
-              startPicker={{
-                isEnabled: true,
-                label: b3Lang('purchasedProducts.from'),
-                defaultValue: distanceDay(90),
-                pickerKey: 'start',
+            >
+              <B3Picker
+                variant="filled"
+                label={b3Lang('purchasedProducts.from')}
+                value={search?.beginDateAt || distanceDay(90)}
+                textFieldSx={{
+                  width: '100%',
+                  '& .MuiFilledInput-root': {
+                    height: '44px',
+                    borderRadius: '5px',
+                    backgroundColor: '#EFEFEF',
+                    '&:before': {
+                      borderBottomWidth: '2px',
+                      borderBottomColor: '#000000',
+                    },
+                    '&:after': {
+                      borderBottomWidth: '2px',
+                      borderBottomColor: '#000000',
+                    },
+                    '&:hover': {
+                      backgroundColor: '#EFEFEF',
+                    },
+                    '&.Mui-focused': {
+                      backgroundColor: '#EFEFEF',
+                    },
+                  },
+                  '& .MuiFilledInput-input': {
+                    padding: '10px',
+                    fontFamily: "'Lato', sans-serif",
+                    fontWeight: 600,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    color: '#000000',
+                  },
+                  '& .MuiInputLabel-root': {
+                    fontFamily: "'Lato', sans-serif",
+                    fontWeight: 600,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    color: '#000000',
+                    '&.MuiInputLabel-shrink': {
+                      transform: 'translate(12px, 0px) scale(0.75)',
+                    },
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: '#000000',
+                  },
+                }}
+                onChange={(value) => handlePickerChange('start', value)}
+              />
+            </Box>
+            <Box
+              sx={{
+                width: isMobile ? '45%' : '167px',
+                minWidth: isMobile ? '45%' : '167px',
               }}
-              endPicker={{
-                isEnabled: true,
-                label: b3Lang('purchasedProducts.to'),
-                defaultValue: distanceDay(),
-                pickerKey: 'end',
-              }}
-              customWidth="58%"
-            />
-          )}
+            >
+              <B3Picker
+                variant="filled"
+                label={b3Lang('purchasedProducts.to')}
+                value={search?.endDateAt || distanceDay()}
+                textFieldSx={{
+                  width: '100%',
+                  '& .MuiFilledInput-root': {
+                    height: '44px',
+                    borderRadius: '5px',
+                    backgroundColor: '#EFEFEF',
+                    '&:before': {
+                      borderBottomWidth: '2px',
+                      borderBottomColor: '#000000',
+                    },
+                    '&:after': {
+                      borderBottomWidth: '2px',
+                      borderBottomColor: '#000000',
+                    },
+                    '&:hover': {
+                      backgroundColor: '#EFEFEF',
+                    },
+                    '&.Mui-focused': {
+                      backgroundColor: '#EFEFEF',
+                    },
+                  },
+                  '& .MuiFilledInput-input': {
+                    padding: '10px',
+                    fontFamily: "'Lato', sans-serif",
+                    fontWeight: 600,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    color: '#000000',
+                  },
+                  '& .MuiInputLabel-root': {
+                    fontFamily: "'Lato', sans-serif",
+                    fontWeight: 600,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    color: '#000000',
+                    '&.MuiInputLabel-shrink': {
+                      transform: 'translate(12px, 0px) scale(0.75)',
+                    },
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: '#000000',
+                  },
+                }}
+                onChange={(value) => handlePickerChange('end', value)}
+              />
+            </Box>
+          </Box>
         </Box>
 
         <B3PaginationTable

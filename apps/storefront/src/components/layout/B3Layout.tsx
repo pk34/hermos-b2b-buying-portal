@@ -101,8 +101,10 @@ export default function B3Layout({ children }: { children: ReactNode }) {
     return {};
   }, [location]);
 
+  const isPurchasedProductsPage = location.pathname === '/purchased-products';
+
   const mobileTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
-    if (!isMobile || !title) {
+    if (!isMobile || !title || !isPurchasedProductsPage) {
       return undefined;
     }
 
@@ -116,7 +118,20 @@ export default function B3Layout({ children }: { children: ReactNode }) {
       width: '100%',
       marginTop: '24px',
     };
-  }, [isMobile, title]);
+  }, [isMobile, title, isPurchasedProductsPage]);
+
+  const desktopTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
+    if (isMobile || !title || !isPurchasedProductsPage) {
+      return undefined;
+    }
+
+    return {
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 600,
+      fontSize: '30px',
+      lineHeight: '38px',
+    };
+  }, [isMobile, title, isPurchasedProductsPage]);
 
   return (
     <Box>
@@ -168,7 +183,7 @@ export default function B3Layout({ children }: { children: ReactNode }) {
               ...overflowStyle,
             }}
           >
-            <B3MainHeader title={title} />
+            <B3MainHeader title={title} titleSx={desktopTitleSx} />
             <CompanyCredit />
             <Box
               component="main"

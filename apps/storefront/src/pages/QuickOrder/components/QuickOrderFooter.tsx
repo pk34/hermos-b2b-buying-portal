@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowDropDown } from '@mui/icons-material';
-import { Box, Grid, Menu, MenuItem, SxProps, Typography, useMediaQuery } from '@mui/material';
+import { Box, Menu, MenuItem, SvgIcon, Typography, useMediaQuery } from '@mui/material';
 import uniq from 'lodash-es/uniq';
 import { v1 as uuid } from 'uuid';
 
@@ -83,6 +82,17 @@ const transformToCartLineItems = (productsSearch: Product[], checkedArr: Checked
   return lineItems;
 };
 
+const QuickOrderFooterArrowIcon = () => (
+  <SvgIcon viewBox="0 0 20 21" sx={{ width: 20, height: 21 }}>
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M5.29289 7.34786C5.68342 6.95436 6.31658 6.95436 6.70711 7.34786L10 10.6659L13.2929 7.34786C13.6834 6.95436 14.3166 6.95436 14.7071 7.34786C15.0976 7.74137 15.0976 8.37937 14.7071 8.77288L10.7071 12.8034C10.3166 13.1969 9.68342 13.1969 9.29289 12.8034L5.29289 8.77288C4.90237 8.37937 4.90237 7.74137 5.29289 7.34786Z"
+      fill="white"
+    />
+  </SvgIcon>
+);
+
 function QuickOrderFooter(props: QuickOrderFooterProps) {
   const { checkedArr, isAgenting, setIsRequestLoading, isB2BUser } = props;
   const {
@@ -111,15 +121,6 @@ function QuickOrderFooter(props: QuickOrderFooterProps) {
   const customerGroupId = useAppSelector((state) => state.company.customer.customerGroupId);
 
   const navigate = useNavigate();
-
-  const containerStyle = isMobile
-    ? {
-        alignItems: 'flex-start',
-        flexDirection: 'column',
-      }
-    : {
-        alignItems: 'center',
-      };
 
   const handleOpenBtnList = () => {
     if (checkedArr.length === 0) {
@@ -457,25 +458,30 @@ function QuickOrderFooter(props: QuickOrderFooterProps) {
   };
 
   const buttonList = [
-    {
-      name: b3Lang('purchasedProducts.footer.addToCart'),
-      key: 'add-selected-to-cart',
-      handleClick: handleAddSelectedToCart,
-      isDisabled: !isShowCartAction,
-    },
+    // {
+    //   name: b3Lang('purchasedProducts.footer.addToCart'),
+    //   key: 'add-selected-to-cart',
+    //   handleClick: handleAddSelectedToCart,
+    //   isDisabled: !isShowCartAction,
+    // },
     {
       name: b3Lang('purchasedProducts.footer.addToQuote'),
       key: 'add-selected-to-quote',
       handleClick: handleAddSelectedToQuote,
       isDisabled: !productQuoteEnabled,
     },
-    {
-      name: b3Lang('purchasedProducts.footer.addSelectedProductsToShoppingList'),
-      key: 'add-selected-to-shoppingList',
-      handleClick: handleCreateShoppingClick,
-      isDisabled: !shoppingListEnabled,
-    },
+    // {
+    //   name: b3Lang('purchasedProducts.footer.addSelectedProductsToShoppingList'),
+    //   key: 'add-selected-to-shoppingList',
+    //   handleClick: handleCreateShoppingClick,
+    //   isDisabled: !shoppingListEnabled,
+    // },
   ];
+
+  // Preserve hidden handlers for potential future reactivation of cart and shopping list options.
+  void handleAddSelectedToCart;
+
+  const hasAvailableActions = buttonList.some((button) => !button.isDisabled);
 
   useEffect(() => {
     if (checkedArr.length > 0) {
@@ -507,155 +513,158 @@ function QuickOrderFooter(props: QuickOrderFooterProps) {
     }
   }, [checkedArr]);
 
-  let gridBarStyles: SxProps = {
-    display: isMobile ? 'initial' : 'flex',
-    flexBasis: '100%',
-  };
-
-  if (isDesktopLimit) {
-    gridBarStyles = {
-      display: 'flex',
-      flexGrow: 1,
-      maxWidth: 1775,
-      margin: 'auto',
-    };
-  }
-
   return (
     <>
       {isShowCartAction || productQuoteEnabled || shoppingListEnabled ? (
-        <Grid
+        <Box
           sx={{
             position: 'fixed',
             bottom: isMobile && isAgenting ? '52px' : 0,
             left: 0,
-            backgroundColor: '#fff',
             width: '100%',
-            padding: isMobile ? '0 0 1rem 0' : '16px 0 16px',
-            height: isMobile ? '8rem' : 'auto',
-            marginLeft: 0,
             display: 'flex',
-            flexWrap: 'nowrap',
+            justifyContent: 'center',
+            padding: 0,
+            backgroundColor: '#FFFFFF',
             zIndex: '1000',
           }}
-          container
-          spacing={2}
         >
-          <Grid item={isMobile} sx={gridBarStyles}>
+          <Box
+            sx={{
+              width: isMobile ? '100vw' : 'calc(66.6667% + 32px)',
+              maxWidth: isMobile ? '100vw' : isDesktopLimit ? '1775px' : 'calc(66.6667% + 32px)',
+              borderStyle: 'solid',
+              borderColor: '#000000',
+              borderWidth: '0px 0.3px 0.3px 0px',
+              backgroundColor: '#FFFFFF',
+              boxSizing: 'border-box',
+            }}
+          >
             <Box
               sx={{
-                width: 263,
-                display: isMobile ? 'none' : 'block',
-              }}
-            />
-            <Box
-              sx={{
-                flex: 1,
                 display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
                 alignItems: 'center',
-                paddingLeft: isMobile ? 0 : '50px',
-                paddingRight: isMobile ? 0 : '80px',
+                justifyContent: isMobile ? 'center' : 'space-between',
+                gap: isMobile ? '16px' : '32px',
+                height: isMobile ? 'auto' : '59px',
+                padding: isMobile ? '16px 20px' : '10px 32px',
               }}
             >
-              <Box
+              <Typography
                 sx={{
-                  width: isMobile ? '100%' : 'calc(66.6667% + 32px)',
-                  display: 'flex',
-                  zIndex: '999',
-                  justifyContent: 'space-between',
-                  ...containerStyle,
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 600,
+                  fontSize: isMobile ? '14px' : '16px',
+                  lineHeight: isMobile ? '20px' : '24px',
+                  color: '#000000',
+                  textAlign: isMobile ? 'center' : 'left',
+                  width: isMobile ? '100%' : 'auto',
                 }}
               >
-                <Typography
-                  sx={{
-                    color: '#000000',
-                    fontSize: '16px',
-                    fontWeight: '400',
-                  }}
-                >
-                  {b3Lang('purchasedProducts.footer.selectedProducts', {
-                    quantity: checkedArr.length,
-                  })}
-                </Typography>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexWrap: isMobile ? 'wrap' : 'nowrap',
-                    width: isMobile ? '100%' : 'auto',
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontSize: '16px',
-                      fontWeight: '700',
-                      color: '#000000',
-                    }}
-                  >
-                    {b3Lang('purchasedProducts.footer.subtotal', {
-                      subtotal: currencyFormat(selectedSubTotal),
-                    })}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginTop: isMobile ? '0.5rem' : 0,
-                      marginLeft: isMobile ? 0 : '20px',
-                      width: isMobile ? '100%' : 'auto',
-                    }}
-                  >
-                    <CustomButton
-                      variant="contained"
-                      ref={ref}
-                      onClick={handleOpenBtnList}
-                      sx={{
-                        marginRight: isMobile ? '1rem' : 0,
-                        width: isMobile ? '100%' : 'auto',
-                      }}
-                      endIcon={<ArrowDropDown />}
-                    >
-                      {b3Lang('purchasedProducts.footer.addSelectedTo')}
-                    </CustomButton>
-
-                    <Menu
-                      id="basic-menu"
-                      anchorEl={ref.current}
-                      open={isOpen}
-                      onClose={handleClose}
-                      MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                      }}
-                    >
-                      {buttonList.length > 0 &&
-                        buttonList.map((button) => {
-                          if (button.isDisabled) return null;
-
-                          return (
-                            <MenuItem
-                              key={button.key}
-                              onClick={() => {
-                                button.handleClick();
-                              }}
-                            >
-                              {button.name}
-                            </MenuItem>
-                          );
-                        })}
-                    </Menu>
-                  </Box>
-                </Box>
-              </Box>
+                {b3Lang('purchasedProducts.footer.selectedProducts', {
+                  quantity: checkedArr.length,
+                })}
+              </Typography>
+              <Typography
+                sx={{
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: isMobile ? 600 : 700,
+                  fontSize: '16px',
+                  lineHeight: '24px',
+                  color: '#000000',
+                  textAlign: 'center',
+                  width: isMobile ? '100%' : 'auto',
+                }}
+              >
+                {b3Lang('purchasedProducts.footer.subtotal', {
+                  subtotal: currencyFormat(selectedSubTotal),
+                })}
+              </Typography>
               <Box
                 sx={{
-                  width: '33.3333%',
-                  display: isMobile ? 'none' : 'block',
+                  width: isMobile ? '100%' : 'auto',
+                  display: 'flex',
+                  justifyContent: isMobile ? 'center' : 'flex-end',
                 }}
-              />
+              >
+                <CustomButton
+                  id="quick-order-footer-button"
+                  variant="contained"
+                  ref={ref}
+                  onClick={handleOpenBtnList}
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '5px',
+                    padding: '10px 20px',
+                    minHeight: '40px',
+                    backgroundColor: '#0067A0',
+                    textTransform: 'none',
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    color: '#FFFFFF',
+                    '&:hover': {
+                      backgroundColor: '#00965E',
+                    },
+                  }}
+                  disabled={!hasAvailableActions}
+                  endIcon={<QuickOrderFooterArrowIcon />}
+                >
+                  {b3Lang('purchasedProducts.footer.addSelectedTo')}
+                </CustomButton>
+                <Menu
+                  id="quick-order-footer-menu"
+                  anchorEl={ref.current}
+                  open={isOpen && hasAvailableActions}
+                  onClose={handleClose}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  MenuListProps={{
+                    'aria-labelledby': 'quick-order-footer-button',
+                  }}
+                  PaperProps={{
+                    sx: {
+                      width: isMobile ? '100vw' : '352px',
+                      maxWidth: isMobile ? '100vw' : '352px',
+                      backgroundColor: '#F5F5F5',
+                      borderRadius: '5px',
+                      boxShadow: 'none',
+                      left: isMobile ? '0 !important' : undefined,
+                      right: isMobile ? '0 !important' : undefined,
+                    },
+                  }}
+                >
+                  {buttonList.length > 0 &&
+                    buttonList.map((button) => {
+                      if (button.isDisabled) return null;
+
+                      return (
+                        <MenuItem
+                          key={button.key}
+                          onClick={() => {
+                            button.handleClick();
+                          }}
+                          sx={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 600,
+                            fontSize: '16px',
+                            lineHeight: '24px',
+                            color: '#000000',
+                          }}
+                        >
+                          {button.name}
+                        </MenuItem>
+                      );
+                    })}
+                </Menu>
+              </Box>
             </Box>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       ) : null}
 
       <OrderShoppingList
