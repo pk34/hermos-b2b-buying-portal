@@ -47,7 +47,7 @@ function QuickOrder() {
             xs={isMobile ? 12 : 8}
             sx={{
               backgroundColor: '#ffffff',
-              borderRadius: '4px',
+              borderRadius: '0px',
               borderStyle: 'solid',
               borderColor: '#000000',
               borderWidth: '0px 0.3px 0.3px 0px',

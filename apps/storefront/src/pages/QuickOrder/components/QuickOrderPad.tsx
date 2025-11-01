@@ -368,9 +368,11 @@ export default function QuickOrderPad() {
         borderColor: '#000000',
         borderWidth: '0px 0.3px 0.3px 0px',
         backgroundColor: '#ffffff',
+        borderRadius: '0px',
+        mt: { lg: '36px' },
       }}
     >
-      <CardContent sx={{ padding: isMobile ? '24px 16px' : '32px 24px' }}>
+      <CardContent sx={{ padding: '16px' }}>
         <Box>
           <Typography
             sx={{
