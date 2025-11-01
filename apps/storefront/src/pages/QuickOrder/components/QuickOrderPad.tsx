@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { UploadFile as UploadFileIcon } from '@mui/icons-material';
 import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
 
 import { B3Upload } from '@/components';
@@ -18,6 +17,13 @@ import { addCartProductToVerify } from '../utils';
 
 import QuickAdd from './QuickAdd';
 import SearchProduct from './SearchProduct';
+
+const dividerStyles = {
+  borderColor: '#000000',
+  borderWidth: '0 0 0.5px 0',
+  borderStyle: 'solid',
+  opacity: 1,
+} as const;
 
 export default function QuickOrderPad() {
   const [isMobile] = useMobile();
@@ -358,11 +364,25 @@ export default function QuickOrderPad() {
       sx={{
         marginBottom: isMobile ? '8.5rem' : '50px',
         boxShadow: 'none',
+        borderStyle: 'solid',
+        borderColor: '#000000',
+        borderWidth: '0px 0.3px 0.3px 0px',
+        backgroundColor: '#ffffff',
       }}
     >
-      <CardContent>
+      <CardContent sx={{ padding: isMobile ? '24px 16px' : '32px 24px' }}>
         <Box>
-          <Typography variant="h5" sx={{ marginBottom: '1rem' }}>
+          <Typography
+            sx={{
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: isMobile ? 400 : 600,
+              fontSize: isMobile ? '20px' : '24px',
+              lineHeight: '28px',
+              color: '#000000',
+              textAlign: isMobile ? 'center' : 'left',
+              marginBottom: isMobile ? '16px' : '24px',
+            }}
+          >
             {b3Lang('purchasedProducts.quickOrderPad.quickOrderPad')}
           </Typography>
 
@@ -374,15 +394,53 @@ export default function QuickOrderPad() {
             }
           />
 
-          <Divider />
+          <Divider sx={dividerStyles} />
 
           <QuickAdd quickAddToList={quickAddToList} />
 
-          <Divider />
+          <Divider sx={{ ...dividerStyles, marginTop: isMobile ? '24px' : '32px' }} />
 
-          <Box sx={{ margin: '20px 0 0' }}>
-            <CustomButton variant="text" onClick={() => handleOpenUploadDiag()}>
-              <UploadFileIcon sx={{ marginRight: '8px' }} />
+          <Box
+            sx={{
+              margin: '20px 0 0',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <CustomButton
+              variant="text"
+              onClick={() => handleOpenUploadDiag()}
+              sx={{
+                textTransform: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#0067A0',
+                width: '100%',
+                padding: 0,
+              }}
+            >
+              <Box
+                component="svg"
+                width={24}
+                height={24}
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 16V17C4 18.6569 5.34315 20 7 20H17C18.6569 20 20 18.6569 20 17V16M16 8L12 4M12 4L8 8M12 4V16"
+                  stroke="#0067A0"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </Box>
               {b3Lang('purchasedProducts.quickOrderPad.bulkUploadCSV')}
             </CustomButton>
           </Box>

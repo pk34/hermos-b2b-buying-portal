@@ -155,7 +155,17 @@ export default function SearchProduct({ addToList }: SearchProductProps) {
         margin: '24px 0',
       }}
     >
-      <Typography>{b3Lang('global.searchProductAddProduct.searchBySkuOrName')}</Typography>
+      <Typography
+        sx={{
+          fontFamily: 'Lato, sans-serif',
+          fontWeight: 600,
+          fontSize: '16px',
+          lineHeight: '24px',
+          color: '#000000',
+        }}
+      >
+        {b3Lang('global.searchProductAddProduct.searchBySkuOrName')}
+      </Typography>
       <TextField
         hiddenLabel
         placeholder={b3Lang('global.searchProduct.placeholder.quickOrder')}
@@ -168,28 +178,90 @@ export default function SearchProduct({ addToList }: SearchProductProps) {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <SearchIcon />
+              <SearchIcon sx={{ color: '#000000' }} />
             </InputAdornment>
           ),
         }}
         sx={{
           margin: '12px 0',
-          '& input': {
-            padding: '12px 12px 12px 0',
+          width: '100%',
+          '& .MuiFilledInput-root': {
+            height: '44px',
+            borderRadius: '5px',
+            backgroundColor: '#EFEFEF',
+            padding: '0 10px',
+            '&:before': {
+              borderBottomWidth: '2px',
+              borderBottomColor: '#000000',
+            },
+            '&:after': {
+              borderBottomWidth: '2px',
+              borderBottomColor: '#000000',
+            },
+            '&:hover': {
+              backgroundColor: '#EFEFEF',
+            },
+            '&.Mui-focused': {
+              backgroundColor: '#EFEFEF',
+            },
+          },
+          '& .MuiInputAdornment-root': {
+            marginRight: '8px',
+            color: '#000000',
+          },
+          '& .MuiInputBase-input': {
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: '16px',
+            lineHeight: '24px',
+            color: '#000000',
+            padding: '10px 0',
+            '&::placeholder': {
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '16px',
+              lineHeight: '24px',
+              color: '#000000',
+              opacity: 1,
+            },
           },
         }}
       />
       <CustomButton
-        variant="outlined"
+        variant="contained"
         fullWidth
         disabled={isLoading}
         onClick={handleSearchButtonClicked}
+        sx={{
+          width: '100%',
+          height: '44px',
+          borderRadius: '5px',
+          padding: '10px',
+          backgroundColor: '#0067A0',
+          fontFamily: 'Lato, sans-serif',
+          fontWeight: 600,
+          fontSize: '16px',
+          lineHeight: '24px',
+          textAlign: 'center',
+          color: '#FFFFFF',
+          textTransform: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          '&:hover': {
+            backgroundColor: '#0067A0',
+          },
+        }}
       >
         <B3Spin isSpinning={isLoading} tip="" size={16}>
           <Box
             sx={{
               flex: 1,
               textAlign: 'center',
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '16px',
+              lineHeight: '24px',
             }}
           >
             {b3Lang('global.searchProductAddProduct.searchProduct')}
