@@ -249,7 +249,7 @@ export default function SearchProduct({ addToList }: SearchProductProps) {
           alignItems: 'center',
           justifyContent: 'center',
           '&:hover': {
-            backgroundColor: '#0067A0',
+            backgroundColor: '#00965E',
           },
         }}
       >

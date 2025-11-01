@@ -608,7 +608,7 @@ function QuickOrderFooter(props: QuickOrderFooterProps) {
                     lineHeight: '20px',
                     color: '#FFFFFF',
                     '&:hover': {
-                      backgroundColor: '#0067A0',
+                      backgroundColor: '#00965E',
                     },
                   }}
                   disabled={!hasAvailableActions}

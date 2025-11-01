@@ -570,7 +570,7 @@ export default function QuickAdd(props: AddToListContentProps) {
             alignItems: 'center',
             justifyContent: 'center',
             '&:hover': {
-              backgroundColor: '#0067A0',
+              backgroundColor: '#00965E',
             },
           }}
         >
