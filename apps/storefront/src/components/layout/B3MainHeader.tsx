@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
@@ -64,6 +64,28 @@ export default function MainHeader({
   useEffect(() => {
     b3TriggerCartNumber();
   }, []);
+
+  const headingSx = useMemo<SxProps<Theme>>(() => {
+    const baseTitleSx: SxProps<Theme> = {
+      display: 'flex',
+      alignItems: 'flex-end',
+      height: '40px',
+      mb: '24px',
+      mt: isMobile ? 0 : '24px',
+      ml: 0,
+      color: '#0067A0',
+    };
+
+    if (!titleSx) {
+      return baseTitleSx;
+    }
+
+    if (Array.isArray(titleSx)) {
+      return [baseTitleSx, ...titleSx];
+    }
+
+    return [baseTitleSx, titleSx];
+  }, [isMobile, titleSx]);
 
   return (
     <Box>
@@ -168,22 +190,7 @@ export default function MainHeader({
         </Box>
       </Box>
       {title && (
-        <SectionTitle
-          sx={[
-            {
-              display: 'flex',
-              alignItems: 'flex-end',
-              height: '40px',
-              mb: '24px',
-              mt: isMobile ? 0 : '24px',
-              ml: 0,
-              color: '#0067A0',
-            },
-            titleSx,
-          ]}
-        >
-          {title}
-        </SectionTitle>
+        <SectionTitle sx={headingSx}>{title}</SectionTitle>
       )}
       <B3StatusNotification title={title} />
     </Box>
