@@ -107,14 +107,6 @@ const StyleQuickOrderTable = styled(Box)(() => ({
   },
 }));
 
-const tableHeaderTypographySx = {
-  fontFamily: 'Lato, sans-serif',
-  fontWeight: 300,
-  fontSize: '16px',
-  lineHeight: '100%',
-  color: '#000000',
-} as const;
-
 const tableDataTypographySx = {
   fontFamily: 'Lato, sans-serif',
   fontWeight: 600,
@@ -329,7 +321,7 @@ function QuickOrderTable({
   const columnItems: TableColumnItem<ProductInfoProps>[] = [
     {
       key: 'product',
-      title: <Typography sx={tableHeaderTypographySx}>{b3Lang('purchasedProducts.product')}</Typography>,
+      title: b3Lang('purchasedProducts.product'),
       render: (row: CustomFieldItems) => {
         const { optionList, productsSearch, variantId } = row;
         const currentVariants = productsSearch.variants || [];
@@ -370,7 +362,7 @@ function QuickOrderTable({
     },
     {
       key: 'price',
-      title: <Typography sx={tableHeaderTypographySx}>{b3Lang('purchasedProducts.price')}</Typography>,
+      title: b3Lang('purchasedProducts.price'),
       render: (row: CustomFieldItems) => {
         const {
           productsSearch: { variants },
@@ -400,7 +392,7 @@ function QuickOrderTable({
     },
     {
       key: 'qty',
-      title: <Typography sx={tableHeaderTypographySx}>{b3Lang('purchasedProducts.qty')}</Typography>,
+      title: b3Lang('purchasedProducts.qty'),
       render: (row) => {
         const qty = handleSetCheckedQty(row);
 
@@ -422,11 +414,11 @@ function QuickOrderTable({
     },
     {
       key: 'lastOrderedAt',
-      title: <Typography sx={tableHeaderTypographySx}>{b3Lang('purchasedProducts.lastOrdered')}</Typography>,
+      title: b3Lang('purchasedProducts.lastOrdered'),
       render: (row: CustomFieldItems) => (
         <Box>
           <Typography sx={{ ...tableDataTypographySx, textAlign: 'right', width: '100%' }}>
-            {displayFormat(Number(row.lastOrderedAt))}
+            {`${displayFormat(Number(row.lastOrderedAt))}`}
           </Typography>
         </Box>
       ),

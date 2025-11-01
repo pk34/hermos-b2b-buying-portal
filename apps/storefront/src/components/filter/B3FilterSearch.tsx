@@ -121,7 +121,11 @@ function B3FilterSearch({
               },
             },
           },
-          inputSx,
+          ...(Array.isArray(inputSx)
+            ? inputSx
+            : inputSx
+            ? [inputSx]
+            : []),
         ]}
         size="small"
         value={search}
