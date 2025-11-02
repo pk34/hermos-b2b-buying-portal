@@ -278,7 +278,9 @@ describe('when search returns no results', () => {
     expect(within(dialog).getByText('$123.00')).toBeInTheDocument();
     expect(within(dialog).getByText('$246.00')).toBeInTheDocument();
     expect(within(dialog).getByText('DSP-123')).toBeInTheDocument();
-    expect(within(dialog).getByRole('button', { name: 'Add to cart' })).toBeInTheDocument();
+    expect(
+      within(dialog).getByRole('button', { name: 'Add to quick order list' }),
+    ).toBeInTheDocument();
   });
 });
 
@@ -390,7 +392,9 @@ describe('when search returns results', () => {
     expect(within(dialog).getByText('$246.00')).toBeInTheDocument();
     expect(within(dialog).getByText('LC-123')).toBeInTheDocument();
 
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Add to cart' }));
+    await userEvent.click(
+      within(dialog).getByRole('button', { name: 'Add to quick order list' }),
+    );
 
     expect(await screen.findByText('Products were added to cart')).toBeInTheDocument();
 

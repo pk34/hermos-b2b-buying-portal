@@ -7,7 +7,7 @@ import { isB2BUserSelector, rolePermissionSelector, useAppSelector } from '@/sto
 import QuickOrderTable from './components/QuickOrderB2BTable';
 import QuickOrderFooter from './components/QuickOrderFooter';
 import QuickOrderPad from './components/QuickOrderPad';
-import { CheckedProduct } from './utils';
+import { CheckedProduct, QuickOrderListItem } from './utils';
 
 function QuickOrder() {
   const isB2BUser = useAppSelector(isB2BUserSelector);
@@ -18,9 +18,21 @@ function QuickOrder() {
 
   const [isRequestLoading, setIsRequestLoading] = useState<boolean>(false);
   const [checkedArr, setCheckedArr] = useState<CheckedProduct[]>([]);
+  const [manualProducts, setManualProducts] = useState<QuickOrderListItem[]>([]);
   const { purchasabilityPermission } = useAppSelector(rolePermissionSelector);
 
   const isShowQuickOrderPad = isB2BUser ? purchasabilityPermission : true;
+
+  const handleAddManualProducts = (items: QuickOrderListItem[]) => {
+    if (!items.length) return;
+
+    setManualProducts((prev) => {
+      const existingIds = new Set(prev.map(({ node }) => node.id));
+      const newItems = items.filter(({ node }) => !existingIds.has(node.id));
+
+      return [...newItems, ...prev];
+    });
+  };
 
   return (
     <Box
@@ -59,6 +71,7 @@ function QuickOrder() {
               setCheckedArr={setCheckedArr}
               setIsRequestLoading={setIsRequestLoading}
               isRequestLoading={isRequestLoading}
+              manualProducts={manualProducts}
             />
           </Grid>
           <Grid
@@ -69,7 +82,7 @@ function QuickOrder() {
               pl: isMobile ? '0px !important' : '16px',
             }}
           >
-            {isShowQuickOrderPad && <QuickOrderPad />}
+            {isShowQuickOrderPad && <QuickOrderPad onAddProducts={handleAddManualProducts} />}
           </Grid>
         </Grid>
       </Box>
