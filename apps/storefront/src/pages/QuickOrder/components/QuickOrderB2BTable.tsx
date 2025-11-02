@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import { Box, styled, Typography } from '@mui/material';
 
 import B3Spin from '@/components/spin/B3Spin';
@@ -145,8 +145,9 @@ function QuickOrderTable({
       listProducts.forEach((item) => {
         const { node } = item;
         node.quantity = 1;
-        if (!productIds.includes(node.productId)) {
-          productIds.push(node.productId);
+        const productId = Number(node.productId);
+        if (!Number.isNaN(productId) && !productIds.includes(productId)) {
+          productIds.push(productId);
         }
       });
 
@@ -225,7 +226,7 @@ function QuickOrderTable({
   const getSelectCheckbox = (selectCheckbox: Array<string | number>) => {
     if (selectCheckbox.length > 0) {
       const productList = paginationTableRef.current?.getCacheList() || [];
-      const checkedItems = selectCheckbox.reduce((pre, item: number | string) => {
+      const checkedItems = selectCheckbox.reduce<QuickOrderListItem[]>((pre, item: number | string) => {
         const newItems = productList.find((product: QuickOrderListItem) => {
           const { node } = product;
 
@@ -264,7 +265,7 @@ function QuickOrderTable({
     const newListItems = listItems?.map((item: QuickOrderListItem) => {
       const { node } = item;
       if (node?.id === id) {
-        node.quantity = Number(value) || '';
+        node.quantity = value === '' ? '' : Number(value);
       }
 
       return item;
@@ -272,7 +273,7 @@ function QuickOrderTable({
     const newListCacheItems = listCacheItems?.map((item: QuickOrderListItem) => {
       const { node } = item;
       if (node?.id === id) {
-        node.quantity = Number(value) || '';
+        node.quantity = value === '' ? '' : Number(value);
       }
 
       return item;

@@ -148,7 +148,6 @@ export default function QuickOrderPad({ onAddProducts }: QuickOrderPadProps) {
         variantSku,
         variantId,
         productId,
-        modifiers,
       } = currentProduct;
       if (purchasingDisabled === '1' || purchasingDisabled) {
         notPurchaseSku.push(variantSku);

@@ -3,8 +3,7 @@ import { searchProducts } from '@/shared/service/b2b';
 import { getCart } from '@/shared/service/bc/graphql/cart';
 import { store } from '@/store';
 import { OrderedProductType, ProductInfoType } from '@/types/gql/graphql';
-import { snackbar } from '@/utils';
-import { getProductPriceIncTaxOrExTaxBySetting } from '@/utils/b3Product/b3Product';
+import { snackbar, getProductPriceIncTaxOrExTaxBySetting } from '@/utils';
 import { conversionProductsList } from '@/utils/b3Product/shared/config';
 import { LineItem } from '@/utils/b3Product/b3Product';
 
@@ -27,14 +26,10 @@ export interface QuickOrderOptionItem {
 
 export interface QuickOrderTableNode extends OrderedProductType {
   productsSearch: ProductInfoType;
-  quantity: number;
+  quantity: number | '';
   optionList: QuickOrderOptionItem[];
   primaryImage?: string;
   itemId?: number;
-  basePrice?: number | string;
-  discount?: number | string;
-  tax?: number | string;
-  enteredInclusive?: boolean;
 }
 
 export interface QuickOrderListItem {
@@ -292,42 +287,54 @@ export const buildQuickOrderItemsFromSelections = async (
     currencyCode,
   });
 
-  const convertedProducts = conversionProductsList(productsSearch || []);
+  const convertedProducts = conversionProductsList(productsSearch || []) as CustomFieldItems[];
 
   const timestamp = Math.floor(Date.now() / 1000);
 
   return selections.reduce<QuickOrderListItem[]>((acc, selection, index) => {
     const productInfo = convertedProducts.find(
       (product: CustomFieldItems) => Number(product.id) === Number(selection.productId),
-    );
+    ) as CustomFieldItems | undefined;
 
     if (!productInfo) return acc;
 
-    const variants = productInfo.variants || [];
+    const productInfoAny = productInfo as CustomFieldItems;
+    const productInfoGraphql = productInfo as unknown as ProductInfoType;
+    const variants = (productInfoAny.variants || []) as CustomFieldItems[];
     const matchedVariant = variants.find(
       (variant: CustomFieldItems) => Number(variant.variant_id) === Number(selection.variantId),
     );
 
-    const variantSku = selection.variantSku || matchedVariant?.sku || productInfo.sku || '';
+    const variantSku =
+      selection.variantSku || matchedVariant?.sku || productInfoAny.sku || '';
 
-    const optionList = buildOptionList(selection.optionSelections, productInfo);
+    const optionList = buildOptionList(selection.optionSelections, productInfoGraphql);
 
     const unitPrice =
       getProductPriceIncTaxOrExTaxBySetting(variants, Number(selection.variantId)) ||
-      Number(matchedVariant?.calculated_price || productInfo.price_inc_tax || 0);
+      Number(matchedVariant?.calculated_price || productInfoAny.price_inc_tax || 0);
 
-    const taxInclusive = matchedVariant?.bc_calculated_price?.entered_inclusive ?? false;
-    const taxValue = matchedVariant?.bc_calculated_price
-      ? matchedVariant.bc_calculated_price.tax_inclusive - matchedVariant.bc_calculated_price.tax_exclusive
+    const matchedPriceInfo = matchedVariant?.bc_calculated_price as
+      | (CustomFieldItems & { entered_inclusive?: boolean; tax_inclusive?: number; tax_exclusive?: number })
+      | undefined;
+
+    const taxInclusive = matchedPriceInfo?.entered_inclusive ?? false;
+    const taxValue = matchedPriceInfo
+      ? Number(matchedPriceInfo.tax_inclusive || 0) - Number(matchedPriceInfo.tax_exclusive || 0)
       : 0;
+
+    const brandName =
+      productInfoAny.brandName ||
+      (typeof productInfoAny.brand === 'object' ? productInfoAny.brand?.name : '') ||
+      '';
 
     acc.push({
       node: {
         id: `manual-${selection.productId}-${selection.variantId}-${timestamp}-${index}`,
         createdAt: timestamp,
         updatedAt: timestamp,
-        productName: productInfo.name,
-        productBrandName: productInfo.brandName || '',
+        productName: productInfoAny.name,
+        productBrandName: brandName,
         variantSku,
         productId: String(selection.productId),
         variantId: String(selection.variantId),
@@ -336,19 +343,20 @@ export const buildQuickOrderItemsFromSelections = async (
         firstOrderedAt: timestamp,
         lastOrderedAt: timestamp,
         lastOrderedItems: String(selection.quantity),
-        sku: productInfo.sku,
+        sku: productInfoAny.sku,
         lastOrdered: String(timestamp),
-        imageUrl: matchedVariant?.image_url || productInfo.imageUrl,
-        baseSku: productInfo.sku,
+        imageUrl: matchedVariant?.image_url || productInfoAny.imageUrl,
+        baseSku: productInfoAny.sku,
         basePrice: unitPrice?.toString() || '0',
         discount: '0',
         tax: taxValue?.toString() || '0',
         enteredInclusive: taxInclusive,
-        productUrl: productInfo.productUrl,
-        optionSelections: [],
+        productUrl: productInfoAny.productUrl,
+        optionSelections: optionList,
+        orderProductId: `manual-${selection.productId}-${selection.variantId}`,
         quantity: Number(selection.quantity),
-        productsSearch: productInfo,
-        primaryImage: matchedVariant?.image_url || productInfo.imageUrl,
+        productsSearch: productInfoGraphql,
+        primaryImage: matchedVariant?.image_url || productInfoAny.imageUrl,
         itemId: Number(selection.variantId),
       },
     });
