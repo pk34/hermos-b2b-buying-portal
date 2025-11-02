@@ -3,6 +3,7 @@ import { searchProducts } from '@/shared/service/b2b';
 import { getCart } from '@/shared/service/bc/graphql/cart';
 import { store } from '@/store';
 import { OrderedProductType, ProductInfoType } from '@/types/gql/graphql';
+import { Variant } from '@/types/products';
 import { snackbar, getProductPriceIncTaxOrExTaxBySetting } from '@/utils';
 import { conversionProductsList } from '@/utils/b3Product/shared/config';
 import { LineItem } from '@/utils/b3Product/b3Product';
@@ -38,7 +39,7 @@ export interface QuickOrderListItem {
 
 interface ProductInfo extends OrderedProductType {
   productsSearch: ProductInfoType;
-  quantity: number;
+  quantity: number | '';
 }
 
 interface CommonProducts extends ProductInfoType {
@@ -301,6 +302,7 @@ export const buildQuickOrderItemsFromSelections = async (
     const productInfoAny = productInfo as CustomFieldItems;
     const productInfoGraphql = productInfo as unknown as ProductInfoType;
     const variants = (productInfoAny.variants || []) as CustomFieldItems[];
+    const variantPricingSource = (productInfoGraphql.variants || []) as unknown as Variant[];
     const matchedVariant = variants.find(
       (variant: CustomFieldItems) => Number(variant.variant_id) === Number(selection.variantId),
     );
@@ -311,7 +313,7 @@ export const buildQuickOrderItemsFromSelections = async (
     const optionList = buildOptionList(selection.optionSelections, productInfoGraphql);
 
     const unitPrice =
-      getProductPriceIncTaxOrExTaxBySetting(variants, Number(selection.variantId)) ||
+      getProductPriceIncTaxOrExTaxBySetting(variantPricingSource, Number(selection.variantId)) ||
       Number(matchedVariant?.calculated_price || productInfoAny.price_inc_tax || 0);
 
     const matchedPriceInfo = matchedVariant?.bc_calculated_price as
