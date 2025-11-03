@@ -563,6 +563,10 @@ const quickAddBaseFieldStyles = {
   },
   '& .MuiFormLabel-root.MuiInputLabel-shrink': {
     color: '#000000',
+    transform: 'translate(12px, 0px) scale(0.75)',
+  },
+  '& .MuiInputLabel-root.MuiInputLabel-shrink': {
+    transform: 'translate(12px, 0px) scale(0.75)',
   },
 };
 
