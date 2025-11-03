@@ -24,6 +24,18 @@ const SPECIAL_PATH_TEXTS = {
   '/company-orders': 'global.companyOrders.title',
 } as const;
 
+const MOBILE_TITLE_PATHS = [
+  '/purchased-products',
+  '/orders',
+  '/company-orders',
+  '/invoice',
+  '/quotes',
+  '/shoppingLists',
+  '/addresses',
+  '/user-management',
+  '/accountSettings',
+];
+
 export default function B3Layout({ children }: { children: ReactNode }) {
   const [isMobile] = useMobile();
   const isDesktopLimit = useMediaQuery('(min-width:1775px)');
@@ -103,8 +115,16 @@ export default function B3Layout({ children }: { children: ReactNode }) {
 
   const isPurchasedProductsPage = location.pathname === '/purchased-products';
 
+  const shouldUseMobileTitleStyles = useMemo(() => {
+    if (location.pathname.startsWith('/shoppingList/')) {
+      return true;
+    }
+
+    return MOBILE_TITLE_PATHS.includes(location.pathname);
+  }, [location.pathname]);
+
   const mobileTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
-    if (!isMobile || !title || !isPurchasedProductsPage) {
+    if (!isMobile || !title || !shouldUseMobileTitleStyles) {
       return undefined;
     }
 
@@ -118,7 +138,7 @@ export default function B3Layout({ children }: { children: ReactNode }) {
       width: '100%',
       marginTop: '24px',
     };
-  }, [isMobile, title, isPurchasedProductsPage]);
+  }, [isMobile, title, shouldUseMobileTitleStyles]);
 
   const desktopTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
     if (isMobile || !title || !isPurchasedProductsPage) {
