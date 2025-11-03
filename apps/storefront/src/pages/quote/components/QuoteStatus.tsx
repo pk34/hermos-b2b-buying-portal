@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 import { B3Tag } from '@/components';
+import { statusTagBaseStyles } from '@/components/statusTagStyles';
 import { LangFormatFunction, useB3Lang } from '@/lib/lang';
 
 interface OrderStatusProps {
@@ -15,22 +16,9 @@ interface QuoteStatusObj {
   };
 }
 
-const StatusTag = styled(B3Tag)`
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Lato, sans-serif';
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
-  border-radius: 20px;
-  padding: 16px;
-  height: 34px;
-  color: #231f20;
-  white-space: nowrap;
-`;
+const StatusTag = styled(B3Tag)(() => ({
+  ...statusTagBaseStyles,
+}));
 
 const quoteStatus: QuoteStatusObj = {
   '0': {

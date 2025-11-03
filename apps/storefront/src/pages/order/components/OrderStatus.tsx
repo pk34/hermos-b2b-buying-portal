@@ -4,6 +4,7 @@ import type { CSSObject } from '@emotion/react';
 import type { SxProps, Theme } from '@mui/material/styles';
 
 import { B3Tag } from '@/components';
+import { statusTagBaseStyles } from '@/components/statusTagStyles';
 
 import getOrderStatus from '../shared/getOrderStatus';
 
@@ -26,20 +27,7 @@ const StatusTag = styled(B3Tag, {
   shouldForwardProp: (prop) => prop !== 'variant',
 })<StatusTagProps>(({ variant = 'default' }): CSSObject => {
   const baseStyles: CSSObject = {
-    boxSizing: 'border-box',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'Lato, sans-serif',
-    fontWeight: 600,
-    fontSize: '16px',
-    lineHeight: '24px',
-    textAlign: 'center',
-    borderRadius: '20px',
-    padding: '10px',
-    height: '34px',
-    width: 'auto',
-    minWidth: 'auto',
+    ...statusTagBaseStyles,
   };
 
   if (variant === 'orderDetailHeader') {
