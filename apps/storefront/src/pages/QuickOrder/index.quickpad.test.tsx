@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import { set } from 'lodash-es';
 import { vi } from 'vitest';
 import {
@@ -291,14 +290,14 @@ describe('when search returns no results', () => {
     expect(within(dialog).getByText('$246.00')).toBeInTheDocument();
     expect(within(dialog).getByText('DSP-123')).toBeInTheDocument();
     expect(
-      within(dialog).getByRole('button', { name: 'Add to quick order list' }),
+      within(dialog).getByRole('button', { name: 'Add to list' }),
     ).toBeInTheDocument();
   });
 });
 
 describe('when search returns results', () => {
-  it('shows the results in a modal and allows adding to cart', async () => {
-    renderQuickOrderPad();
+  it('shows the results in a modal and allows adding to the list', async () => {
+    const { onAddProducts } = renderQuickOrderPad();
 
     expect(await screen.findByRole('heading', { name: 'Quick order pad' })).toBeInTheDocument();
 
@@ -405,15 +404,21 @@ describe('when search returns results', () => {
     expect(within(dialog).getByText('LC-123')).toBeInTheDocument();
 
     await userEvent.click(
-      within(dialog).getByRole('button', { name: 'Add to quick order list' }),
+      within(dialog).getByRole('button', { name: 'Add to list' }),
     );
 
-    expect(await screen.findByText('Products were added to cart')).toBeInTheDocument();
+    expect(await screen.findByText('Products were added to your quick order list')).toBeInTheDocument();
 
-    expect(Cookies.get('cartId')).toBe('12345');
-
-    expect(window.b2b.callbacks.dispatchEvent).toHaveBeenCalledWith('on-cart-created', {
-      cartId: '12345',
-    });
+    expect(onAddProducts).toHaveBeenCalledTimes(1);
+    expect(onAddProducts).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({
+          node: expect.objectContaining({
+            variantSku: variant.sku,
+            quantity: 2,
+          }),
+        }),
+      ]),
+    );
   });
 });

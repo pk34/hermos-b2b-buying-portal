@@ -140,7 +140,7 @@ export const routeList: (BuyerPortalRoute | RouteItem)[] = [
   {
     path: '/purchased-products',
     name: 'Quick order',
-    pageTitle: 'Purchased products',
+    pageTitle: 'Quick order',
     subsidiariesCompanyKey: 'quickOrder',
     wsKey: 'quickOrder',
     isMenuItem: true,

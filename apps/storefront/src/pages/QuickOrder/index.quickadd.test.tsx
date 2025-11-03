@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import { set } from 'lodash-es';
 import { vi } from 'vitest';
 import {
@@ -225,7 +224,7 @@ it('adds the skus and the quantities to the cart when clicking on the -add to ca
     ),
   );
 
-  renderQuickOrderPad();
+  const { onAddProducts } = renderQuickOrderPad();
 
   const [skuInput] = screen.getAllByRole('textbox', { name: 'SKU#' });
   const [qtyInput] = screen.getAllByRole('spinbutton', { name: 'Qty' });
@@ -233,23 +232,27 @@ it('adds the skus and the quantities to the cart when clicking on the -add to ca
   await userEvent.type(skuInput, 'S-123');
   await userEvent.type(qtyInput, '2');
 
-  await userEvent.click(
-    screen.getByRole('button', { name: 'Add products to quick order list' }),
+  await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
+
+  expect(await screen.findByText('Products were added to your quick order list')).toBeInTheDocument();
+
+  expect(onAddProducts).toHaveBeenCalledTimes(1);
+  expect(onAddProducts).toHaveBeenCalledWith(
+    expect.arrayContaining([
+      expect.objectContaining({
+        node: expect.objectContaining({
+          variantSku: 'S-123',
+          quantity: 2,
+        }),
+      }),
+    ]),
   );
-
-  expect(await screen.findByText('Products were added to cart')).toBeInTheDocument();
-
-  expect(window.b2b.callbacks.dispatchEvent).toHaveBeenCalledWith('on-cart-created', {
-    cartId: 'de435179-9b4b-4fa4-b609-34d948d04783',
-  });
-
-  expect(Cookies.get('cartId')).toBe('de435179-9b4b-4fa4-b609-34d948d04783');
 
   expect(skuInput).toHaveValue('');
   expect(qtyInput).toHaveValue(null);
 });
 
-it('only clears inputs that are added to the cart, keeps the rest', async () => {
+it('only clears inputs that are added to the list, keeps the rest', async () => {
   const getVariantInfoBySkus = vi.fn();
 
   const variantInfo = buildVariantInfoWith({
@@ -297,7 +300,7 @@ it('only clears inputs that are added to the cart, keeps the rest', async () => 
     ),
   );
 
-  renderQuickOrderPad();
+  const { onAddProducts } = renderQuickOrderPad();
 
   const [firstInput, secondSkuInput] = screen.getAllByRole('textbox', { name: 'SKU#' });
   const [firstQtyInput, secondQtyInput] = screen.getAllByRole('spinbutton', { name: 'Qty' });
@@ -308,19 +311,25 @@ it('only clears inputs that are added to the cart, keeps the rest', async () => 
   await userEvent.type(secondSkuInput, 'S-456');
   await userEvent.type(secondQtyInput, '3');
 
-  await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
   expect(
     await screen.findByText('SKU S-456 were not found, please check entered values'),
   ).toBeInTheDocument();
 
-  expect(await screen.findByText('Products were added to cart')).toBeInTheDocument();
+  expect(await screen.findByText('Products were added to your quick order list')).toBeInTheDocument();
 
-  expect(window.b2b.callbacks.dispatchEvent).toHaveBeenCalledWith('on-cart-created', {
-    cartId: 'de435179-9b4b-4fa4-b609-34d948d04783',
-  });
-
-  expect(Cookies.get('cartId')).toBe('de435179-9b4b-4fa4-b609-34d948d04783');
+  expect(onAddProducts).toHaveBeenCalledTimes(1);
+  expect(onAddProducts).toHaveBeenCalledWith(
+    expect.arrayContaining([
+      expect.objectContaining({
+        node: expect.objectContaining({
+          variantSku: 'S-123',
+          quantity: 2,
+        }),
+      }),
+    ]),
+  );
 
   expect(firstInput).toHaveValue('');
   expect(firstQtyInput).toHaveValue(null);
@@ -392,7 +401,7 @@ describe('when there is a problem with some of the skus', () => {
     await userEvent.type(skuInput, 'S-123');
     await userEvent.type(qtyInput, '100');
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
     await waitFor(() => {
       expect(
@@ -436,7 +445,7 @@ describe('when there is a problem with some of the skus', () => {
     await userEvent.type(skuInput, 'S-123');
     await userEvent.type(qtyInput, '2');
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
     await waitFor(() => {
       expect(screen.getByText('SKU S-123 no longer for sale')).toBeInTheDocument();
@@ -477,7 +486,7 @@ describe('when there is a problem with some of the skus', () => {
     await userEvent.type(skuInput, 'S-123');
     await userEvent.type(qtyInput, '2');
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
     await waitFor(() => {
       expect(
@@ -522,7 +531,7 @@ describe('when there is a problem with some of the skus', () => {
     await userEvent.type(skuInput, 'S-123');
     await userEvent.type(qtyInput, '4');
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
     await waitFor(() => {
       expect(
@@ -561,7 +570,7 @@ describe('when there is a problem with some of the skus', () => {
     await userEvent.type(secondSkuInput, 'S-456');
     await userEvent.type(secondQtyInput, '2');
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
     await waitFor(() => {
       expect(
@@ -625,7 +634,7 @@ describe('when there is a problem with some of the skus', () => {
       await userEvent.type(skuInput, 'S-123');
       await userEvent.type(qtyInput, '30');
 
-      await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+      await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
       await waitFor(() => {
         expect(
@@ -693,10 +702,10 @@ describe('when there is a problem with some of the skus', () => {
       await userEvent.type(skuInput, 'S-123');
       await userEvent.type(qtyInput, '3');
 
-      await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+      await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
       await waitFor(() => {
-        expect(screen.getByText('Products were added to cart')).toBeInTheDocument();
+        expect(screen.getByText('Products were added to your quick order list')).toBeInTheDocument();
       });
     });
 
@@ -752,7 +761,7 @@ describe('when there is a problem with some of the skus', () => {
       await userEvent.type(skuInput, 'S-123');
       await userEvent.type(qtyInput, '6');
 
-      await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+      await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
       await waitFor(() => {
         expect(
@@ -791,7 +800,7 @@ describe('when there is a problem with some of the skus', () => {
       await userEvent.type(secondSkuInput, 'S-456');
       await userEvent.type(secondQtyInput, '2');
 
-      await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+      await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
       await waitFor(() => {
         expect(
@@ -815,7 +824,7 @@ describe('when some data is missing in the form', async () => {
     await userEvent.type(firstSkuInput, 'S-123');
     await userEvent.type(secondQtyInput, '3');
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
     expect(secondSkuInput).not.toBeValid();
     expect(secondSkuInput).toHaveAccessibleDescription('SKU# is required');
@@ -841,7 +850,7 @@ describe('when some data is missing in the form', async () => {
     await userEvent.type(skuInput, 'S-123');
     await userEvent.type(qtyInput, '-3');
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add products to quick order list' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Add products to list' }));
 
     expect(qtyInput).not.toBeValid();
     expect(qtyInput).toHaveAccessibleDescription('incorrect number');
