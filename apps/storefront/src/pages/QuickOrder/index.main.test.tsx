@@ -2225,7 +2225,7 @@ describe('When backend validation', () => {
     expect(within(dialog).getByText('OOS-123')).toBeInTheDocument();
 
     const addToCartButton = within(dialog).getByRole('button', {
-      name: 'Add to quick order list',
+      name: 'Add to list',
     });
     await userEvent.click(addToCartButton);
 
@@ -2509,7 +2509,7 @@ describe('When backend validation', () => {
     expect(within(dialog).getByText('MIN-QTY-123')).toBeInTheDocument();
 
     const addToCartButton = within(dialog).getByRole('button', {
-      name: 'Add to quick order list',
+      name: 'Add to list',
     });
     await userEvent.click(addToCartButton);
 
@@ -2647,7 +2647,7 @@ describe('When backend validation', () => {
     await userEvent.type(quantityInput, '5');
 
     const addToCartButton = within(dialog).getByRole('button', {
-      name: 'Add to quick order list',
+      name: 'Add to list',
     });
     await userEvent.click(addToCartButton);
 
@@ -2729,7 +2729,7 @@ describe('When backend validation', () => {
     await userEvent.type(skuInput, 'OOS-123');
     await userEvent.type(qtyInput, '2');
 
-    const addButton = screen.getByRole('button', { name: /Add products to quick order list/i });
+    const addButton = screen.getByRole('button', { name: /Add products to list/i });
     await userEvent.click(addButton);
 
     const error = await screen.findByText('SKU OOS-123 is out of stock');
@@ -2822,7 +2822,7 @@ describe('When backend validation', () => {
     await userEvent.type(skuInput, 'OOS-123');
     await userEvent.type(qtyInput, '3');
 
-    const addButton = screen.getByRole('button', { name: /Add products to quick order list/i });
+    const addButton = screen.getByRole('button', { name: /Add products to list/i });
     await userEvent.click(addButton);
 
     await waitFor(() => {
@@ -2872,7 +2872,7 @@ describe('When backend validation', () => {
     await userEvent.type(skuInput, 'NON-EXISTENT-SKU');
     await userEvent.type(qtyInput, '1');
 
-    const addButton = screen.getByRole('button', { name: /Add products to quick order list/i });
+    const addButton = screen.getByRole('button', { name: /Add products to list/i });
     await userEvent.click(addButton);
 
     const error = await screen.findByText(

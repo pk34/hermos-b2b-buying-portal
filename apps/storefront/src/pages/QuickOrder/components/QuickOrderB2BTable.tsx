@@ -2,23 +2,23 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } fr
 import { Box, styled, Typography } from '@mui/material';
 
 import B3Spin from '@/components/spin/B3Spin';
-import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
+import {
+  B3PaginationTable,
+  GetRequestList,
+  TableRefreshConfig,
+} from '@/components/table/B3PaginationTable';
 import { TableColumnItem } from '@/components/table/B3Table';
 import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
 import { useMobile, useSort } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
-import { getOrderedProducts, searchProducts } from '@/shared/service/b2b';
-import { activeCurrencyInfoSelector, useAppSelector } from '@/store';
 import {
   currencyFormat,
   displayFormat,
   distanceDay,
   getProductPriceIncTaxOrExTaxBySetting,
-  snackbar,
 } from '@/utils';
 import b2bGetVariantImageByVariantInfo from '@/utils/b2bGetVariantImageByVariantInfo';
 import { getDisplayPrice } from '@/utils/b3Product/b3Product';
-import { conversionProductsList } from '@/utils/b3Product/shared/config';
 
 import B3FilterSearch from '../../../components/filter/B3FilterSearch';
 import B3Picker from '../../../components/ui/B3Picker';
@@ -42,6 +42,7 @@ interface PaginationTableRefProps extends HTMLInputElement {
   setCacheAllList: (items?: QuickOrderListItem[]) => void;
   setList: (items?: QuickOrderListItem[]) => void;
   getSelectedValue: () => void;
+  refresh?: (config?: TableRefreshConfig) => void;
 }
 
 const StyledImage = styled('img')(() => ({
@@ -118,9 +119,6 @@ function QuickOrderTable({
 }: QuickOrderTableProps) {
   const paginationTableRef = useRef<PaginationTableRefProps | null>(null);
 
-  const companyInfoId = useAppSelector(({ company }) => company.companyInfo.id);
-  const customerGroupId = useAppSelector(({ company }) => company.customer.customerGroupId);
-
   const [search, setSearch] = useState<SearchProps>({
     q: '',
     beginDateAt: distanceDay(90),
@@ -137,82 +135,97 @@ function QuickOrderTable({
 
   const b3Lang = useB3Lang();
 
-  const { currency_code: currencyCode } = useAppSelector(activeCurrencyInfoSelector);
+  const normalizeTimestamp = useCallback((value: number | string | undefined) => {
+    if (value === undefined || value === null) return null;
 
-  const handleGetProductsById = async (listProducts: QuickOrderListItem[]) => {
-    if (listProducts.length > 0) {
-      const productIds: number[] = [];
-      listProducts.forEach((item) => {
-        const { node } = item;
-        node.quantity = 1;
-        const productId = Number(node.productId);
-        if (!Number.isNaN(productId) && !productIds.includes(productId)) {
-          productIds.push(productId);
+    const numericValue = Number(value);
+    if (Number.isNaN(numericValue)) return null;
+
+    const timestamp = numericValue < 1e12 ? numericValue * 1000 : numericValue;
+
+    return new Date(timestamp);
+  }, []);
+
+  const filterManualProducts = useCallback(
+    (items: QuickOrderListItem[], params: SearchProps) => {
+      const { q = '', beginDateAt, endDateAt, orderBy: orderByParam } = params;
+
+      const searchTerm = q.trim().toLowerCase();
+      const beginDate = beginDateAt ? new Date(`${beginDateAt}T00:00:00`) : null;
+      const endDate = endDateAt ? new Date(`${endDateAt}T23:59:59`) : null;
+
+      const filteredItems = items.filter(({ node }) => {
+        const productName = node.productName?.toLowerCase() || '';
+        const sku = node.variantSku?.toLowerCase() || '';
+
+        const matchesSearch = !searchTerm || productName.includes(searchTerm) || sku.includes(searchTerm);
+
+        if (!matchesSearch) {
+          return false;
         }
+
+        const lastOrderedDate = normalizeTimestamp(node.lastOrderedAt);
+
+        if (!lastOrderedDate) {
+          return beginDate === null && endDate === null;
+        }
+
+        if (beginDate && lastOrderedDate < beginDate) {
+          return false;
+        }
+
+        if (endDate && lastOrderedDate > endDate) {
+          return false;
+        }
+
+        return true;
       });
 
-      try {
-        const { productsSearch } = await searchProducts({
-          productIds,
-          currencyCode,
-          companyId: companyInfoId,
-          customerGroupId,
-        });
+      const orderKey = orderByParam || `-${sortKeys[defaultSortKey]}`;
+      const direction = orderKey.startsWith('-') ? 'desc' : 'asc';
+      const key = orderKey.replace(/^[-+]/, '');
 
-        const newProductsSearch = conversionProductsList(productsSearch);
+      const sortedItems = [...filteredItems].sort((a, b) => {
+        const aValue = (a.node as CustomFieldItems)[key];
+        const bValue = (b.node as CustomFieldItems)[key];
 
-        listProducts.forEach((item) => {
-          const { node } = item;
+        if (key === sortKeys.product) {
+          const aString = (aValue || '').toString().toLowerCase();
+          const bString = (bValue || '').toString().toLowerCase();
 
-          const productInfo = newProductsSearch.find((search: CustomFieldItems) => {
-            const { id: productId } = search;
+          if (aString < bString) return direction === 'asc' ? -1 : 1;
+          if (aString > bString) return direction === 'asc' ? 1 : -1;
 
-            return Number(node.productId) === Number(productId);
-          });
+          return 0;
+        }
 
-          node.productsSearch = productInfo || {};
-          if (node.optionList && typeof node.optionList === 'string') {
-            try {
-              node.optionList = JSON.parse(node.optionList);
-            } catch (error) {
-              node.optionList = [];
-            }
-          }
-        });
+        const aNumber = Number(aValue) || 0;
+        const bNumber = Number(bValue) || 0;
 
-        return listProducts;
-      } catch (err: any) {
-        snackbar.error(err);
-      }
-    }
-    return [];
-  };
+        if (aNumber < bNumber) return direction === 'asc' ? -1 : 1;
+        if (aNumber > bNumber) return direction === 'asc' ? 1 : -1;
 
-  const mergeManualProducts = useCallback(
-    (items: QuickOrderListItem[]) => {
-      const manualItems = manualProductsRef.current;
-      if (!manualItems.length) return items;
-      const manualIds = manualItems.map((item) => item.node.id);
-      const filteredItems = items.filter((item) => !manualIds.includes(item.node.id));
-      return [...manualItems, ...filteredItems];
+        return 0;
+      });
+
+      return sortedItems;
     },
-    [],
+    [normalizeTimestamp],
   );
 
   const getList: GetRequestList<SearchProps, QuickOrderListItem['node']> = async (params) => {
-    const {
-      orderedProducts: { edges, totalCount },
-    } = await getOrderedProducts(params);
+    const sortedItems = filterManualProducts(manualProductsRef.current, params);
+    const totalCount = sortedItems.length;
 
-    const listProducts = await handleGetProductsById(edges as unknown as QuickOrderListItem[]);
-
-    const mergedList = mergeManualProducts(listProducts);
+    const offset = params.offset || 0;
+    const first = params.first || totalCount;
+    const paginatedItems = sortedItems.slice(offset, offset + first);
 
     setFetchedTotal(totalCount);
 
     return {
-      edges: mergedList,
-      totalCount: totalCount + manualProductsRef.current.length,
+      edges: paginatedItems,
+      totalCount,
     };
   };
 
@@ -315,7 +328,7 @@ function QuickOrderTable({
     return qty;
   };
 
-  const totalProducts = fetchedTotal + manualProducts.length;
+  const totalProducts = fetchedTotal;
 
   const columnItems: TableColumnItem<QuickOrderListItem['node']>[] = [
     {
@@ -431,15 +444,9 @@ function QuickOrderTable({
 
   useEffect(() => {
     manualProductsRef.current = manualProducts;
-
-    const currentList = paginationTableRef.current?.getList() || [];
-    const mergedList = mergeManualProducts(currentList);
-    paginationTableRef.current?.setList([...mergedList]);
-
-    const cacheList = paginationTableRef.current?.getCacheList() || [];
-    const mergedCache = mergeManualProducts(cacheList);
-    paginationTableRef.current?.setCacheAllList([...mergedCache]);
-  }, [manualProducts, mergeManualProducts]);
+    paginationTableRef.current?.setCacheAllList([...manualProducts]);
+    paginationTableRef.current?.refresh?.({ keepCheckedItems: true });
+  }, [manualProducts]);
 
   return (
     <B3Spin isSpinning={isRequestLoading}>
