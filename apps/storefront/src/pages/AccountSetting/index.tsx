@@ -394,7 +394,7 @@ function AccountSetting() {
       },
       '& .MuiInputBase-root.Mui-disabled': {
         borderColor: '#575757',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#F4F4F4',
         color: '#000000',
       },
       '& .MuiInputBase-root.Mui-disabled .MuiInputBase-input': {
