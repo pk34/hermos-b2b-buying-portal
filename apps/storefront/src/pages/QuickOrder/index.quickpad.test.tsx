@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import { set } from 'lodash-es';
+import { vi } from 'vitest';
 import {
   buildCompanyStateWith,
   builder,
@@ -206,13 +207,24 @@ const storeInfoWithDateFormat = buildStoreInfoStateWith({ timeFormat: { display:
 
 const preloadedState = { company: approvedB2BCompany, storeInfo: storeInfoWithDateFormat };
 
+const renderQuickOrderPad = (
+  props: Partial<Parameters<typeof QuickOrderPad>[0]> = {},
+) => {
+  const onAddProducts = vi.fn();
+  renderWithProviders(<QuickOrderPad onAddProducts={onAddProducts} {...props} />, {
+    preloadedState,
+  });
+
+  return { onAddProducts };
+};
+
 beforeEach(() => {
   set(window, 'b2b.callbacks.dispatchEvent', vi.fn());
 });
 
 describe('when search returns no results', () => {
   it('shows a modal with no results and lets you perform a new search', async () => {
-    renderWithProviders(<QuickOrderPad />, { preloadedState });
+    renderQuickOrderPad();
 
     expect(await screen.findByRole('heading', { name: 'Quick order pad' })).toBeInTheDocument();
 
@@ -278,13 +290,15 @@ describe('when search returns no results', () => {
     expect(within(dialog).getByText('$123.00')).toBeInTheDocument();
     expect(within(dialog).getByText('$246.00')).toBeInTheDocument();
     expect(within(dialog).getByText('DSP-123')).toBeInTheDocument();
-    expect(within(dialog).getByRole('button', { name: 'Add to cart' })).toBeInTheDocument();
+    expect(
+      within(dialog).getByRole('button', { name: 'Add to quick order list' }),
+    ).toBeInTheDocument();
   });
 });
 
 describe('when search returns results', () => {
   it('shows the results in a modal and allows adding to cart', async () => {
-    renderWithProviders(<QuickOrderPad />, { preloadedState });
+    renderQuickOrderPad();
 
     expect(await screen.findByRole('heading', { name: 'Quick order pad' })).toBeInTheDocument();
 
@@ -390,7 +404,9 @@ describe('when search returns results', () => {
     expect(within(dialog).getByText('$246.00')).toBeInTheDocument();
     expect(within(dialog).getByText('LC-123')).toBeInTheDocument();
 
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Add to cart' }));
+    await userEvent.click(
+      within(dialog).getByRole('button', { name: 'Add to quick order list' }),
+    );
 
     expect(await screen.findByText('Products were added to cart')).toBeInTheDocument();
 

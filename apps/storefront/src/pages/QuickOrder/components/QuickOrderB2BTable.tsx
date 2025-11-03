@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import { Box, styled, Typography } from '@mui/material';
 
 import B3Spin from '@/components/spin/B3Spin';
@@ -9,7 +9,6 @@ import { useMobile, useSort } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { getOrderedProducts, searchProducts } from '@/shared/service/b2b';
 import { activeCurrencyInfoSelector, useAppSelector } from '@/store';
-import { ProductInfoType } from '@/types/gql/graphql';
 import {
   currencyFormat,
   displayFormat,
@@ -23,35 +22,10 @@ import { conversionProductsList } from '@/utils/b3Product/shared/config';
 
 import B3FilterSearch from '../../../components/filter/B3FilterSearch';
 import B3Picker from '../../../components/ui/B3Picker';
-import { CheckedProduct } from '../utils';
+import { CheckedProduct, QuickOrderListItem } from '../utils';
 
 import QuickOrderCard from './QuickOrderCard';
 import QuickOrderQuantitySelector from './QuickOrderQuantitySelector';
-
-interface ProductInfoProps {
-  basePrice: number | string;
-  baseSku: string;
-  createdAt: number;
-  discount: number | string;
-  enteredInclusive: boolean;
-  id: number | string;
-  itemId: number;
-  optionList: string;
-  primaryImage: string;
-  productId: number;
-  productName: string;
-  productUrl: string;
-  quantity: number | string;
-  taxPrice: number;
-  updatedAt: number;
-  variantId: number;
-  variantSku: string;
-  productsSearch: ProductInfoType;
-}
-
-interface ListItemProps {
-  node: ProductInfoProps;
-}
 
 interface SearchProps {
   q: string;
@@ -63,10 +37,10 @@ interface SearchProps {
 }
 
 interface PaginationTableRefProps extends HTMLInputElement {
-  getList: () => void;
-  getCacheList: () => void;
-  setCacheAllList: (items?: ListItemProps[]) => void;
-  setList: (items?: ListItemProps[]) => void;
+  getList: () => QuickOrderListItem[];
+  getCacheList: () => QuickOrderListItem[];
+  setCacheAllList: (items?: QuickOrderListItem[]) => void;
+  setList: (items?: QuickOrderListItem[]) => void;
   getSelectedValue: () => void;
 }
 
@@ -126,6 +100,7 @@ interface QuickOrderTableProps {
   setIsRequestLoading: Dispatch<SetStateAction<boolean>>;
   setCheckedArr: (values: CheckedProduct[]) => void;
   isRequestLoading: boolean;
+  manualProducts: QuickOrderListItem[];
 }
 
 const defaultSortKey = 'lastOrderedAt';
@@ -139,6 +114,7 @@ function QuickOrderTable({
   setIsRequestLoading,
   setCheckedArr,
   isRequestLoading,
+  manualProducts,
 }: QuickOrderTableProps) {
   const paginationTableRef = useRef<PaginationTableRefProps | null>(null);
 
@@ -154,7 +130,8 @@ function QuickOrderTable({
 
   const [handleSetOrderBy, order, orderBy] = useSort(sortKeys, defaultSortKey, search, setSearch);
 
-  const [total, setTotalCount] = useState<number>(0);
+  const [fetchedTotal, setFetchedTotal] = useState<number>(0);
+  const manualProductsRef = useRef<QuickOrderListItem[]>([]);
 
   const [isMobile] = useMobile();
 
@@ -162,14 +139,15 @@ function QuickOrderTable({
 
   const { currency_code: currencyCode } = useAppSelector(activeCurrencyInfoSelector);
 
-  const handleGetProductsById = async (listProducts: ListItemProps[]) => {
+  const handleGetProductsById = async (listProducts: QuickOrderListItem[]) => {
     if (listProducts.length > 0) {
       const productIds: number[] = [];
       listProducts.forEach((item) => {
         const { node } = item;
         node.quantity = 1;
-        if (!productIds.includes(node.productId)) {
-          productIds.push(node.productId);
+        const productId = Number(node.productId);
+        if (!Number.isNaN(productId) && !productIds.includes(productId)) {
+          productIds.push(productId);
         }
       });
 
@@ -193,6 +171,13 @@ function QuickOrderTable({
           });
 
           node.productsSearch = productInfo || {};
+          if (node.optionList && typeof node.optionList === 'string') {
+            try {
+              node.optionList = JSON.parse(node.optionList);
+            } catch (error) {
+              node.optionList = [];
+            }
+          }
         });
 
         return listProducts;
@@ -203,18 +188,31 @@ function QuickOrderTable({
     return [];
   };
 
-  const getList: GetRequestList<SearchProps, ProductInfoProps> = async (params) => {
+  const mergeManualProducts = useCallback(
+    (items: QuickOrderListItem[]) => {
+      const manualItems = manualProductsRef.current;
+      if (!manualItems.length) return items;
+      const manualIds = manualItems.map((item) => item.node.id);
+      const filteredItems = items.filter((item) => !manualIds.includes(item.node.id));
+      return [...manualItems, ...filteredItems];
+    },
+    [],
+  );
+
+  const getList: GetRequestList<SearchProps, QuickOrderListItem['node']> = async (params) => {
     const {
       orderedProducts: { edges, totalCount },
     } = await getOrderedProducts(params);
 
-    const listProducts = await handleGetProductsById(edges);
+    const listProducts = await handleGetProductsById(edges as unknown as QuickOrderListItem[]);
 
-    setTotalCount(totalCount);
+    const mergedList = mergeManualProducts(listProducts);
+
+    setFetchedTotal(totalCount);
 
     return {
-      edges: listProducts,
-      totalCount,
+      edges: mergedList,
+      totalCount: totalCount + manualProductsRef.current.length,
     };
   };
 
@@ -228,8 +226,8 @@ function QuickOrderTable({
   const getSelectCheckbox = (selectCheckbox: Array<string | number>) => {
     if (selectCheckbox.length > 0) {
       const productList = paginationTableRef.current?.getCacheList() || [];
-      const checkedItems = selectCheckbox.reduce((pre, item: number | string) => {
-        const newItems = productList.find((product: ListItemProps) => {
+      const checkedItems = selectCheckbox.reduce<QuickOrderListItem[]>((pre, item: number | string) => {
+        const newItems = productList.find((product: QuickOrderListItem) => {
           const { node } = product;
 
           return node.id === item;
@@ -264,18 +262,18 @@ function QuickOrderTable({
     const listItems = paginationTableRef.current?.getList() || [];
     const listCacheItems = paginationTableRef.current?.getCacheList() || [];
 
-    const newListItems = listItems?.map((item: ListItemProps) => {
+    const newListItems = listItems?.map((item: QuickOrderListItem) => {
       const { node } = item;
       if (node?.id === id) {
-        node.quantity = Number(value) || '';
+        node.quantity = value === '' ? '' : Number(value);
       }
 
       return item;
     });
-    const newListCacheItems = listCacheItems?.map((item: ListItemProps) => {
+    const newListCacheItems = listCacheItems?.map((item: QuickOrderListItem) => {
       const { node } = item;
       if (node?.id === id) {
-        node.quantity = Number(value) || '';
+        node.quantity = value === '' ? '' : Number(value);
       }
 
       return item;
@@ -317,7 +315,9 @@ function QuickOrderTable({
     return qty;
   };
 
-  const columnItems: TableColumnItem<ProductInfoProps>[] = [
+  const totalProducts = fetchedTotal + manualProducts.length;
+
+  const columnItems: TableColumnItem<QuickOrderListItem['node']>[] = [
     {
       key: 'product',
       title: b3Lang('purchasedProducts.product'),
@@ -429,6 +429,18 @@ function QuickOrderTable({
     },
   ];
 
+  useEffect(() => {
+    manualProductsRef.current = manualProducts;
+
+    const currentList = paginationTableRef.current?.getList() || [];
+    const mergedList = mergeManualProducts(currentList);
+    paginationTableRef.current?.setList([...mergedList]);
+
+    const cacheList = paginationTableRef.current?.getCacheList() || [];
+    const mergedCache = mergeManualProducts(cacheList);
+    paginationTableRef.current?.setCacheAllList([...mergedCache]);
+  }, [manualProducts, mergeManualProducts]);
+
   return (
     <B3Spin isSpinning={isRequestLoading}>
       <StyleQuickOrderTable>
@@ -445,7 +457,7 @@ function QuickOrderTable({
             width: '100%',
           }}
         >
-          {b3Lang('purchasedProducts.totalProducts', { total })}
+          {b3Lang('purchasedProducts.totalProducts', { total: totalProducts })}
         </Typography>
         <Box
           sx={{
@@ -623,7 +635,7 @@ function QuickOrderTable({
 
         <B3PaginationTable
           ref={paginationTableRef}
-          columnItems={columnItems}
+          columnItems={columnItems as TableColumnItem<QuickOrderListItem['node']>[]}
           rowsPerPageOptions={[12, 24, 36]}
           getRequestList={getList}
           searchParams={search}
