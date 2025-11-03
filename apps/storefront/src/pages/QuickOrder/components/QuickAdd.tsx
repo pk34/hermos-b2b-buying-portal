@@ -546,6 +546,10 @@ export default function QuickAdd(props: AddToListContentProps) {
             control={control}
             getValues={getValues}
             setValue={setValue}
+            containerProps={{
+              rowSpacing: 2,
+              columnSpacing: 0,
+            }}
           />
         </Box>
 
