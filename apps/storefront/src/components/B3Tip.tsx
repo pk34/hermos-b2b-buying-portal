@@ -13,9 +13,11 @@ interface B3TipProps extends TipMessagesProps {
 function MessageAlert({
   msg,
   onClose,
+  isMobile,
 }: {
   msg: MsgsProps;
   onClose: (id: string | number) => void;
+  isMobile: boolean;
 }) {
   return (
     <Alert
@@ -28,7 +30,8 @@ function MessageAlert({
 
         '& .MuiAlert-message': {
           overflow: 'unset',
-          whiteSpace: 'nowrap',
+          whiteSpace: isMobile ? 'normal' : 'nowrap',
+          width: '100%',
         },
       }}
       variant="filled"
@@ -202,15 +205,25 @@ export default function B3Tip({
               anchorOrigin={
                 msg.customType === 'account-settings-success'
                   ? { vertical: 'top', horizontal: 'center' }
-                  : { vertical, horizontal }
+                  : { vertical, horizontal: isMobile ? 'center' : horizontal }
               }
               sx={{
                 top:
                   msg.customType === 'account-settings-success'
                     ? `${(isMobile ? 156 : 168) + index * 64}px !important`
                     : `${24 + index * 10 + index * (isMobile ? 80 : 90)}px !important`,
-                width: msg.customType === 'account-settings-success' ? '90vw' : '320px',
-                maxWidth: msg.customType === 'account-settings-success' ? '90vw' : '100%',
+                width:
+                  msg.customType === 'account-settings-success'
+                    ? '90vw'
+                    : isMobile
+                    ? 'calc(100vw - 32px)'
+                    : '320px',
+                maxWidth:
+                  msg.customType === 'account-settings-success'
+                    ? '90vw'
+                    : isMobile
+                    ? 'calc(100vw - 32px)'
+                    : '100%',
                 height: 'auto',
                 left: msg.customType === 'account-settings-success' ? '50% !important' : undefined,
                 transform:
@@ -241,7 +254,7 @@ export default function B3Tip({
                     display: 'flex',
                   }}
                 >
-                  <MessageAlert msg={msg} onClose={handleItemClose} />
+                  <MessageAlert msg={msg} onClose={handleItemClose} isMobile={isMobile} />
                 </Box>
               )}
             </Snackbar>
