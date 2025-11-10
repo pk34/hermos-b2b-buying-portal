@@ -22,6 +22,8 @@ const CardBaseStyles: CSSObject = {
   flexDirection: 'column',
 };
 
+const SHIPPED_STATUSES = new Set(['Shipped', 'Partially Shipped', 'Completed', 'Refunded', 'Partially Refunded']);
+
 const ClientInfoCard = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'isMobile',
 })<{ isMobile: boolean }>(({ isMobile }): CSSObject => ({
@@ -184,6 +186,7 @@ export default function OrderShipping({ isCurrentCompany: _isCurrentCompany }: O
       billingAddress,
       history = [],
       poNumber = '',
+      status = '',
     },
   } = useContext(OrderDetailsContext);
 
@@ -269,10 +272,25 @@ export default function OrderShipping({ isCurrentCompany: _isCurrentCompany }: O
     ? products.every((product) => Number(product.quantity_shipped || 0) >= Number(product.quantity || 0))
     : false;
 
-  const statusKey = isFullyShipped
-    ? 'orderDetail.shippingStatus.shipped'
-    : 'orderDetail.shippingStatus.notShippedYet';
-  const statusText = hasProducts ? b3Lang(statusKey) : '';
+  const shipments = shippingInfo?.shipmentItems || [];
+  const trackingNumber = shipments.find((shipment) => shipment.tracking_number)?.tracking_number || '';
+
+  const isShippedStatus = status ? SHIPPED_STATUSES.has(status) : false;
+  const shouldShowShippedStatus = hasProducts && (isFullyShipped || isShippedStatus);
+  const formattedTrackingNumber = trackingNumber
+    ? trackingNumber.trim().startsWith('#')
+      ? trackingNumber.trim()
+      : `#${trackingNumber.trim()}`
+    : '';
+  const statusText = hasProducts
+    ? shouldShowShippedStatus
+      ? formattedTrackingNumber
+        ? b3Lang('orderDetail.shippingStatus.shippedWithTracking', {
+            trackingNumber: formattedTrackingNumber,
+          })
+        : b3Lang('orderDetail.shippingStatus.shipped')
+      : b3Lang('orderDetail.shippingStatus.notShippedYet')
+    : '';
 
   const productList = products;
 
