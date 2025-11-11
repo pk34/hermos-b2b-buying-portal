@@ -367,6 +367,7 @@
   "orderDetail.shipment.notShippedYet": "Not shipped yet",
   "orderDetail.shippingStatus.label": "Shipping status: {status}",
   "orderDetail.shippingStatus.shipped": "Shipped",
+  "orderDetail.shippingStatus.shippedWithTracking": "Shipped - Tracking number: {trackingNumber}",
   "orderDetail.shippingStatus.notShippedYet": "Not shipped yet",
   "orderDetail.billing.digitalProducts": "Digital products",
   "orderDetail.summary.subTotal": "Sub total",
