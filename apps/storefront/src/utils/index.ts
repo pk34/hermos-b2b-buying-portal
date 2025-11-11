@@ -30,6 +30,7 @@ import {
   convertObjectToGraphql,
 } from './graphqlDataConvert';
 import { memoWithGenerics } from './memoWithGenerics';
+import { normalizeTimeFormat } from './normalizeTimeFormat';
 import ValidationError from './validationError';
 import { validatorRules } from './validatorRules';
 
@@ -83,4 +84,5 @@ export {
   handleGetCorrespondingCurrencyToken,
   forwardRefWithGenerics,
   memoWithGenerics,
+  normalizeTimeFormat,
 };
