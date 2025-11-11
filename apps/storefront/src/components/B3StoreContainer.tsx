@@ -4,6 +4,7 @@ import { Z_INDEX } from '@/constants';
 import { GlobalContext } from '@/shared/global';
 import { getBCStoreChannelId } from '@/shared/service/b2b';
 import { getGlobalTranslations, setStoreInfo, setTimeFormat, useAppDispatch } from '@/store';
+import { normalizeTimeFormat } from '@/utils';
 
 import { B3PageMask, usePageMask } from './loading';
 
@@ -75,7 +76,7 @@ export default function B3StoreContainer(props: B3StoreContainerProps) {
           }),
         );
 
-        storeDispatch(setTimeFormat(storeBasicInfo.timeFormat));
+        storeDispatch(setTimeFormat(normalizeTimeFormat(storeBasicInfo.timeFormat)));
         sessionStorage.setItem('currentB2BEnabled', JSON.stringify(isEnabled));
       } catch (error) {
         showPageMask(false);
