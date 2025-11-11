@@ -2,6 +2,8 @@ import type { TimeFormat } from '@/store';
 
 type TimeFormatSegment = string | null | undefined;
 
+export const MEXICAN_EXTENDED_FORMAT_TOKEN = '__MEXICAN_EXTENDED__';
+
 const STRFTIME_TO_PHP_MAP: Record<string, string> = {
   '%a': 'D',
   '%A': 'l',
@@ -42,6 +44,8 @@ const STRFTIME_TO_PHP_MAP: Record<string, string> = {
 };
 
 const STRFTIME_DIRECTIVE_REGEX = /%([%a-zA-Z])/g;
+const MEXICAN_EXTENDED_FORMAT_REGEX =
+  /%e\s+de\s+%B\s+%Y\s+a\s+las\s+%(?:l|I|H):%M(?:[:\s]*%S)?\s*(?:%p)?/i;
 
 const convertSegment = (segment: TimeFormatSegment): string => {
   if (!segment) return '';
@@ -78,7 +82,19 @@ export const normalizeTimeFormat = (timeFormat?: TimeFormat): TimeFormat => {
   return {
     display: convertSegment(timeFormat.display),
     export: convertSegment(timeFormat.export),
-    extendedDisplay: convertSegment(timeFormat.extendedDisplay),
+    extendedDisplay: (() => {
+      if (!timeFormat.extendedDisplay) {
+        return '';
+      }
+
+      const value = String(timeFormat.extendedDisplay);
+
+      if (MEXICAN_EXTENDED_FORMAT_REGEX.test(value)) {
+        return MEXICAN_EXTENDED_FORMAT_TOKEN;
+      }
+
+      return convertSegment(value);
+    })(),
     offset: typeof timeFormat.offset === 'number' ? timeFormat.offset : defaultFormat.offset,
   };
 };

@@ -2,14 +2,14 @@ import { describe, expect, it } from 'vitest';
 
 import type { TimeFormat } from '@/store';
 
-import { normalizeTimeFormat } from './normalizeTimeFormat';
+import { MEXICAN_EXTENDED_FORMAT_TOKEN, normalizeTimeFormat } from './normalizeTimeFormat';
 
 describe('normalizeTimeFormat', () => {
   it('converts strftime directives to php date tokens', () => {
     const format: TimeFormat = {
       display: '%e de %B %Y',
       export: '%Y-%m-%d',
-      extendedDisplay: '%l:%M %p',
+      extendedDisplay: '%e de %B %Y a las %l:%M %p',
       offset: -21600,
     };
 
@@ -18,7 +18,7 @@ describe('normalizeTimeFormat', () => {
     expect(normalized).toEqual({
       display: 'j de F Y',
       export: 'Y-m-d',
-      extendedDisplay: 'g:i A',
+      extendedDisplay: MEXICAN_EXTENDED_FORMAT_TOKEN,
       offset: -21600,
     });
   });
