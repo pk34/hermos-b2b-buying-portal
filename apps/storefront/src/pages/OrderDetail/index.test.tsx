@@ -659,6 +659,7 @@ describe('when a personal customer visits an order', () => {
         shipping_method: 'Free Shipping',
         shipping_provider_display_name: 'DHL',
         order_address_id: address.id,
+        tracking_number: 'TRACK-1',
         items: [
           {
             quantity: laughCanister.quantity_shipped,
@@ -673,6 +674,7 @@ describe('when a personal customer visits an order', () => {
         shipping_method: 'Express Shipping',
         shipping_provider_display_name: 'USPS',
         order_address_id: address.id,
+        tracking_number: 'TRACK-2',
         items: [
           {
             quantity: screamCanister.quantity_shipped,
@@ -694,6 +696,7 @@ describe('when a personal customer visits an order', () => {
               data: {
                 customerOrder: {
                   money: euro,
+                  status: 'Shipped',
                   shipments: [
                     dhlShipmentOfAllLaughCanistersToAddress1,
                     uspsShipmentOfAllScreamCanistersToAddress1,
@@ -711,6 +714,9 @@ describe('when a personal customer visits an order', () => {
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('progressbar'));
 
+      expect(
+        await screen.findByText('Shipped - Tracking number: #TRACK-1'),
+      ).toBeInTheDocument();
       expect(await screen.findByText('Shipment 1 –')).toBeInTheDocument();
       expect(screen.getByText('shipped on May, 21, by DHL, Free Shipping')).toBeInTheDocument();
 
