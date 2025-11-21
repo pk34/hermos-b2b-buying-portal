@@ -72,6 +72,9 @@ declare interface Window {
         addProductsFromCart: () => Promise<void>;
         addProductsFromCartId: (cartId: string) => Promise<void>;
         addProducts: (items: import('@/utils').LineItems[]) => Promise<void>;
+        create: (
+          quoteData: Record<string, unknown>,
+        ) => Promise<import('@/types/quotes').CreateQuoteResponse>;
         getQuoteConfigs: () => import('@/shared/global/context/config').QuoteConfigProps[];
         getCurrent: () => {
           productList: import('@/components').FormattedQuoteItem[];
