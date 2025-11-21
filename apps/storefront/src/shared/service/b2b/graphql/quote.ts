@@ -1,4 +1,4 @@
-import { QuoteExtraFieldsType } from '@/types/quotes';
+import { CreateQuoteResponse, QuoteExtraFieldsType } from '@/types/quotes';
 import { channelId, convertArrayToGraphql, convertObjectToGraphql, storeHash } from '@/utils';
 
 import B3Request from '../../request/b3Fetch';

@@ -27,6 +27,8 @@ import {
   ValidateProductResponse,
 } from '@/shared/service/b2b/graphql/product';
 import { QuoteInfoState } from '@/store/slices/quoteInfo';
+import { GraphQLError } from 'graphql';
+
 import { CompanyStatus, CustomerRole, UserTypes } from '@/types';
 import { CreateQuoteResponse, QuoteInfo, QuoteItem } from '@/types/quotes';
 
@@ -361,8 +363,14 @@ const buildCSVUploadWith = builder(() => ({
   },
 }));
 
-const buildQuoteCreateResponseWith = builder<CreateQuoteResponse>(() => ({
-  quoteCreate: { quote: { id: faker.number.int(), createdAt: faker.date.anytime().toString() } },
+type GraphQLResponse<T> = {
+  data?: T;
+  errors?: readonly Partial<GraphQLError>[] | null;
+  extensions?: Record<string, any>;
+};
+
+const buildQuoteCreateResponseWith = builder<GraphQLResponse<CreateQuoteResponse>>(() => ({
+  data: { quoteCreate: { quote: { id: faker.number.int(), createdAt: faker.date.anytime().toString() } } },
 }));
 
 const customerEmail = 'info@abc.net';
@@ -1764,7 +1772,7 @@ describe('when the user is a B2B customer', () => {
         graphql.mutation('CreateQuote', () =>
           HttpResponse.json(
             buildQuoteCreateResponseWith({
-              quoteCreate: { quote: { id: 123, createdAt: '1245' } },
+              data: { quoteCreate: { quote: { id: 123, createdAt: '1245' } } },
             }),
           ),
         ),
