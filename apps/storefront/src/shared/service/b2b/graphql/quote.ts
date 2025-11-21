@@ -1,4 +1,4 @@
-import { QuoteExtraFieldsType } from '@/types/quotes';
+import { CreateQuoteResponse, QuoteExtraFieldsType } from '@/types/quotes';
 import { channelId, convertArrayToGraphql, convertObjectToGraphql, storeHash } from '@/utils';
 
 import B3Request from '../../request/b3Fetch';
@@ -436,8 +436,8 @@ export const getBCQuotesList = (data: CustomFieldItems) =>
     query: getQuotesList(data, 'bc'),
   }).then((res) => res.customerQuotes);
 
-export const createQuote = (data: CustomFieldItems) =>
-  B3Request.graphqlB2B({
+export const createQuote = (data: CustomFieldItems): Promise<CreateQuoteResponse> =>
+  B3Request.graphqlB2B<CreateQuoteResponse>({
     query: quoteCreate(data),
   });
 

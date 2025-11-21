@@ -146,10 +146,9 @@ export interface QuoteExtraFieldsData {
   fieldValue: string | number;
 }
 
-export interface CreateQuoteResponse {
-  data: {
-    quoteCreate: {
-      quote: { id: number; createdAt: string };
-    };
+export interface CreateQuoteResponse extends CustomFieldItems {
+  quoteCreate: {
+    quote: { id: number; createdAt: string };
   };
+  error?: { extensions?: CustomFieldItems };
 }
