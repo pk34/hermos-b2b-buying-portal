@@ -28,8 +28,26 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
     ...restProps
   } = props;
 
-  const { spacing: gridSpacing = 2, ...restContainerProps } =
-    (containerProps || {}) as GridProps;
+  const {
+    spacing: gridSpacing,
+    rowSpacing,
+    columnSpacing,
+    ...restContainerProps
+  } = (containerProps || {}) as GridProps;
+
+  const spacingProps: Partial<GridProps> = {};
+
+  if (rowSpacing !== undefined) {
+    spacingProps.rowSpacing = rowSpacing;
+  }
+
+  if (columnSpacing !== undefined) {
+    spacingProps.columnSpacing = columnSpacing;
+  }
+
+  if (gridSpacing !== undefined || (rowSpacing === undefined && columnSpacing === undefined)) {
+    spacingProps.spacing = gridSpacing ?? 2;
+  }
 
   const renderFormFields = (fields: any) =>
     fields.map((field: B3UI.B3CustomFormValue) => {
@@ -135,7 +153,7 @@ export default function B3CustomForm(props: B3UI.B3CustomFormProps) {
     });
 
   return (
-    <Grid container spacing={gridSpacing} {...restContainerProps}>
+    <Grid container {...spacingProps} {...restContainerProps}>
       {formFields && renderFormFields(formFields)}
     </Grid>
   );

@@ -4,6 +4,7 @@ import { MoreHoriz as MoreHorizIcon } from '@mui/icons-material';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { rolePermissionSelector, useAppSelector } from '@/store';
 import { InvoiceList } from '@/types/invoice';
@@ -15,10 +16,24 @@ import { getInvoiceDownloadPDFUrl, handlePrintPDF } from '../utils/pdf';
 import { triggerPdfDownload } from './triggerPdfDownload';
 
 const StyledMenu = styled(Menu)(() => ({
-  '& .MuiPaper-elevation': {
-    boxShadow:
-      '0px 1px 0px -1px rgba(0, 0, 0, 0.1), 0px 1px 6px rgba(0, 0, 0, 0.07), 0px 1px 4px rgba(0, 0, 0, 0.06)',
-    borderRadius: '4px',
+  '& .MuiPaper-root': {
+    borderRadius: 0,
+    boxShadow: '0px 4px 22px 5px #0000001A',
+  },
+}));
+
+const StyledMenuItem = styled(MenuItem)(() => ({
+  width: '244px',
+  height: '44px',
+  padding: '10px',
+  backgroundColor: '#FFFFFF',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+  '&:hover': {
+    backgroundColor: '#F5F5F5',
   },
 }));
 
@@ -26,7 +41,7 @@ interface B3PulldownProps {
   row: InvoiceList;
   setIsRequestLoading: (bool: boolean) => void;
   setInvoiceId: (id: string) => void;
-  handleOpenHistoryModal: (bool: boolean) => void;
+  handleOpenDetails: (invoiceId: string) => void;
   isCurrentCompany: boolean;
   invoicePay: boolean;
 }
@@ -35,7 +50,7 @@ function B3Pulldown({
   row,
   setIsRequestLoading,
   setInvoiceId,
-  handleOpenHistoryModal,
+  handleOpenDetails,
   isCurrentCompany,
   invoicePay,
 }: B3PulldownProps) {
@@ -43,6 +58,7 @@ function B3Pulldown({
   const ref = useRef<HTMLButtonElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isPay, setIsPay] = useState<boolean>(true);
+  const [isMobile] = useMobile();
 
   const navigate = useNavigate();
 
@@ -63,7 +79,7 @@ function B3Pulldown({
     setIsOpen(true);
   };
 
-  const handleViewInvoice = async (isPayNow: boolean) => {
+  const handleViewInvoicePdf = async (isPayNow: boolean) => {
     const { id } = row;
 
     close();
@@ -117,9 +133,11 @@ function B3Pulldown({
     await gotoInvoiceCheckoutUrl(params, platform, false);
   };
 
-  const viewPaymentHistory = async () => {
+  const handleViewDetails = () => {
+    const { id } = row;
+
     close();
-    handleOpenHistoryModal(true);
+    handleOpenDetails(id);
   };
 
   const handleDownloadPDF = async () => {
@@ -160,8 +178,18 @@ function B3Pulldown({
         ref={ref}
         aria-label={b3Lang('invoice.actions.moreActions')}
         aria-haspopup="menu"
+        sx={
+          isMobile
+            ? {
+                color: '#0067A0',
+                '& .MuiSvgIcon-root': {
+                  color: '#0067A0',
+                },
+              }
+            : undefined
+        }
       >
-        <MoreHorizIcon />
+        <MoreHorizIcon sx={isMobile ? { color: '#0067A0' } : undefined} />
       </IconButton>
       <StyledMenu
         id="basic-menu"
@@ -180,71 +208,35 @@ function B3Pulldown({
           horizontal: 'right',
         }}
       >
-        <MenuItem
-          key="View-invoice"
-          sx={{
-            color: 'primary.main',
-          }}
+        <StyledMenuItem
+          key="view-invoice-pdf"
           onClick={() =>
-            handleViewInvoice(row.status !== 2 && invoicePayPermission && purchasabilityPermission)
+            handleViewInvoicePdf(
+              row.status !== 2 && invoicePayPermission && purchasabilityPermission,
+            )
           }
         >
           {b3Lang('invoice.actions.viewInvoice')}
-        </MenuItem>
+        </StyledMenuItem>
+        <StyledMenuItem key="download-xml" onClick={() => handleDownloadPDF()}>
+          {b3Lang('invoice.actions.download')}
+        </StyledMenuItem>
         {isCanViewOrder && (
-          <MenuItem
-            key="View-Order"
-            sx={{
-              color: 'primary.main',
-            }}
-            onClick={handleViewOrder}
-          >
+          <StyledMenuItem key="view-order" onClick={handleViewOrder}>
             {b3Lang('invoice.actions.viewOrder')}
-          </MenuItem>
+          </StyledMenuItem>
         )}
 
         {row.status !== 0 && (
-          <MenuItem
-            key="View-payment-history"
-            sx={{
-              color: 'primary.main',
-            }}
-            onClick={viewPaymentHistory}
-          >
+          <StyledMenuItem key="view-history-payment" onClick={handleViewDetails}>
             {b3Lang('invoice.actions.viewPaymentHistory')}
-          </MenuItem>
+          </StyledMenuItem>
         )}
         {isPay && (
-          <MenuItem
-            key="Pay"
-            sx={{
-              color: 'primary.main',
-            }}
-            onClick={handlePay}
-          >
+          <StyledMenuItem key="pay" onClick={handlePay}>
             {b3Lang('invoice.actions.pay')}
-          </MenuItem>
+          </StyledMenuItem>
         )}
-        <MenuItem
-          key="Print"
-          sx={{
-            color: 'primary.main',
-          }}
-          onClick={() =>
-            handleViewInvoice(row.status !== 2 && invoicePayPermission && purchasabilityPermission)
-          }
-        >
-          {b3Lang('invoice.actions.print')}
-        </MenuItem>
-        <MenuItem
-          key="Download"
-          sx={{
-            color: 'primary.main',
-          }}
-          onClick={() => handleDownloadPDF()}
-        >
-          {b3Lang('invoice.actions.download')}
-        </MenuItem>
       </StyledMenu>
     </>
   );

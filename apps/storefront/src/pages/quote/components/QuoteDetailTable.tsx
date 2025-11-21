@@ -69,21 +69,44 @@ const StyledQuoteTableContainer = styled('div')(() => ({
   backgroundColor: '#FFFFFF',
   padding: '1rem',
   width: '100%',
-  border: '1px solid #E0E0E0',
-  boxShadow:
-    '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 1px 3px rgba(0, 0, 0, 0.12)',
-  borderRadius: '4px',
+  borderWidth: '0px 0.3px 0.3px 0px',
+  borderStyle: 'solid',
+  borderColor: '#000000',
+  boxShadow: 'none',
+  borderRadius: 0,
+
+  '& .MuiTableHead-root .MuiTableCell-root': {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    borderBottom: '0.5px solid #000000',
+  },
+
+  '& .MuiTableBody-root .MuiTableCell-root': {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    borderBottom: '0.5px solid #000000 !important',
+  },
+
+  '& .MuiTableBody-root .MuiTableRow-root:last-of-type .MuiTableCell-root': {
+    borderBottom: '0.5px solid #000000 !important',
+  },
 
   '& tbody': {
     '& tr': {
       '& td': {
         verticalAlign: 'top',
       },
-      '& td: first-of-type': {
+      '& td:first-of-type': {
         verticalAlign: 'inherit',
       },
     },
-    '& tr: hover': {
+    '& tr:hover': {
       '& #shoppingList-actionList': {
         opacity: 1,
       },
@@ -91,11 +114,30 @@ const StyledQuoteTableContainer = styled('div')(() => ({
   },
 }));
 
-const StyledImage = styled('img')(() => ({
-  maxWidth: '60px',
-  height: 'auto',
+const StyledImageWrapper = styled('div')(() => ({
+  width: '85px',
+  height: '85px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   marginRight: '0.5rem',
+  flexShrink: 0,
 }));
+
+const StyledImage = styled('img')(() => ({
+  maxWidth: '100%',
+  maxHeight: '100%',
+  width: 'auto',
+  height: 'auto',
+}));
+
+const TABLE_DATA_TYPOGRAPHY_SX = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 400,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+} as const;
 
 function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
   const b3Lang = useB3Lang();
@@ -151,15 +193,16 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
               alignItems: 'flex-start',
             }}
           >
-            <StyledImage
-              src={row.imageUrl || PRODUCT_DEFAULT_IMAGE}
-              alt="Product-img"
-              loading="lazy"
-            />
+            <StyledImageWrapper>
+              <StyledImage
+                src={row.imageUrl || PRODUCT_DEFAULT_IMAGE}
+                alt="Product-img"
+                loading="lazy"
+              />
+            </StyledImageWrapper>
             <Box>
               <Typography
                 variant="body1"
-                color="#212121"
                 onClick={() => {
                   const {
                     location: { origin },
@@ -169,12 +212,18 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
                   }
                 }}
                 sx={{
+                  ...TABLE_DATA_TYPOGRAPHY_SX,
                   cursor: 'pointer',
                 }}
               >
                 {row.productName}
               </Typography>
-              <Typography variant="body1" color="#616161">
+              <Typography
+                variant="body1"
+                sx={{
+                  ...TABLE_DATA_TYPOGRAPHY_SX,
+                }}
+              >
                 {row.sku}
               </Typography>
               {optionsValue.length > 0 && (
@@ -184,24 +233,20 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
                       option.optionLabel && (
                         <Typography
                           sx={{
-                            fontSize: '0.75rem',
-                            lineHeight: '1.5',
-                            color: '#455A64',
+                            ...TABLE_DATA_TYPOGRAPHY_SX,
                           }}
                           key={`${option.optionId}_${option.optionName}_${option.optionLabel}`}
                         >
                           {option.optionName}: {option.optionLabel}
                         </Typography>
-                      ),
+                    ),
                   )}
                 </Box>
               )}
               {row.notes && (
                 <Typography
-                  variant="body1"
-                  color="#ED6C02"
                   sx={{
-                    fontSize: '0.9rem',
+                    ...TABLE_DATA_TYPOGRAPHY_SX,
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',
                   }}
@@ -243,6 +288,7 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
             {isDiscount && (
               <Typography
                 sx={{
+                  ...TABLE_DATA_TYPOGRAPHY_SX,
                   padding: '12px 0 0 0',
                   textDecoration: 'line-through',
                 }}
@@ -260,8 +306,8 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
 
             <Typography
               sx={{
+                ...TABLE_DATA_TYPOGRAPHY_SX,
                 padding: isDiscount ? '0' : '12px 0 0 0',
-                color: isDiscount ? '#2E7D32' : '#212121',
               }}
             >
               {showPrice(
@@ -287,6 +333,7 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
       render: (row) => (
         <Typography
           sx={{
+            ...TABLE_DATA_TYPOGRAPHY_SX,
             padding: '12px 0',
           }}
         >
@@ -329,6 +376,7 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
             {isDiscount && (
               <Typography
                 sx={{
+                  ...TABLE_DATA_TYPOGRAPHY_SX,
                   padding: '12px 0 0 0',
                   textDecoration: 'line-through',
                 }}
@@ -345,8 +393,8 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
             )}
             <Typography
               sx={{
+                ...TABLE_DATA_TYPOGRAPHY_SX,
                 padding: isDiscount ? '0' : '12px 0 0 0',
-                color: isDiscount ? '#2E7D32' : '#212121',
               }}
             >
               {showPrice(
@@ -374,12 +422,22 @@ function QuoteDetailTable(props: ShoppingDetailTableProps, ref: Ref<unknown>) {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
           margin: '0.5rem 0 1rem 0',
         }}
       >
-        <SectionTitle component="h2">
-          {b3Lang('quoteDetail.table.totalProducts', { total: total || 0 })}
+        <SectionTitle
+          component="h2"
+          sx={{
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: '18px',
+            lineHeight: '24px',
+            color: '#000000',
+            marginLeft: 0,
+          }}
+        >
+          {b3Lang('quoteDetail.table.productsTitle')}
         </SectionTitle>
       </Box>
       <B3PaginationTable

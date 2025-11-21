@@ -1,5 +1,4 @@
 import { Alert, Box, IconButton, Snackbar } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 
 import useMobile from '@/hooks/useMobile';
 import { MsgsProps, TipMessagesProps } from '@/shared/dynamicallyVariable/context/config';
@@ -14,9 +13,11 @@ interface B3TipProps extends TipMessagesProps {
 function MessageAlert({
   msg,
   onClose,
+  isMobile,
 }: {
   msg: MsgsProps;
   onClose: (id: string | number) => void;
+  isMobile: boolean;
 }) {
   return (
     <Alert
@@ -29,7 +30,8 @@ function MessageAlert({
 
         '& .MuiAlert-message': {
           overflow: 'unset',
-          whiteSpace: 'nowrap',
+          whiteSpace: isMobile ? 'normal' : 'nowrap',
+          width: '100%',
         },
       }}
       variant="filled"
@@ -45,16 +47,12 @@ function MessageAlert({
 function AccountSettingsSuccessToast({
   message,
   onClose,
-  isMobile,
   description,
 }: {
   message?: string;
   description?: string;
   onClose: () => void;
-  isMobile: boolean;
 }) {
-  const theme = useTheme();
-
   const CheckIcon = () => (
     <Box
       component="span"
@@ -64,17 +62,17 @@ function AccountSettingsSuccessToast({
       }}
     >
       <svg
-        width="24"
-        height="26"
-        viewBox="0 0 24 26"
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden
       >
         <path
-          d="M9 13.0004L11 15.0156L15 10.9851M21 13.0004C21 18.0089 16.9706 22.0691 12 22.0691C7.02944 22.0691 3 18.0089 3 13.0004C3 7.99184 7.02944 3.93164 12 3.93164C16.9706 3.93164 21 7.99184 21 13.0004Z"
-          stroke="#F7F7F7"
-          strokeWidth="2"
+          d="M7.5 10.0003L9.16671 11.667L12.5 8.33366M17.5 10.0003C17.5 13.6821 14.6421 16.6669 10.8334 16.6669C7.02469 16.6669 4.16671 13.6821 4.16671 10.0003C4.16671 6.31851 7.02469 3.33366 10.8334 3.33366C14.6421 3.33366 17.5 6.31851 17.5 10.0003Z"
+          stroke="#FFFFFF"
+          strokeWidth="1.66667"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -103,23 +101,23 @@ function AccountSettingsSuccessToast({
   return (
     <Box
       sx={{
-        width: isMobile ? '100%' : '419px',
-        maxWidth: '100%',
-        height: '76px',
+        width: '100%',
+        height: '44px',
         borderRadius: '5px',
         padding: '10px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '10px',
-        backgroundColor: theme.palette.success.main,
+        gap: '12px',
+        backgroundColor: '#457B3B',
+        boxSizing: 'border-box',
       }}
     >
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
+          gap: '12px',
           flex: 1,
         }}
       >
@@ -127,21 +125,43 @@ function AccountSettingsSuccessToast({
         <Box
           component="span"
           sx={{
-            fontFamily: "'Lato', sans-serif",
-            fontWeight: 400,
-            fontSize: '20px',
-            lineHeight: '28px',
-            letterSpacing: 0,
-            color: '#F7F7F7',
-            verticalAlign: 'middle',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
+            fontFamily: "'Lato', sans-serif",
+            fontWeight: 600,
+            fontSize: '14px',
+            lineHeight: '20px',
+            color: '#FFFFFF',
+            textAlign: 'left',
+            gap: 0,
+            width: '100%',
+            wordBreak: 'break-word',
           }}
         >
-          {message}
+          <Box
+            component="span"
+            sx={{
+              fontFamily: "'Lato', sans-serif",
+              fontWeight: 600,
+              fontSize: '14px',
+              lineHeight: '20px',
+              color: '#FFFFFF',
+            }}
+          >
+            {message}
+          </Box>
           {description && (
-            <Box component="span" sx={{ fontSize: '16px', lineHeight: '24px' }}>
+            <Box
+              component="span"
+              sx={{
+                fontFamily: "'Lato', sans-serif",
+                fontWeight: 600,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#FFFFFF',
+              }}
+            >
               {description}
             </Box>
           )}
@@ -152,9 +172,9 @@ function AccountSettingsSuccessToast({
         onClick={onClose}
         sx={{
           padding: 0,
-          width: '20px',
-          height: '20px',
-          color: '#F7F7F7',
+          width: '24px',
+          height: '24px',
+          color: '#FFFFFF',
         }}
       >
         <CloseIcon />
@@ -182,22 +202,50 @@ export default function B3Tip({
               autoHideDuration={msg?.time || 5000}
               onClose={(_, reason: string) => handleAllClose(msg.id, reason)}
               disableWindowBlurListener
-              anchorOrigin={{
-                vertical,
-                horizontal,
-              }}
+              anchorOrigin={
+                msg.customType === 'account-settings-success'
+                  ? { vertical: 'top', horizontal: 'center' }
+                  : { vertical, horizontal: isMobile ? 'center' : horizontal }
+              }
               sx={{
-                top: `${24 + index * 10 + index * (isMobile ? 80 : 90)}px !important`,
-                width: msg.customType === 'account-settings-success' ? 'auto' : '320px',
-                maxWidth: '100%',
+                top:
+                  msg.customType === 'account-settings-success'
+                    ? `${(isMobile ? 156 : 168) + index * 64}px !important`
+                    : `${24 + index * 10 + index * (isMobile ? 80 : 90)}px !important`,
+                width:
+                  msg.customType === 'account-settings-success'
+                    ? '90vw'
+                    : isMobile
+                    ? 'calc(100vw - 32px)'
+                    : '320px',
+                maxWidth:
+                  msg.customType === 'account-settings-success'
+                    ? '90vw'
+                    : isMobile
+                    ? 'calc(100vw - 32px)'
+                    : '100%',
                 height: 'auto',
+                left: msg.customType === 'account-settings-success' ? '50% !important' : undefined,
+                transform:
+                  msg.customType === 'account-settings-success'
+                    ? 'translateX(-50%) !important'
+                    : undefined,
+                right: msg.customType === 'account-settings-success' ? 'auto !important' : undefined,
+                '& .MuiSnackbarContent-root':
+                  msg.customType === 'account-settings-success'
+                    ? {
+                        backgroundColor: 'transparent',
+                        boxShadow: 'none',
+                        padding: 0,
+                        width: '100%',
+                      }
+                    : undefined,
               }}
             >
               {msg.customType === 'account-settings-success' ? (
                 <AccountSettingsSuccessToast
                   message={msg.msg}
                   description={msg.description}
-                  isMobile={isMobile}
                   onClose={() => handleItemClose(msg.id)}
                 />
               ) : (
@@ -206,7 +254,7 @@ export default function B3Tip({
                     display: 'flex',
                   }}
                 >
-                  <MessageAlert msg={msg} onClose={handleItemClose} />
+                  <MessageAlert msg={msg} onClose={handleItemClose} isMobile={isMobile} />
                 </Box>
               )}
             </Snackbar>

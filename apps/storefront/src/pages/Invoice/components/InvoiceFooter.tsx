@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 
 import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
@@ -22,15 +22,6 @@ function InvoiceFooter(props: InvoiceFooterProps) {
   const [currentToken, setCurrentToken] = useState<string>('$');
 
   const isAgenting = useAppSelector(({ b2bFeatures }) => b2bFeatures.masqueradeCompany.isAgenting);
-
-  const containerStyle = isMobile
-    ? {
-        alignItems: 'flex-start',
-        flexDirection: 'column',
-      }
-    : {
-        alignItems: 'center',
-      };
 
   const { selectedPay, decimalPlaces } = props;
 
@@ -100,124 +91,73 @@ function InvoiceFooter(props: InvoiceFooterProps) {
   }, [decimalPlaces, selectedPay]);
 
   return (
-    <Grid
+    <Box
       sx={{
         position: 'fixed',
-        bottom: isMobile && isAgenting ? '52px' : 0,
+        bottom: isMobile && isAgenting ? '62px' : '10px',
         left: 0,
-        backgroundColor: '#fff',
         width: '100%',
-        padding: isMobile ? '0 0 1rem 0' : '0 40px 1rem 40px',
-        height: isMobile ? '8rem' : 'auto',
-        marginLeft: 0,
+        height: '60px',
+        backgroundColor: '#00965E',
         display: 'flex',
-        flexWrap: 'nowrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: isMobile ? '0 16px' : '0 40px',
         zIndex: '999',
       }}
-      container
-      spacing={2}
     >
-      <Grid
-        item
+      <Box
         sx={{
-          display: isMobile ? 'none' : 'block',
-          width: '290px',
-          paddingLeft: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
-      />
-      <Grid
-        item
-        sx={
-          isMobile
-            ? {
-                flexBasis: '100%',
-              }
-            : {
-                flexBasis: '690px',
-                flexGrow: 1,
-              }
-        }
       >
-        <Box
+        <Typography
+          variant="h6"
           sx={{
-            width: '100%',
-            pr: '20px',
-            display: 'flex',
-            zIndex: '999',
-            justifyContent: 'space-between',
-            ...containerStyle,
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: '16px',
+            lineHeight: '24px',
+            color: '#FFFFFF',
           }}
         >
-          <Typography
-            sx={{
-              color: '#000000',
-              fontSize: '16px',
-              fontWeight: '400',
-            }}
-          >
-            {b3Lang('invoice.footer.invoiceSelected', {
-              invoices: selectedPay.length,
-            })}
-          </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              flexWrap: isMobile ? 'wrap' : 'nowrap',
-              width: isMobile ? '100%' : 'auto',
-            }}
-          >
-            <Typography
-              variant="h6"
-              sx={{
-                fontSize: '16px',
-                fontWeight: '700',
-                color: '#000000',
-              }}
-            >
-              {b3Lang('invoice.footer.totalPayment', {
-                total: `${currentToken}${selectedAccount}`,
-              })}
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                marginTop: isMobile ? '0.5rem' : 0,
-                width: isMobile ? '100%' : 'auto',
-              }}
-            >
-              <Button
-                variant="contained"
-                sx={{
-                  marginLeft: isMobile ? 0 : '1rem',
-                  width: isMobile ? '100%' : 'auto',
-                }}
-                onClick={() => {
-                  handlePay();
-                }}
-              >
-                {b3Lang('invoice.footer.payInvoices')}
-              </Button>
-            </Box>
-          </Box>
-        </Box>
-      </Grid>
-      <Grid
-        item
-        sx={
-          isMobile
-            ? {
-                flexBasis: '100%',
-                display: isMobile ? 'none' : 'block',
-              }
-            : {
-                flexBasis: '0',
-                display: isMobile ? 'none' : 'block',
-              }
-        }
-      />
-    </Grid>
+          {b3Lang('invoice.footer.totalPayment', {
+            total: `${currentToken}${selectedAccount}`,
+          })}
+        </Typography>
+        <Button
+          variant="contained"
+          sx={{
+            width: 'auto',
+            height: '40px',
+            borderRadius: '5px',
+            padding: '10px',
+            marginLeft: '10px',
+            backgroundColor: '#0067A0',
+            fontFamily: 'Lato, sans-serif',
+            fontWeight: 600,
+            fontSize: '16px',
+            lineHeight: '24px',
+            textAlign: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#FFFFFF',
+            minWidth: 'auto',
+            '&:hover': {
+              backgroundColor: '#005280',
+            },
+          }}
+          onClick={() => {
+            handlePay();
+          }}
+        >
+          {b3Lang('invoice.footer.payInvoices')}
+        </Button>
+      </Box>
+    </Box>
   );
 }
 

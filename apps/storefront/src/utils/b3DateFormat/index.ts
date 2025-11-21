@@ -2,11 +2,43 @@ import merge from 'lodash-es/merge';
 
 import { store } from '@/store';
 
+import { MEXICAN_EXTENDED_FORMAT_TOKEN } from '../normalizeTimeFormat';
+
 import DateFormatter from './php-date-format.js';
 
 type DisplayType = 'display' | 'extendedDisplay';
 
 const fmt = new DateFormatter();
+
+const MEXICAN_MONTHS = [
+  'enero',
+  'febrero',
+  'marzo',
+  'abril',
+  'mayo',
+  'junio',
+  'julio',
+  'agosto',
+  'septiembre',
+  'octubre',
+  'noviembre',
+  'diciembre',
+];
+
+const formatMexicanExtendedDate = (date: Date): string => {
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  const day = date.getDate();
+  const month = MEXICAN_MONTHS[date.getMonth()];
+  const year = date.getFullYear();
+  const hours = `${date.getHours()}`.padStart(2, '0');
+  const minutes = `${date.getMinutes()}`.padStart(2, '0');
+  const seconds = `${date.getSeconds()}`.padStart(2, '0');
+
+  return `${day} de ${month} ${year} a las ${hours}:${minutes}:${seconds}`;
+};
 
 type Handler = 'formatDate' | 'parseDate';
 
@@ -25,6 +57,8 @@ const formatCreator =
     );
 
     const display = dateFormat[displayType];
+    const isMexicanExtendedDisplay =
+      displayType === 'extendedDisplay' && display === MEXICAN_EXTENDED_FORMAT_TOKEN;
 
     if (!timestamp) return '';
 
@@ -37,8 +71,16 @@ const formatCreator =
     const dateObject = new Date(utcTime);
     switch (handler) {
       case 'formatDate':
+        if (isMexicanExtendedDisplay) {
+          return formatMexicanExtendedDate(dateObject);
+        }
+
         return fmt.formatDate(dateObject, display) || '';
       case 'parseDate':
+        if (isMexicanExtendedDisplay) {
+          return dateObject;
+        }
+
         return fmt.parseDate(dateObject, display) || '';
       default:
         throw new Error('Invalid value');

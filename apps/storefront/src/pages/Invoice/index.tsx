@@ -1,7 +1,8 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Button, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import cloneDeep from 'lodash-es/cloneDeep';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 import { B2BAutoCompleteCheckbox } from '@/components';
 import B3Spin from '@/components/spin/B3Spin';
@@ -10,8 +11,7 @@ import { TableColumnItem } from '@/components/table/B3Table';
 import { permissionLevels } from '@/constants';
 import { useMobile, useSort } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
-import { GlobalContext } from '@/shared/global';
-import { exportInvoicesAsCSV, getInvoiceList, getInvoiceStats } from '@/shared/service/b2b';
+import { getInvoiceList, getInvoiceStats } from '@/shared/service/b2b';
 import { rolePermissionSelector, useAppSelector } from '@/store';
 import { CustomerRole } from '@/types';
 import { InvoiceList, InvoiceListNode } from '@/types/invoice';
@@ -37,7 +37,6 @@ import PaymentSuccess from './components/PaymentSuccess';
 import PrintTemplate from './components/PrintTemplate';
 import InvoiceListType, {
   defaultSortKey,
-  exportOrderByArr,
   filterFormConfig,
   filterFormConfigsTranslationVariables,
   sortIdArr,
@@ -55,9 +54,9 @@ interface FilterSearchProps {
 }
 
 interface PaginationTableRefProps extends HTMLInputElement {
-  getList: () => void;
-  getCacheList: () => void;
-  setCacheAllList: (items?: InvoiceList[]) => void;
+  getList: () => InvoiceListNode[];
+  getCacheList: () => InvoiceListNode[];
+  setCacheAllList: (items?: InvoiceListNode[]) => void;
   setList: (items?: InvoiceListNode[]) => void;
   getSelectedValue: () => void;
 }
@@ -68,6 +67,53 @@ const initFilter = {
   offset: 0,
   orderBy: `-${sortIdArr[defaultSortKey]}`,
   companyIds: [],
+};
+
+const invoiceTableStyles: SxProps<Theme> = {
+  '& .MuiCard-root': {
+    backgroundColor: '#FFFFFF',
+    borderRadius: '10px',
+    overflow: 'hidden',
+  },
+  '& .MuiTable-root': {
+    borderCollapse: 'separate',
+    borderSpacing: 0,
+  },
+  '& thead th': {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '14px',
+    lineHeight: '20px',
+    color: '#000000',
+    padding: '16px 20px',
+    borderBottom: '0.2px solid #000000 !important',
+    backgroundColor: '#FFFFFF',
+  },
+  '& tbody td': {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    padding: '16px 20px',
+    borderBottom: '0.2px solid #000000 !important',
+  },
+  '& tbody tr:last-of-type td': {
+    borderBottom: '0.2px solid #000000 !important',
+  },
+  '& tbody td:first-of-type, & thead th:first-of-type': {
+    paddingLeft: '16px',
+    paddingRight: '16px',
+  },
+  '& tbody td:nth-of-type(2), & thead th:nth-of-type(2)': {
+    paddingLeft: '20px',
+  },
+  '& tbody .MuiCheckbox-root': {
+    padding: '0 8px 0 0',
+  },
+  '& tbody .MuiIconButton-root': {
+    color: '#000000',
+  },
 };
 
 function useData() {
@@ -134,8 +180,6 @@ function Invoice() {
 
   const [filterData, setFilterData] = useState<Partial<FilterSearchProps>>({});
 
-  const [exportCsvText, setExportCsvText] = useState<string>(b3Lang('invoice.exportCsvText'));
-
   const [filterChangeFlag, setFilterChangeFlag] = useState(false);
   const [filterLists, setFilterLists] = useState<InvoiceListNode[]>([]);
   const [selectAllPay, setSelectAllPay] = useState<boolean>(invoicePayPermission);
@@ -144,10 +188,6 @@ function Invoice() {
     level: permissionLevels.COMPANY_SUBSIDIARIES,
     code: b2bPermissionsMap.invoicePayPermission,
   });
-
-  const {
-    state: { bcLanguage },
-  } = useContext(GlobalContext);
 
   const [handleSetOrderBy, order, orderBy] = useSort(
     sortIdArr,
@@ -303,84 +343,41 @@ function Invoice() {
     }
   };
 
-  const handleSetSelectedInvoiceAccount = (newPrice: number | string, invoiceId: string) => {
-    const currentOriginInvoice = checkedArr.find((invoice: InvoiceListNode) => {
-      const {
-        node: { id },
-      } = invoice;
+  const handleOpenInvoiceDetails = (invoiceId: string) => {
+    const table = paginationTableRef.current;
+    if (!table) {
+      return;
+    }
 
-      return Number(id) === Number(invoiceId);
-    });
-
-    if (selectedPay.length > 0) {
-      const newInvoices = selectedPay.map((selectedItem: InvoiceListNode) => {
-        const {
-          node: { id, openBalance },
-        } = selectedItem;
-        const {
-          node: { openBalance: currentOriginOpenBalance },
-        } = currentOriginInvoice;
-
-        if (Number(id) === Number(invoiceId)) {
-          openBalance.value =
-            Number(currentOriginOpenBalance.value) < Number(newPrice)
-              ? currentOriginOpenBalance.value
-              : newPrice;
+    const applyCollapseState = (items: InvoiceListNode[] = []) =>
+      items.map((invoiceNode) => {
+        if (!invoiceNode?.node) {
+          return invoiceNode;
         }
 
-        return selectedItem;
+        return {
+          ...invoiceNode,
+          node: {
+            ...invoiceNode.node,
+            isCollapse: invoiceNode.node.id === invoiceId,
+          },
+        };
       });
 
-      setSelectedPay(newInvoices);
+    const listItems = table.getList?.();
+    if (listItems) {
+      table.setList?.(applyCollapseState(listItems));
     }
+
+    const cachedItems = table.getCacheList?.();
+    if (cachedItems) {
+      table.setCacheAllList?.(applyCollapseState(cachedItems));
+    }
+
+    setCurrentInvoiceId(invoiceId);
   };
 
-  const handleExportInvoiceAsCSV = async () => {
-    try {
-      setIsRequestLoading(true);
-      const filtering = filterData ? isFiltering(filterData) : false;
-      const currentCheckedArr = filtering
-        ? filterLists.filter((item: InvoiceListNode) =>
-            checkedArr.some((item2: InvoiceListNode) => item?.node?.id === item2?.node?.id),
-          )
-        : checkedArr;
-
-      const invoiceNumber = currentCheckedArr.map((item: InvoiceListNode) => item.node.id);
-      const invoiceStatus = filterData?.status ? [Number(filterData.status)] : [];
-
-      let orderByFiled = '-invoice_number';
-      if (filterData?.orderBy) {
-        const orderByStr = String(filterData.orderBy);
-        orderByFiled = orderByStr.includes('-')
-          ? `-${exportOrderByArr[orderByStr.split('-')[1]]}`
-          : exportOrderByArr[orderByStr];
-      }
-
-      const invoiceFilterData = {
-        search: filterData?.q || '',
-        idIn: `${invoiceNumber || ''}`,
-        orderNumber: '',
-        beginDateAt: filterData?.beginDateAt || null,
-        endDateAt: filterData?.endDateAt || null,
-        status: invoiceStatus,
-        orderBy: orderByFiled,
-        companyIds: filterData?.companyIds || [],
-      };
-
-      const { invoicesExport } = await exportInvoicesAsCSV({
-        invoiceFilterData,
-        lang: bcLanguage || 'en',
-      });
-
-      if (invoicesExport?.url) {
-        window.open(invoicesExport?.url, '_blank');
-      }
-    } catch (err) {
-      b2bLogger.error(err);
-    } finally {
-      setIsRequestLoading(false);
-    }
-  };
+  
 
   useEffect(() => {
     const newInitFilter = {
@@ -525,33 +522,10 @@ function Invoice() {
     };
   };
 
-  const handleSetSelectedInvoiceAccountNumber = (val: string, id: string) => {
-    let result = val;
-    if (val.includes('.')) {
-      const wholeDecimalNumber = val.split('.');
-      const movePoint =
-        decimalPlaces === 0 ? 0 : wholeDecimalNumber[1].length - Number(decimalPlaces);
-      if (wholeDecimalNumber[1] && movePoint > 0) {
-        const newVal = wholeDecimalNumber[0] + wholeDecimalNumber[1];
-        result = `${newVal.slice(0, -decimalPlaces)}.${newVal.slice(-decimalPlaces)}`;
-      }
-      if (wholeDecimalNumber[1] && movePoint === 0) {
-        result = formattingNumericValues(Number(val), decimalPlaces);
-      }
-    } else if (result.length > 1) {
-      result = `${val.slice(0, 1)}.${val.slice(-1)}`;
-      if (Number(decimalPlaces) === 0) result = val;
-    } else {
-      result = val;
-    }
-
-    handleSetSelectedInvoiceAccount(result, id);
-  };
-
   const columnAllItems: TableColumnItem<InvoiceList>[] = [
     {
-      key: 'id',
-      title: b3Lang('invoice.headers.invoice'),
+      key: 'invoiceNumber',
+      title: b3Lang('invoice.headers.invoiceNumber'),
       isSortable: true,
       render: (item: InvoiceList) => (
         <Box
@@ -568,21 +542,10 @@ function Invoice() {
             handleViewInvoice(item.id, item.status, companyInfo?.companyId);
           }}
         >
-          {item?.invoiceNumber ? item?.invoiceNumber : item?.id}
+          {item?.invoiceNumber ? item.invoiceNumber : item?.id}
         </Box>
       ),
-      width: '8%',
-    },
-    {
-      key: 'companyInfo',
-      title: b3Lang('invoice.headers.companyName'),
-      isSortable: false,
-      render: (item: InvoiceList) => {
-        const { companyName } = item?.companyInfo || {};
-
-        return <Box>{companyName}</Box>;
-      },
-      width: '15%',
+      width: '12%',
     },
     {
       key: 'orderNumber',
@@ -594,9 +557,7 @@ function Invoice() {
           sx={{
             color: '#000000',
             cursor: 'pointer',
-            ':hover': {
-              textDecoration: 'underline',
-            },
+            textDecoration: 'underline',
           }}
           onClick={() => {
             navigate(`/orderDetail/${item.orderNumber}`);
@@ -609,15 +570,15 @@ function Invoice() {
     },
     {
       key: 'createdAt',
-      title: b3Lang('invoice.headers.invoiceDate'),
+      title: b3Lang('invoice.headers.quoteDate'),
       isSortable: true,
       render: (item: InvoiceList) =>
         `${item.createdAt ? displayFormat(Number(item.createdAt)) : '–'}`,
-      width: '15%',
+      width: '14%',
     },
     {
       key: 'updatedAt',
-      title: b3Lang('invoice.headers.dueDate'),
+      title: b3Lang('invoice.headers.expirationDate'),
       isSortable: true,
       render: (item: InvoiceList) => {
         const { dueDate, status } = item;
@@ -634,11 +595,11 @@ function Invoice() {
           </Typography>
         );
       },
-      width: '15%',
+      width: '14%',
     },
     {
       key: 'originalBalance',
-      title: b3Lang('invoice.headers.invoiceTotal'),
+      title: b3Lang('invoice.headers.total'),
       isSortable: true,
       render: (item: InvoiceList) => {
         const { originalBalance } = item;
@@ -651,11 +612,11 @@ function Invoice() {
 
         return `${token}${originalAmount || 0}`;
       },
-      width: '10%',
+      width: '12%',
     },
     {
       key: 'openBalance',
-      title: b3Lang('invoice.headers.amountDue'),
+      title: b3Lang('invoice.headers.debtAmount'),
       isSortable: true,
       render: (item: InvoiceList) => {
         const { openBalance } = item;
@@ -665,74 +626,17 @@ function Invoice() {
 
         return `${token}${openAmount || 0}`;
       },
-      width: '10%',
+      width: '12%',
     },
     {
-      key: 'openBalanceToPay',
-      title: b3Lang('invoice.headers.amountToPay'),
+      key: 'currency',
+      title: b3Lang('invoice.headers.currency'),
       render: (item: InvoiceList) => {
-        const { openBalance, id } = item;
-        const currentCode = openBalance.code || 'USD';
-        let valuePrice = openBalance.value;
-        let disabled = true;
+        const { openBalance, originalBalance } = item;
 
-        if (selectedPay.length > 0) {
-          const currentSelected = selectedPay.find((item: InvoiceListNode) => {
-            const {
-              node: { id: selectedId },
-            } = item;
-
-            return Number(selectedId) === Number(id);
-          });
-
-          if (currentSelected) {
-            const {
-              node: { openBalance: selectedOpenBalance },
-            } = currentSelected;
-
-            disabled = false;
-            valuePrice = selectedOpenBalance.value;
-
-            if (Number(openBalance.value) === 0) {
-              disabled = true;
-            }
-          }
-        }
-
-        return (
-          <TextField
-            disabled={disabled}
-            variant="filled"
-            value={valuePrice || ''}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment
-                  position="start"
-                  sx={{ padding: '8px 0', marginTop: '0 !important' }}
-                >
-                  {handleGetCorrespondingCurrencyToken(currentCode)}
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              '& input': {
-                paddingTop: '8px',
-              },
-              '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
-                {
-                  WebkitAppearance: 'none',
-                  margin: 0,
-                },
-            }}
-            onChange={(e: CustomFieldItems) => {
-              const val = e.target?.value;
-              handleSetSelectedInvoiceAccountNumber(val, id);
-            }}
-            type="number"
-          />
-        );
+        return openBalance?.code || originalBalance?.code || '-';
       },
-      width: '15%',
+      width: '8%',
     },
     {
       key: 'status',
@@ -742,13 +646,13 @@ function Invoice() {
         const { status, dueDate } = item;
         let code = item.status;
 
-        // (3, "Overdue")-【Display status when invoice exceeds due date. For front-end display only】
         if (status === 0 && currentDate > dueDate * 1000) {
           code = 3;
         }
 
         return <InvoiceStatus code={code} />;
       },
+      width: '8%',
     },
     {
       key: 'invoiceActions',
@@ -774,7 +678,7 @@ function Invoice() {
           <B3Pulldown
             row={actionRow}
             setInvoiceId={setCurrentInvoiceId}
-            handleOpenHistoryModal={setIsOpenHistory}
+            handleOpenDetails={handleOpenInvoiceDetails}
             setIsRequestLoading={setIsRequestLoading}
             isCurrentCompany={Number(currentCompanyId) === Number(companyInfo.companyId)}
             invoicePay={
@@ -788,33 +692,6 @@ function Invoice() {
       width: '10%',
     },
   ];
-
-  useEffect(() => {
-    let exportCsvTexts = b3Lang('invoice.exportCsvText');
-
-    const filtering = filterData ? isFiltering(filterData) : false;
-    const currentCheckedArr = filtering
-      ? filterLists.filter((item: InvoiceListNode) =>
-          checkedArr.some((item2: InvoiceListNode) => item?.node?.id === item2?.node?.id),
-        )
-      : checkedArr;
-
-    if (filtering) {
-      exportCsvTexts =
-        currentCheckedArr.length > 0
-          ? b3Lang('invoice.exportSelectedAsCsv')
-          : b3Lang('invoice.exportFilteredAsCsv');
-    } else {
-      exportCsvTexts =
-        currentCheckedArr.length > 0
-          ? b3Lang('invoice.exportSelectedAsCsv')
-          : b3Lang('invoice.exportCsvText');
-    }
-
-    setExportCsvText(exportCsvTexts);
-    // disabling because of b3lang rendering errors
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkedArr, filterData, filterLists]);
 
   const translatedFilterFormConfigs = filterFormConfig.map((element) => {
     const config = element;
@@ -904,13 +781,18 @@ function Invoice() {
           <Box
             sx={{
               display: 'flex',
+              alignItems: 'center',
               marginBottom: '30px',
-              flexDirection: document.body.clientWidth <= 465 ? 'column' : 'row',
+              flexDirection: 'row',
+              gap: isMobile ? '12px' : 0,
             }}
           >
             <Typography
               sx={{
-                fontSize: '24px',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: isMobile ? 600 : 400,
+                fontSize: isMobile ? '14px' : '20px',
+                lineHeight: isMobile ? '20px' : '28px',
                 color: '#000000',
               }}
             >
@@ -918,10 +800,21 @@ function Invoice() {
                 unpaid: currencyFormat(unpaidAmount),
               })}
             </Typography>
-            {document.body.clientWidth >= 465 && (
+            {isMobile ? (
+              <Box
+                sx={{
+                  width: 0,
+                  height: '19px',
+                  border: '2px solid #000000',
+                }}
+              />
+            ) : (
               <Typography
                 sx={{
-                  fontSize: '24px',
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '28px',
                   margin: '0 8px',
                 }}
               >
@@ -930,8 +823,11 @@ function Invoice() {
             )}
             <Typography
               sx={{
-                fontSize: '24px',
-                color: '#D32F2F',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: isMobile ? 600 : 400,
+                fontSize: isMobile ? '14px' : '20px',
+                lineHeight: isMobile ? '20px' : '28px',
+                color: '#F70000',
               }}
             >
               {b3Lang('invoice.overdueAmount', {
@@ -940,61 +836,48 @@ function Invoice() {
             </Typography>
           </Box>
         </Box>
-        <B3PaginationTable
-          ref={paginationTableRef}
-          columnItems={columnAllItems}
-          rowsPerPageOptions={[10, 20, 30]}
-          getRequestList={fetchList}
-          searchParams={filterData}
-          isCustomRender={false}
-          requestLoading={setIsRequestLoading}
-          tableKey="id"
-          showCheckbox={selectAllPay && purchasabilityPermission}
-          showSelectAllCheckbox={!isMobile && selectAllPay && purchasabilityPermission}
-          disableCheckbox={false}
-          applyAllDisableCheckbox={false}
-          getSelectCheckbox={getSelectCheckbox}
-          CollapseComponent={PrintTemplate}
-          sortDirection={order}
-          orderBy={orderBy}
-          sortByFn={handleSetOrderBy}
-          isSelectOtherPageCheckbox
-          hover
-          isAutoRefresh={false}
-          renderItem={(row, index, checkBox) => (
+        <Box sx={invoiceTableStyles}>
+          <B3PaginationTable
+            ref={paginationTableRef}
+            columnItems={columnAllItems}
+            rowsPerPageOptions={[10, 20, 30]}
+            getRequestList={fetchList}
+            searchParams={filterData}
+            isCustomRender={false}
+            requestLoading={setIsRequestLoading}
+            tableKey="id"
+            showCheckbox={selectAllPay && purchasabilityPermission}
+            showSelectAllCheckbox={!isMobile && selectAllPay && purchasabilityPermission}
+            disableCheckbox={false}
+            applyAllDisableCheckbox={false}
+            getSelectCheckbox={getSelectCheckbox}
+            CollapseComponent={PrintTemplate}
+            sortDirection={order}
+            orderBy={orderBy}
+            sortByFn={handleSetOrderBy}
+            isSelectOtherPageCheckbox
+            hover
+            isAutoRefresh={false}
+            renderItem={(row, index, checkBox) => (
             <InvoiceItemCard
               item={row}
               checkBox={checkBox}
-              handleSetSelectedInvoiceAccount={handleSetSelectedInvoiceAccountNumber}
               handleViewInvoice={handleViewInvoice}
               setIsRequestLoading={setIsRequestLoading}
               setInvoiceId={setCurrentInvoiceId}
-              handleOpenHistoryModal={setIsOpenHistory}
+              handleOpenDetails={handleOpenInvoiceDetails}
               selectedPay={selectedPay}
-              handleGetCorrespondingCurrency={handleGetCorrespondingCurrencyToken}
               addBottom={list.length - 1 === index}
               isCurrentCompany={Number(currentCompanyId) === Number(row.companyInfo.companyId)}
               invoicePay={
                 Number(currentCompanyId) === Number(row.companyInfo.companyId)
-                  ? invoicePayPermission
-                  : invoiceSubPayPermission
-              }
-            />
-          )}
-        />
-        {list.length > 0 && !isMobile && (
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: '8px',
-              left: '20px',
-            }}
-          >
-            <Button variant="text" onClick={handleExportInvoiceAsCSV}>
-              {exportCsvText}
-            </Button>
-          </Box>
-        )}
+                    ? invoicePayPermission
+                    : invoiceSubPayPermission
+                }
+              />
+            )}
+          />
+        </Box>
       </Box>
       {selectedPay.length > 0 &&
         (((invoicePayPermission || invoiceSubPayPermission) && purchasabilityPermission) ||

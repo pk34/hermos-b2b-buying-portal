@@ -4,15 +4,19 @@ import type { CSSObject } from '@emotion/react';
 import type { SxProps, Theme } from '@mui/material/styles';
 
 import { B3Tag } from '@/components';
+import { statusTagBaseStyles } from '@/components/statusTagStyles';
 
 import getOrderStatus from '../shared/getOrderStatus';
 
 type OrderStatusVariant = 'default' | 'orderDetailHeader' | 'orderDetailHistory';
 
+type OrderStatusAlignment = 'left' | 'center' | 'right';
+
 interface OrderStatusProps {
   code: string;
   text?: string;
   variant?: OrderStatusVariant;
+  align?: OrderStatusAlignment;
 }
 
 interface StatusTagProps {
@@ -23,18 +27,7 @@ const StatusTag = styled(B3Tag, {
   shouldForwardProp: (prop) => prop !== 'variant',
 })<StatusTagProps>(({ variant = 'default' }): CSSObject => {
   const baseStyles: CSSObject = {
-    boxSizing: 'border-box',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'Lato, sans-serif',
-    fontWeight: 600,
-    fontSize: '16px',
-    lineHeight: '24px',
-    textAlign: 'center',
-    borderRadius: '20px',
-    padding: '10px',
-    height: '34px',
+    ...statusTagBaseStyles,
   };
 
   if (variant === 'orderDetailHeader') {
@@ -48,19 +41,16 @@ const StatusTag = styled(B3Tag, {
   if (variant === 'orderDetailHistory') {
     return {
       ...baseStyles,
-      width: '194px',
-      minWidth: '194px',
+      width: 'auto',
+      minWidth: 'auto',
     };
   }
 
-  return {
-    ...baseStyles,
-    width: '166px',
-  };
+  return baseStyles;
 });
 
 export default function OrderStatus(props: OrderStatusProps) {
-  const { code, text, variant = 'default' } = props;
+  const { code, text, variant = 'default', align = 'center' } = props;
 
   const status = getOrderStatus(code);
 
@@ -68,20 +58,24 @@ export default function OrderStatus(props: OrderStatusProps) {
     return null;
   }
 
+  const justifyContent: CSSObject['justifyContent'] =
+    align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center';
+
   const containerStyles: SxProps<Theme> =
     variant === 'default'
       ? {
           width: '100%',
           display: 'flex',
-          justifyContent: 'center',
+          justifyContent,
           alignItems: 'center',
         }
       : {
           display: 'flex',
           alignItems: 'center',
+          justifyContent,
         };
 
-  const textColor = variant === 'default' ? '#000000' : '#FFFFFF';
+  const textColor = variant === 'default' ? '#F7F7F7' : '#FFFFFF';
 
   return (
     <Box sx={containerStyles}>

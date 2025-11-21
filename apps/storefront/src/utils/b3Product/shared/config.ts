@@ -500,6 +500,76 @@ export const getOptionRequestData = (
   return requestData;
 };
 
+const quickAddBaseFieldStyles = {
+  '& .MuiFilledInput-root': {
+    backgroundColor: '#EFEFEF',
+    borderRadius: '5px',
+    borderBottom: '2px solid #000000',
+    height: '44px',
+    padding: '0 10px',
+    boxSizing: 'border-box',
+    '&:before': {
+      borderBottom: 'none',
+    },
+    '&:after': {
+      borderBottom: 'none',
+    },
+    '&:hover:not(.Mui-disabled):before': {
+      borderBottom: 'none',
+    },
+  },
+  '& .MuiFilledInput-input': {
+    padding: '10px 0',
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#231F20',
+    '&::placeholder': {
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 400,
+      fontSize: '16px',
+      lineHeight: '24px',
+      color: '#231F20',
+      opacity: 1,
+    },
+  },
+  '& .MuiInputBase-input': {
+    padding: '10px 0',
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#231F20',
+    '&::placeholder': {
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 400,
+      fontSize: '16px',
+      lineHeight: '24px',
+      color: '#231F20',
+      opacity: 1,
+    },
+  },
+  '& .MuiFormLabel-root': {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+    zIndex: 1,
+  },
+  '& .MuiFormLabel-root.Mui-focused': {
+    color: '#000000',
+  },
+  '& .MuiFormLabel-root.MuiInputLabel-shrink': {
+    color: '#000000',
+    transform: 'translate(12px, 0px) scale(0.75)',
+  },
+  '& .MuiInputLabel-root.MuiInputLabel-shrink': {
+    transform: 'translate(12px, 0px) scale(0.75)',
+  },
+};
+
 export const getQuickAddRowFields = (name: string | number, b3Lang: LangFormatFunction) => [
   {
     name: `sku-${name}`,
@@ -510,6 +580,11 @@ export const getQuickAddRowFields = (name: string | number, b3Lang: LangFormatFu
     size: 'small',
     fieldType: 'text',
     default: '',
+    sx: {
+      width: { xs: '100%', md: '168px' },
+      maxWidth: { md: '168px' },
+      ...quickAddBaseFieldStyles,
+    },
   },
   {
     name: `qty-${name}`,
@@ -523,6 +598,11 @@ export const getQuickAddRowFields = (name: string | number, b3Lang: LangFormatFu
     allowArrow: true,
     min: 1,
     max: 1000000,
+    sx: {
+      width: { xs: '100%', md: '115px' },
+      maxWidth: { md: '115px' },
+      ...quickAddBaseFieldStyles,
+    },
   },
 ];
 

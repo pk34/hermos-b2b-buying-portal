@@ -609,6 +609,8 @@ function QuoteDetail() {
   const { quotePurchasabilityPermission, quoteConvertToOrderPermission } =
     quotePurchasabilityPermissionInfo;
 
+  const shouldShowBuyerInfoCard = false;
+
   return (
     <B3Spin isSpinning={isRequestLoading || quoteCheckoutLoading}>
       <Box
@@ -623,24 +625,27 @@ function QuoteDetail() {
           quoteNumber={quoteDetail.quoteNumber}
           issuedAt={quoteDetail.createdAt}
           expirationDate={quoteDetail.expiredAt}
+          currency={quoteDetail.currency}
           exportPdf={exportPdf}
           printQuote={printQuote}
           role={role}
           salesRepInfo={quoteDetail.salesRepInfo}
         />
 
-        <Box
-          sx={{
-            marginTop: '1rem',
-          }}
-        >
-          <QuoteInfo
-            quoteAndExtraFieldsInfo={quoteAndExtraFieldsInfo}
-            contactInfo={quoteDetail.contactInfo}
-            shippingAddress={quoteDetail.shippingAddress}
-            billingAddress={quoteDetail.billingAddress}
-          />
-        </Box>
+        {shouldShowBuyerInfoCard && (
+          <Box
+            sx={{
+              marginTop: '1rem',
+            }}
+          >
+            <QuoteInfo
+              quoteAndExtraFieldsInfo={quoteAndExtraFieldsInfo}
+              contactInfo={quoteDetail.contactInfo}
+              shippingAddress={quoteDetail.shippingAddress}
+              billingAddress={quoteDetail.billingAddress}
+            />
+          </Box>
+        )}
 
         <Grid
           container
@@ -758,6 +763,22 @@ function QuoteDetail() {
                 status={quoteDetail.status}
                 defaultFileList={fileList}
               />
+
+              {quoteConvertToOrderPermission &&
+                quotePurchasabilityPermission &&
+                Number(quoteDetail.status) !== 4 &&
+                isShowFooter &&
+                quoteDetail?.allowCheckout &&
+                isAutoEnableQuoteCheckout &&
+                isEnableProductShowCheckout() && (
+                  <QuoteDetailFooter
+                    quoteId={quoteDetail.id}
+                    role={role}
+                    isAgenting={isAgenting}
+                    status={quoteDetail.status}
+                    proceedingCheckoutFn={proceedingCheckoutFn}
+                  />
+                )}
             </Box>
 
             {quoteDetail.legalTerms && (
@@ -771,22 +792,6 @@ function QuoteDetail() {
             )}
           </Grid>
         </Grid>
-
-        {quoteConvertToOrderPermission &&
-          quotePurchasabilityPermission &&
-          Number(quoteDetail.status) !== 4 &&
-          isShowFooter &&
-          quoteDetail?.allowCheckout &&
-          isAutoEnableQuoteCheckout &&
-          isEnableProductShowCheckout() && (
-            <QuoteDetailFooter
-              quoteId={quoteDetail.id}
-              role={role}
-              isAgenting={isAgenting}
-              status={quoteDetail.status}
-              proceedingCheckoutFn={proceedingCheckoutFn}
-            />
-          )}
       </Box>
     </B3Spin>
   );

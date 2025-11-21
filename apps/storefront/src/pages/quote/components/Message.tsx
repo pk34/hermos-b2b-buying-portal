@@ -7,8 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { ArrowUpward as ArrowUpwardIcon } from '@mui/icons-material';
-import { Box, Card, CardContent, TextField, Tooltip, useTheme } from '@mui/material';
+import { Box, Card, CardContent, Tooltip, Typography, useTheme } from '@mui/material';
 import { format, formatDistanceStrict } from 'date-fns';
 
 import { B3CollapseContainer } from '@/components';
@@ -43,6 +42,113 @@ interface CustomerMessageProps {
   isCustomer?: boolean;
 }
 
+const messageTitleStyles = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '24px',
+  lineHeight: '28px',
+  color: '#000000',
+  marginBottom: '8px',
+} as const;
+
+const messageSubtitleStyles = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '14px',
+  lineHeight: '20px',
+  color: '#B2B2B2',
+} as const;
+
+const messageDateLabelStyles = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '14px',
+  lineHeight: '20px',
+  color: '#231F20',
+  marginBottom: '18px',
+  textAlign: 'center' as const,
+  display: 'block',
+} as const;
+
+const messageNameStyles = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '14px',
+  lineHeight: '20px',
+  color: '#231F20',
+  marginBottom: '5px',
+} as const;
+
+const messageBubbleStyles = {
+  width: '231px',
+  borderRadius: '20px',
+  backgroundColor: '#BAD6F2',
+  padding: '12px 16px',
+  display: 'flex',
+  flexDirection: 'column' as const,
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+  rowGap: '8px',
+} as const;
+
+const messageSentTimeStyles = {
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '12px',
+  lineHeight: '16px',
+  color: '#231F20',
+  textAlign: 'left' as const,
+} as const;
+
+const messageInputStyles = {
+  width: '246px',
+  height: '59px',
+  borderRadius: '5px',
+  padding: '10px',
+  paddingBottom: '24px',
+  border: 'none',
+  borderBottom: '2px solid #000000',
+  backgroundColor: '#EFEFEF',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+  resize: 'none' as const,
+  outline: 'none',
+  marginBottom: '15px',
+} as const;
+
+const sendButtonContainerStyles = {
+  width: '46px',
+  height: '46px',
+  borderRadius: '100px',
+  padding: '10px',
+  backgroundColor: '#BAD6F2',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+} as const;
+
+const SendMessageIcon = () => (
+  <Box
+    component="svg"
+    width={32}
+    height={33}
+    viewBox="0 0 32 33"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M8.46863 15.6503C7.84379 15.0207 7.84379 13.9999 8.46863 13.3703L14.8686 6.92142C15.4935 6.29182 16.5065 6.29182 17.1314 6.92142L23.5314 13.3703C24.1562 13.9999 24.1562 15.0207 23.5314 15.6503C22.9065 16.2799 21.8935 16.2799 21.2686 15.6503L17.6 11.9536L17.6 24.1835C17.6 25.0739 16.8837 25.7957 16 25.7957C15.1163 25.7957 14.4 25.0739 14.4 24.1835L14.4 11.9536L10.7314 15.6503C10.1065 16.2799 9.09347 16.2799 8.46863 15.6503Z"
+      fill="#0A0A0A"
+    />
+  </Box>
+);
+
 function ChatMessage({ msg, isEndMessage, isCustomer }: CustomerMessageProps) {
   const b3Lang = useB3Lang();
   return (
@@ -55,50 +161,30 @@ function ChatMessage({ msg, isEndMessage, isCustomer }: CustomerMessageProps) {
       }}
     >
       {msg?.role && (
-        <Box
-          sx={{
-            height: '14px',
-            fontWeight: 400,
-            lineHeight: '14px',
-            fontSize: '10px',
-            letterSpacing: '0.17px',
-            color: 'rgba(0, 0, 0, 0.38)',
-          }}
-        >
+        <Typography sx={{ ...messageNameStyles, textAlign: isCustomer ? 'right' : 'left' }}>
           {msg.role}
-        </Box>
+        </Typography>
       )}
       {msg?.message && (
-        <Box
-          sx={{
-            display: 'inline-block',
-            lineHeight: '34px',
-            padding: '0 10px',
-            background: isCustomer ? 'rgba(25, 118, 210, 0.3)' : 'rgba(0, 0, 0, 0.12)',
-            borderRadius: '18px',
-            m: '1px',
-          }}
-        >
+        <Box sx={{ ...messageBubbleStyles, alignSelf: isCustomer ? 'flex-end' : 'flex-start' }}>
           <Tooltip title={format((msg.sendTime || 0) * 1000, 'K:m aa')} placement="top" arrow>
-            <Box
+            <Typography
               sx={{
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#231F20',
                 wordBreak: 'break-word',
+                textAlign: 'left',
+                width: '100%',
               }}
             >
               {msg.message}
-            </Box>
+            </Typography>
           </Tooltip>
-          {isEndMessage && (
-            <Box
-              sx={{
-                height: '14px',
-                fontWeight: 400,
-                lineHeight: '14px',
-                fontSize: '10px',
-                letterSpacing: '0.17px',
-                color: 'rgba(0, 0, 0, 0.38)',
-              }}
-            >
+          {isEndMessage && msg?.sendTime && (
+            <Typography sx={messageSentTimeStyles}>
               {`${b3Lang('quoteDetail.message.sent')} ${formatDistanceStrict(
                 new Date((msg.sendTime || 0) * 1000),
                 new Date(),
@@ -106,7 +192,7 @@ function ChatMessage({ msg, isEndMessage, isCustomer }: CustomerMessageProps) {
                   addSuffix: true,
                 },
               )}`}
-            </Box>
+            </Typography>
           )}
         </Box>
       )}
@@ -120,16 +206,7 @@ interface DateMessageProps {
 
 function DateMessage({ msg }: DateMessageProps) {
   return (
-    <Box
-      sx={{
-        color: 'rgba(0, 0, 0, 0.6)',
-        textAlign: 'center',
-        height: '21px',
-        mb: '5px',
-      }}
-    >
-      {`${displayExtendedFormat(msg?.date || 0)}`}
-    </Box>
+    <Typography sx={messageDateLabelStyles}>{`${displayExtendedFormat(msg?.date || 0)}`}</Typography>
   );
 }
 
@@ -218,11 +295,11 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center',
+          columnGap: '8px',
         }}
       >
-        {`${b3Lang('quoteDetail.message.message')} `}
+        <Typography sx={messageTitleStyles}>{b3Lang('quoteDetail.message.message')}</Typography>
         {read !== 0 && (
           <Box
             sx={{
@@ -236,6 +313,7 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
               color: '#fff',
               fontSize: '12px',
               ml: '8px',
+              fontFamily: 'Lato, sans-serif',
             }}
           >
             {read}
@@ -259,6 +337,10 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
   }, [messages]);
 
   const updateMsgs = async (msg: string) => {
+    const trimmedMessage = msg.trim();
+    if (!trimmedMessage) {
+      return;
+    }
     try {
       setLoading(true);
       const {
@@ -268,7 +350,7 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
       } = await updateQuote({
         id: Number(id),
         quoteData: {
-          message: msg,
+          message: trimmedMessage,
           lastMessage: parseInt(`${new Date().getTime() / 1000}`, 10),
           userEmail: email || '',
           storeHash,
@@ -282,9 +364,10 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
     }
   };
 
-  const updateMessage = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      updateMsgs((e.target as HTMLInputElement).value || '');
+  const updateMessage = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      updateMsgs((e.target as HTMLTextAreaElement).value || '');
     }
   };
 
@@ -325,30 +408,32 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
   }, [read]);
 
   return (
-    <Card>
+    <Card
+      sx={{
+        boxShadow: 'none',
+        borderWidth: '0px 0.3px 0.3px 0px',
+        borderStyle: 'solid',
+        borderColor: '#000000',
+        borderRadius: 0,
+      }}
+    >
       <CardContent
         sx={{
-          p: '16px !important',
+          padding: '20px',
+          '&:last-child': {
+            paddingBottom: '20px',
+          },
         }}
       >
         <B3CollapseContainer handleOnChange={handleOnChange} title={title}>
           <Box
             sx={{
-              padding: '16px 0',
+              padding: '20px 0 0',
             }}
           >
-            <Box
-              sx={{
-                position: 'relative',
-                color: 'rgba(0, 0, 0, 0.6)',
-                opacity: 0.6,
-                textAlign: 'left',
-                width: '100%',
-                fontSize: '14px',
-              }}
-            >
+            <Typography sx={messageSubtitleStyles}>
               {b3Lang('quoteDetail.message.merchantAnswers')}
-            </Box>
+            </Typography>
             <Box
               ref={messagesEndRef}
               sx={{
@@ -384,47 +469,37 @@ function Message({ msgs, id, isB2BUser, email, status }: MsgsProps) {
               <Box
                 sx={{
                   display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  flexWrap: 'nowrap',
+                  columnGap: '16px',
+                  marginTop: '38px',
+                  marginBottom: '15px',
                   width: '100%',
                 }}
               >
-                <TextField
+                <Box
+                  component="textarea"
                   onKeyDown={updateMessage}
                   sx={{
-                    width: '100%',
-                    '& .MuiFormLabel-root': {
-                      color: 'rgba(0, 0, 0, 0.38)',
-                    },
-                    '& input': {
-                      padding: '1.5rem 0.7rem 0.5rem',
-                    },
+                    ...messageInputStyles,
+                    flex: '0 0 246px',
                   }}
                   value={message}
                   onChange={(event) => {
                     setMessage(event.target.value);
                   }}
-                  size="small"
-                  label={b3Lang('quoteDetail.message.typeMessage')}
-                  variant="filled"
+                  aria-label={b3Lang('quoteDetail.message.typeMessage')}
+                  placeholder={b3Lang('quoteDetail.message.typeMessage')}
                 />
                 <Box
                   onClick={() => updateMsgs(message)}
                   sx={{
-                    width: '42px',
-                    height: '36px',
-                    margin: '10px 0 0 10px',
-                    background: '#BAD6F2',
-                    borderRadius: '50%',
+                    ...sendButtonContainerStyles,
+                    marginLeft: 'auto',
                   }}
                 >
-                  <ArrowUpwardIcon
-                    sx={{
-                      height: '18px',
-                      width: '18px',
-                      margin: '8px 0 0 9px',
-                      color: '#0000008A',
-                    }}
-                    fontSize="small"
-                  />
+                  <SendMessageIcon />
                 </Box>
               </Box>
             </B3Spin>

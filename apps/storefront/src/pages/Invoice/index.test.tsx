@@ -139,22 +139,19 @@ it('renders every column', async () => {
 
   const columnHeaders = within(table).getAllByRole('columnheader');
 
-  expect(columnHeaders).toHaveLength(12);
+  expect(columnHeaders).toHaveLength(10);
 
   expect(within(columnHeaders[0]).getByRole('checkbox')).not.toBeChecked();
 
-  expect(columnHeaders[1]).toBeEmptyDOMElement(); // contains the checkboxes
-
-  expect(columnHeaders[2]).toHaveTextContent('Invoices');
-  expect(columnHeaders[3]).toHaveTextContent('Company');
-  expect(columnHeaders[4]).toHaveTextContent('Order');
-  expect(columnHeaders[5]).toHaveTextContent('Invoice date');
-  expect(columnHeaders[6]).toHaveTextContent('Due date');
-  expect(columnHeaders[7]).toHaveTextContent('Invoice total');
-  expect(columnHeaders[8]).toHaveTextContent('Amount due');
-  expect(columnHeaders[9]).toHaveTextContent('Amount to pay');
-  expect(columnHeaders[10]).toHaveTextContent('Status');
-  expect(columnHeaders[11]).toHaveTextContent('Action');
+  expect(columnHeaders[1]).toHaveTextContent('Invoice number');
+  expect(columnHeaders[2]).toHaveTextContent('Order');
+  expect(columnHeaders[3]).toHaveTextContent('Invoice date');
+  expect(columnHeaders[4]).toHaveTextContent('Expiration date');
+  expect(columnHeaders[5]).toHaveTextContent('Invoice total');
+  expect(columnHeaders[6]).toHaveTextContent('Pending amount');
+  expect(columnHeaders[7]).toHaveTextContent('Currency');
+  expect(columnHeaders[8]).toHaveTextContent('Status');
+  expect(columnHeaders[9]).toHaveTextContent('Actions');
 });
 
 it('renders all invoices in the table', async () => {
@@ -229,19 +226,15 @@ it('renders invoice information in the table', async () => {
   const row = screen.getByRole('row', { name: /3322/ });
   const cells = within(row).getAllByRole('cell');
 
-  expect(cells[2]).toHaveTextContent('3322');
-  expect(cells[3]).toHaveTextContent('Monsters Inc.');
-  expect(cells[4]).toHaveTextContent('1234');
-  expect(cells[5]).toHaveTextContent('13 March 2025');
-  expect(cells[6]).toHaveTextContent('13 October 2025');
-  expect(cells[7]).toHaveTextContent('$922.00');
-  expect(cells[8]).toHaveTextContent('$433.00');
+  expect(cells[1]).toHaveTextContent('3322');
+  expect(cells[2]).toHaveTextContent('1234');
+  expect(cells[3]).toHaveTextContent('13 March 2025');
+  expect(cells[4]).toHaveTextContent('13 October 2025');
+  expect(cells[5]).toHaveTextContent('$922.00');
+  expect(cells[6]).toHaveTextContent('$433.00');
+  expect(cells[7]).toHaveTextContent('USD');
 
-  // cell with an input to pay the invoice
-  expect(cells[9]).toHaveTextContent('$');
-  expect(within(cells[9]).getByRole('spinbutton')).toHaveValue(433);
-
-  expect(cells[10]).toHaveTextContent('Partially paid');
+  expect(cells[8]).toHaveTextContent('Partially paid');
 
   expect(within(row).getByRole('button', { name: 'More actions' })).toBeInTheDocument();
 });
@@ -334,11 +327,7 @@ it('can pay for multiple invoices', async () => {
 
   await userEvent.click(within(firstRowCells[0]).getByRole('checkbox'));
 
-  expect(screen.getByText('1 invoices selected')).toBeInTheDocument();
-
   await userEvent.click(within(secondRowCells[0]).getByRole('checkbox'));
-
-  expect(screen.getByText('2 invoices selected')).toBeInTheDocument();
 
   expect(screen.getByRole('heading', { name: 'Total payment: $665.00' })).toBeInTheDocument();
 
@@ -493,32 +482,20 @@ it('shows the current open/overdue values at the header', async () => {
   expect(overdueBalance).toBeInTheDocument();
 });
 
-const buildInvoicePaymentNodeWith = builder(() => ({
-  node: {
-    id: faker.number.int().toString(),
-    paymentType: faker.lorem.words(3),
-    invoiceId: faker.number.int(),
-    amount: {
-      code: faker.finance.currencyCode(),
-      value: faker.commerce.price(),
-    },
-    transactionType: faker.lorem.word(),
-    referenceNumber: '',
-    createdAt: faker.date.past(),
-  },
-}));
-
-const buildInvoicePaymentHistoryResponseWith = builder(() => {
-  const totalCount = faker.number.int({ min: 1, max: 5 });
-  return {
-    data: {
-      allReceiptLines: {
-        totalCount,
-        edges: bulk(buildInvoicePaymentNodeWith, 'WHATEVER_VALUES').times(totalCount),
-      },
-    },
-  };
-});
+// const buildInvoicePaymentNodeWith = builder(() => ({
+//   node: {
+//     id: faker.number.int().toString(),
+//     paymentType: faker.lorem.words(3),
+//     invoiceId: faker.number.int(),
+//     amount: {
+//       code: faker.finance.currencyCode(),
+//       value: faker.commerce.price(),
+//     },
+//     transactionType: faker.lorem.word(),
+//     referenceNumber: '',
+//     createdAt: faker.date.past(),
+//   },
+// }));
 
 it('opens the invoice in a new window when clicking on the invoice number', async () => {
   const pdfFile = new Blob(['%PDF-1.4 Mock PDF Content'], { type: 'application/pdf' });
@@ -705,8 +682,6 @@ describe('when rendered in catalyst', () => {
 
     await userEvent.click(within(cells[0]).getByRole('checkbox'));
 
-    expect(screen.getByText('1 invoices selected')).toBeInTheDocument();
-
     expect(screen.getByRole('heading', { name: 'Total payment: $433.00' })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'Pay invoices' }));
@@ -778,8 +753,6 @@ describe('when rendered in stencil', () => {
 
     await userEvent.click(within(cells[0]).getByRole('checkbox'));
 
-    expect(screen.getByText('1 invoices selected')).toBeInTheDocument();
-
     expect(screen.getByRole('heading', { name: 'Total payment: $433.00' })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'Pay invoices' }));
@@ -844,7 +817,7 @@ describe('when using the action menu', () => {
     const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
     await userEvent.click(moreActionsButton);
 
-    await userEvent.click(screen.getByRole('menuitem', { name: 'View invoice' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: 'View invoice PDF' }));
 
     await waitFor(() => {
       expect(window.open).toHaveBeenCalledWith(
@@ -890,7 +863,7 @@ describe('when using the action menu', () => {
     const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
     await userEvent.click(moreActionsButton);
 
-    await userEvent.click(screen.getByRole('menuitem', { name: 'View order' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: 'View Order' }));
 
     expect(navigation).toHaveBeenCalledWith('/orderDetail/4444');
   });
@@ -931,72 +904,14 @@ describe('when using the action menu', () => {
     const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
     await userEvent.click(moreActionsButton);
 
-    await userEvent.click(screen.getByRole('menuitem', { name: 'Download' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Download XML' }));
 
     expect(triggerPdfDownload).toHaveBeenCalledWith('https://example.com/invoice.pdf', 'file.pdf');
   });
 
-  it('prints an invoice', async () => {
+  it('opens invoice details when selecting view history payment', async () => {
     const pdfFile = new Blob(['%PDF-1.4 Mock PDF Content'], { type: 'application/pdf' });
     const getInvoicePDFUrlResponse = vi.fn();
-
-    server.use(
-      graphql.query('GetInvoices', () =>
-        HttpResponse.json(
-          buildInvoicesResponseWith({
-            data: {
-              invoices: {
-                edges: [buildInvoiceWith({ node: { id: '3344', invoiceNumber: '3322' } })],
-              },
-            },
-          }),
-        ),
-      ),
-      graphql.query('GetInvoiceStats', () =>
-        HttpResponse.json(buildInvoiceStatsResponseWith('WHATEVER_VALUES')),
-      ),
-      graphql.mutation('GetInvoicePDFUrl', ({ query }) =>
-        HttpResponse.json(getInvoicePDFUrlResponse(query)),
-      ),
-      http.get('https://example.com/invoice.pdf', async () =>
-        HttpResponse.arrayBuffer(await pdfFile.arrayBuffer(), {
-          headers: { 'Content-Type': 'application/pdf' },
-        }),
-      ),
-    );
-
-    vi.spyOn(window, 'open').mockImplementation(vi.fn());
-
-    when(window.URL.createObjectURL)
-      .calledWith(pdfFile)
-      .thenReturn('https://localhost:3000/mock-blob-url');
-
-    when(getInvoicePDFUrlResponse)
-      .calledWith(stringContainingAll('invoiceId: 3344'))
-      .thenReturn({ data: { invoicePdf: { url: 'https://example.com/invoice.pdf' } } });
-
-    renderWithProviders(<Invoice />, { preloadedState });
-
-    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-
-    const row = screen.getByRole('row', { name: /3322/ });
-
-    const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
-    await userEvent.click(moreActionsButton);
-
-    await userEvent.click(screen.getByRole('menuitem', { name: 'Print' }));
-
-    await waitFor(() => {
-      expect(window.open).toHaveBeenCalledWith(
-        'https://localhost:3000/mock-blob-url',
-        '_blank',
-        'fullscreen=yes',
-      );
-    });
-  });
-
-  it('opens the payment history dialog', async () => {
-    const getInvoicePaymentHistory = vi.fn();
 
     server.use(
       graphql.query('GetInvoices', () =>
@@ -1021,71 +936,39 @@ describe('when using the action menu', () => {
       graphql.query('GetInvoiceStats', () =>
         HttpResponse.json(buildInvoiceStatsResponseWith('WHATEVER_VALUES')),
       ),
-      graphql.query('GetInvoicePaymentHistory', ({ query }) =>
-        HttpResponse.json(getInvoicePaymentHistory(query)),
+      graphql.mutation('GetInvoicePDFUrl', ({ query }) =>
+        HttpResponse.json(getInvoicePDFUrlResponse(query)),
+      ),
+      http.get('https://example.com/invoice.pdf', async () =>
+        HttpResponse.arrayBuffer(await pdfFile.arrayBuffer(), {
+          headers: { 'Content-Type': 'application/pdf' },
+        }),
       ),
     );
 
-    when(getInvoicePaymentHistory)
-      .calledWith(stringContainingAll('invoiceId: "3344"'))
-      .thenReturn(
-        buildInvoicePaymentHistoryResponseWith({
-          data: {
-            allReceiptLines: {
-              totalCount: 2,
-              edges: [
-                buildInvoicePaymentNodeWith({
-                  node: {
-                    createdAt: getUnixTime(new Date('23 July 2025')),
-                    amount: { code: 'USD', value: '50.5' },
-                    referenceNumber: '1234',
-                    paymentType: 'visa ending in 1111',
-                    transactionType: 'Foo Bar',
-                  },
-                }),
-                buildInvoicePaymentNodeWith({
-                  node: {
-                    createdAt: getUnixTime(new Date('14 July 2025')),
-                    amount: { code: 'USD', value: '30.5' },
-                    referenceNumber: '3222',
-                    paymentType: 'visa ending in 1212',
-                    transactionType: 'Bar Baz',
-                  },
-                }),
-              ],
-            },
-          },
-        }),
-      );
+    when(getInvoicePDFUrlResponse)
+      .calledWith(stringContainingAll('invoiceId: 3344'))
+      .thenReturn({ data: { invoicePdf: { url: 'https://example.com/invoice.pdf' } } });
+
+    when(window.URL.createObjectURL)
+      .calledWith(pdfFile)
+      .thenReturn('https://localhost:3000/mock-blob-url');
 
     renderWithProviders(<Invoice />, { preloadedState });
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
 
     const row = screen.getByRole('row', { name: /3322/ });
+
+    expect(within(row).getByTestId('KeyboardArrowRightIcon')).toBeInTheDocument();
+
     const moreActionsButton = within(row).getByRole('button', { name: 'More actions' });
     await userEvent.click(moreActionsButton);
 
-    await userEvent.click(screen.getByRole('menuitem', { name: 'View payment history' }));
-
-    const dialog = await screen.findByRole('dialog', { name: 'Payments history' });
-
-    expect(within(dialog).getByText('23 July 2025')).toBeInTheDocument();
-    expect(within(dialog).getByText('Foo Bar')).toBeInTheDocument();
-    expect(within(dialog).getByText('visa ending in 1111')).toBeInTheDocument();
-    expect(within(dialog).getByText('1234')).toBeInTheDocument();
-    expect(within(dialog).getByText('$50.50')).toBeInTheDocument();
-
-    expect(within(dialog).getByText('14 July 2025')).toBeInTheDocument();
-    expect(within(dialog).getByText('Bar Baz')).toBeInTheDocument();
-    expect(within(dialog).getByText('visa ending in 1212')).toBeInTheDocument();
-    expect(within(dialog).getByText('3222')).toBeInTheDocument();
-    expect(within(dialog).getByText('$30.50')).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole('button', { name: 'ok' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: 'View history payment' }));
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'Payments history' })).not.toBeInTheDocument();
+      expect(within(row).getByTestId('KeyboardArrowDownIcon')).toBeInTheDocument();
     });
   });
 
@@ -1121,7 +1004,7 @@ describe('when using the action menu', () => {
     await userEvent.click(moreActionsButton);
 
     expect(
-      screen.queryByRole('menuitem', { name: 'View payment history' }),
+      screen.queryByRole('menuitem', { name: 'View history payment' }),
     ).not.toBeInTheDocument();
   });
 
@@ -1233,137 +1116,6 @@ describe('when using the action menu', () => {
     await userEvent.click(moreActionsButton);
 
     expect(screen.queryByRole('menuitem', { name: 'Pay' })).not.toBeInTheDocument();
-  });
-});
-
-it('exports the list of invoices as CSV', async () => {
-  const getExportInvoicesAsCSVResponse = vi.fn();
-
-  server.use(
-    graphql.query('GetInvoices', () =>
-      HttpResponse.json(buildInvoicesResponseWith('WHATEVER_VALUES')),
-    ),
-    graphql.query('GetInvoiceStats', () =>
-      HttpResponse.json(buildInvoiceStatsResponseWith('WHATEVER_VALUES')),
-    ),
-    graphql.mutation('ExportInvoicesAsCSV', ({ variables }) =>
-      HttpResponse.json(getExportInvoicesAsCSVResponse(variables)),
-    ),
-  );
-
-  when(getExportInvoicesAsCSVResponse)
-    .calledWith({
-      invoiceFilterData: {
-        search: '',
-        idIn: '',
-        orderNumber: '',
-        beginDateAt: null,
-        endDateAt: null,
-        status: [],
-        orderBy: '-invoice_number',
-        companyIds: [Number(preloadedState.company.companyInfo.id)],
-      },
-      lang: 'en',
-    })
-    .thenReturn({
-      data: {
-        invoicesExport: {
-          url: 'https://example.com/invoices.csv',
-        },
-      },
-    });
-
-  vi.spyOn(window, 'open').mockImplementation(vi.fn());
-
-  renderWithProviders(<Invoice />, { preloadedState });
-
-  await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-
-  const exportButton = screen.getByRole('button', { name: 'Export filtered as CSV' });
-  await userEvent.click(exportButton);
-
-  await waitFor(() => {
-    expect(window.open).toHaveBeenCalledWith('https://example.com/invoices.csv', '_blank');
-  });
-});
-
-it('exports selected invoices as CSV', async () => {
-  const getExportInvoicesAsCSVResponse = vi.fn();
-
-  server.use(
-    graphql.query('GetInvoices', () =>
-      HttpResponse.json(
-        buildInvoicesResponseWith({
-          data: {
-            invoices: {
-              edges: [
-                buildInvoiceWith({
-                  node: {
-                    id: '1441',
-                    invoiceNumber: '3322',
-                    companyInfo: { companyId: preloadedState.company.companyInfo.id },
-                  },
-                }),
-                buildInvoiceWith({
-                  node: {
-                    id: '1313',
-                    invoiceNumber: '4343',
-                    companyInfo: { companyId: preloadedState.company.companyInfo.id },
-                  },
-                }),
-              ],
-            },
-          },
-        }),
-      ),
-    ),
-    graphql.query('GetInvoiceStats', () =>
-      HttpResponse.json(buildInvoiceStatsResponseWith('WHATEVER_VALUES')),
-    ),
-    graphql.mutation('ExportInvoicesAsCSV', ({ variables }) =>
-      HttpResponse.json(getExportInvoicesAsCSVResponse(variables)),
-    ),
-  );
-
-  when(getExportInvoicesAsCSVResponse)
-    .calledWith({
-      invoiceFilterData: {
-        search: '',
-        idIn: '1441,1313',
-        orderNumber: '',
-        beginDateAt: null,
-        endDateAt: null,
-        status: [],
-        orderBy: '-invoice_number',
-        companyIds: [Number(preloadedState.company.companyInfo.id)],
-      },
-      lang: 'en',
-    })
-    .thenReturn({
-      data: {
-        invoicesExport: {
-          url: 'https://example.com/invoices.csv',
-        },
-      },
-    });
-
-  vi.spyOn(window, 'open').mockImplementation(vi.fn());
-
-  renderWithProviders(<Invoice />, { preloadedState });
-
-  await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-
-  const row1 = screen.getByRole('row', { name: /3322/ });
-  const row2 = screen.getByRole('row', { name: /4343/ });
-
-  await userEvent.click(within(row1).getByRole('checkbox'));
-  await userEvent.click(within(row2).getByRole('checkbox'));
-
-  const exportButton = screen.getByRole('button', { name: 'Export selected as CSV' });
-  await userEvent.click(exportButton);
-
-  await waitFor(() => {
-    expect(window.open).toHaveBeenCalledWith('https://example.com/invoices.csv', '_blank');
   });
 });
 

@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { HeadlessRoutes } from '@/constants';
 import { addProductFromPage as addProductFromPageToShoppingList } from '@/hooks/dom/useOpenPDP';
 import { addProductsFromCartToQuote, addProductsToDraftQuote } from '@/hooks/dom/utils';
+import { dispatchEvent } from '@/hooks/useB2BCallback';
 import { setElementsListenersConfig } from '@/lib/config';
 import { useB3Lang } from '@/lib/lang';
 import {
@@ -16,7 +17,7 @@ import { ShoppingListsItemsProps } from '@/pages/ShoppingLists/config';
 import { CustomStyleContext } from '@/shared/customStyleButton';
 import { GlobalContext } from '@/shared/global';
 import { getAllowedRoutesWithoutComponent } from '@/shared/routeList';
-import { getB2BShoppingList, getBcShoppingList, superAdminCompanies } from '@/shared/service/b2b';
+import { createQuote, getB2BShoppingList, getBcShoppingList, superAdminCompanies } from '@/shared/service/b2b';
 import B3Request from '@/shared/service/request/b3Fetch';
 import {
   formattedQuoteDraftListSelector,
@@ -178,6 +179,28 @@ export default function HeadlessController({ setOpenPage }: HeadlessControllerPr
             ...addToAllQuoteBtnRef.current,
             enabled: cartQuoteEnabledRef.current,
           }),
+          create: async (quoteData) => {
+            if (!customerRef.current?.id) {
+              throw new Error('A logged in customer is required to create a quote.');
+            }
+
+            const payload = {
+              channelId: window.B3?.setting?.channel_id,
+              storeHash: window.B3?.setting?.store_hash,
+              userEmail: customerRef.current?.emailAddress ?? '',
+              ...quoteData,
+            };
+
+            if (!payload.channelId || !payload.storeHash) {
+              throw new Error('ChannelId and storeHash are required to create a quote.');
+            }
+
+            if (!dispatchEvent('on-quote-create', payload)) {
+              throw new Error('Quote creation was prevented by a callback.');
+            }
+
+            return createQuote(payload);
+          },
         },
         user: {
           getProfile: () => ({ ...customerRef.current, role }),

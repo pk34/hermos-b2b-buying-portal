@@ -66,10 +66,6 @@ const sortKeys = {
 };
 
 const quotesTableStyles = {
-  '& .MuiPaper-root': {
-    boxShadow: 'none',
-    border: 'none',
-  },
   '& .MuiTableHead-root .MuiTableCell-head': {
     fontFamily: "'Lato', sans-serif",
     fontWeight: 700,
@@ -466,6 +462,7 @@ function QuotesList() {
               isMobile ? b3Lang('quotes.cardsPerPage') : b3Lang('quotes.quotesPerPage')
             }
             renderItem={(row) => <QuoteItemCard item={row} goToDetail={goToDetail} />}
+            itemIsMobileSpacing={3}
             onClickRow={(row) => {
               goToDetail(row, Number(row.status));
             }}

@@ -96,17 +96,57 @@ export default function QuoteDetailSummary({
 
   const subtotalPrice = Number(originalSubtotal);
   const quotedSubtotal = Number(originalSubtotal) - Number(discount);
+  const titleStyles = {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 600,
+    fontSize: '24px',
+    lineHeight: '28px',
+    color: '#000000',
+    marginBottom: '20px',
+  } as const;
+
+  const labelStyles = {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+  } as const;
+
+  const valueStyles = {
+    ...labelStyles,
+    textAlign: 'right' as const,
+  };
+
+  const grandTotalStyles = {
+    fontFamily: 'Lato, sans-serif',
+    fontWeight: 700,
+    fontSize: '16px',
+    lineHeight: '24px',
+    color: '#000000',
+  } as const;
+
   return (
-    <Card>
-      <CardContent>
+    <Card
+      sx={{
+        boxShadow: 'none',
+        borderWidth: '0px 0.3px 0.3px 0px',
+        borderStyle: 'solid',
+        borderColor: '#000000',
+        borderRadius: 0,
+      }}
+    >
+      <CardContent
+        sx={{
+          padding: '20px 20px 8px',
+          '&:last-child': {
+            paddingBottom: '8px',
+          },
+        }}
+      >
         <Box>
-          <Typography variant="h5">{b3Lang('quoteDetail.summary.quoteSummary')}</Typography>
-          <Box
-            sx={{
-              marginTop: '20px',
-              color: '#212121',
-            }}
-          >
+          <Typography sx={titleStyles}>{b3Lang('quoteDetail.summary.quoteSummary')}</Typography>
+          <Box>
             {quoteDetail?.displayDiscount && (
               <Grid
                 container
@@ -115,8 +155,10 @@ export default function QuoteDetailSummary({
                   margin: '4px 0',
                 }}
               >
-                <Typography>{b3Lang('quoteDetail.summary.originalSubtotal')}</Typography>
-                <Typography>
+                <Typography sx={labelStyles}>
+                  {b3Lang('quoteDetail.summary.originalSubtotal')}
+                </Typography>
+                <Typography sx={valueStyles}>
                   {showPrice(priceFormat(getCurrentPrice(subtotalPrice, quoteDetailTax)))}
                 </Typography>
               </Grid>
@@ -131,8 +173,10 @@ export default function QuoteDetailSummary({
                   display: quoteDetail?.displayDiscount ? '' : 'none',
                 }}
               >
-                <Typography>{b3Lang('quoteDetail.summary.discountAmount')}</Typography>
-                <Typography>
+                <Typography sx={labelStyles}>
+                  {b3Lang('quoteDetail.summary.discountAmount')}
+                </Typography>
+                <Typography sx={valueStyles}>
                   {Number(discount) > 0
                     ? `-${priceFormat(Number(discount))}`
                     : priceFormat(Number(discount))}
@@ -147,20 +191,10 @@ export default function QuoteDetailSummary({
                 margin: '4px 0',
               }}
             >
-              <Typography
-                sx={{
-                  fontWeight: 'bold',
-                  color: '#212121',
-                }}
-              >
+              <Typography sx={labelStyles}>
                 {b3Lang('quoteDetail.summary.quotedSubtotal')}
               </Typography>
-              <Typography
-                sx={{
-                  fontWeight: 'bold',
-                  color: '#212121',
-                }}
-              >
+              <Typography sx={valueStyles}>
                 {showPrice(priceFormat(getCurrentPrice(quotedSubtotal, quoteDetailTax)))}
               </Typography>
             </Grid>
@@ -169,55 +203,46 @@ export default function QuoteDetailSummary({
               <>
                 <Grid
                   container
-                  justifyContent="space-between"
+                justifyContent="space-between"
+                sx={{
+                  margin: '4px 0',
+                }}
+              >
+                <Typography
                   sx={{
-                    margin: '4px 0',
+                    ...labelStyles,
+                    maxWidth: '70%',
+                    wordBreak: 'break-word',
                   }}
                 >
-                  <Typography
-                    sx={{
-                      maxWidth: '70%',
-                      wordBreak: 'break-word',
-                    }}
-                  >
-                    {shippingAndTax.shippingText}
-                  </Typography>
-                  <Typography>{showPrice(shippingAndTax.shippingVal)}</Typography>
-                </Grid>
-                <Grid
-                  container
-                  justifyContent="space-between"
-                  sx={{
-                    margin: '4px 0',
-                  }}
-                >
-                  <Typography>{shippingAndTax.taxText}</Typography>
-                  <Typography>{showPrice(shippingAndTax.taxVal)}</Typography>
-                </Grid>
-              </>
-            )}
+                  {shippingAndTax.shippingText}
+                </Typography>
+                <Typography sx={valueStyles}>{showPrice(shippingAndTax.shippingVal)}</Typography>
+              </Grid>
+              <Grid
+                container
+                justifyContent="space-between"
+                sx={{
+                  margin: '4px 0',
+                }}
+              >
+                <Typography sx={labelStyles}>{shippingAndTax.taxText}</Typography>
+                <Typography sx={valueStyles}>{showPrice(shippingAndTax.taxVal)}</Typography>
+              </Grid>
+            </>
+          )}
 
             <Grid
               container
               justifyContent="space-between"
               sx={{
-                margin: '24px 0 0',
+                margin: '15px 0 0',
               }}
             >
-              <Typography
-                sx={{
-                  fontWeight: 'bold',
-                  color: '#212121',
-                }}
-              >
+              <Typography sx={grandTotalStyles}>
                 {b3Lang('quoteDetail.summary.grandTotal')}
               </Typography>
-              <Typography
-                sx={{
-                  fontWeight: 'bold',
-                  color: '#212121',
-                }}
-              >
+              <Typography sx={{ ...grandTotalStyles, textAlign: 'right' }}>
                 {showPrice(priceFormat(Number(totalAmount)))}
               </Typography>
             </Grid>

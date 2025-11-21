@@ -4,8 +4,12 @@ import { Box } from '@mui/material';
 import B3Dialog from '@/components/B3Dialog';
 import B3Filter from '@/components/filter/B3Filter';
 import B3Spin from '@/components/spin/B3Spin';
+import {
+  filterModalLeftButtonSx,
+  filterModalRightButtonSx,
+} from '@/components/filter/styles';
 import { B3PaginationTable, GetRequestList } from '@/components/table/B3PaginationTable';
-import { useCardListColumn, useMobile, useTableRef } from '@/hooks';
+import { useCardListColumn, useTableRef } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
 import { GlobalContext } from '@/shared/global';
 import {
@@ -15,7 +19,7 @@ import {
 } from '@/shared/service/b2b';
 import { isB2BUserSelector, rolePermissionSelector, useAppSelector } from '@/store';
 import { ShoppingListStatus } from '@/types/shoppingList';
-import { channelId, snackbar } from '@/utils';
+import { channelId } from '@/utils';
 
 import AddEditShoppingLists from './AddEditShoppingLists';
 import { ShoppingListSearch, ShoppingListsItemsProps, useGetFilterMoreList } from './config';
@@ -26,6 +30,135 @@ import ShoppingListsCard from './ShoppingListsCard';
 interface RefCurrentProps extends HTMLInputElement {
   handleOpenAddEditShoppingListsClick: (type: string, data?: ShoppingListsItemsProps) => void;
 }
+
+const shoppingListDeleteDialogSx = {
+  '& .MuiDialog-container': {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  '& .MuiDialog-paper': {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 0,
+    padding: '25px',
+    boxShadow: '0px 4px 22px 5px #0000001A',
+    maxHeight: 'calc(100vh - 32px)',
+    '@media (max-width: 600px)': {
+      width: '95vw',
+      maxWidth: '95vw',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  '& .MuiDialogTitle-root': {
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 600,
+    fontSize: '24px',
+    lineHeight: '28px',
+    color: '#000000',
+    textAlign: 'left',
+    padding: 0,
+    marginBottom: '20px',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  '& .MuiDialogContent-root': {
+    padding: 0,
+  },
+  '& .MuiDialogActions-root': {
+    borderTop: 'none',
+    justifyContent: 'center',
+    columnGap: '33px',
+    gap: '33px',
+    padding: 0,
+    '& > :not(style) ~ :not(style)': {
+      marginLeft: 0,
+    },
+    '@media (max-width: 600px)': {
+      width: '100%',
+      flexDirection: 'column-reverse',
+      gap: '20px',
+      alignItems: 'center',
+      columnGap: '20px',
+      padding: '16px 0 24px',
+    },
+  },
+} as const;
+
+const shoppingListDeleteDialogContentSx = {
+  p: 0,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  fontFamily: "'Lato', sans-serif",
+  fontWeight: 600,
+  fontSize: '16px',
+  lineHeight: '24px',
+  color: '#000000',
+  paddingBottom: '10px',
+} as const;
+
+const shoppingListDeleteSuccessDialogSx = {
+  '& .MuiDialog-container': {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  '& .MuiDialog-paper': {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 0,
+    padding: '25px',
+    boxShadow: '0px 4px 22px 5px #0000001A',
+    maxHeight: 'calc(100vh - 32px)',
+    '@media (max-width: 600px)': {
+      width: '95vw',
+      maxWidth: '95vw',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  '& .MuiDialogTitle-root': {
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 600,
+    fontSize: '24px',
+    lineHeight: '28px',
+    color: '#000000',
+    textAlign: 'center',
+    padding: 0,
+    marginBottom: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  '& .MuiDialogContent-root': {
+    padding: 0,
+  },
+  '& .MuiDialogActions-root': {
+    borderTop: 'none',
+    justifyContent: 'center',
+    padding: 0,
+    '& > :not(style) ~ :not(style)': {
+      marginLeft: 0,
+    },
+    '@media (max-width: 600px)': {
+      width: '100%',
+      flexDirection: 'column',
+      gap: '20px',
+      alignItems: 'center',
+      padding: '16px 0 24px',
+    },
+  },
+} as const;
+
+const shoppingListDeleteSuccessDialogContentSx = {
+  p: 0,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  flexDirection: 'column',
+} as const;
 
 function useData() {
   const salesRepCompanyId = useAppSelector(({ b2bFeatures }) => b2bFeatures.masqueradeCompany.id);
@@ -54,10 +187,10 @@ function ShoppingLists() {
   const [isRequestLoading, setIsRequestLoading] = useState<boolean>(false);
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
   const [deleteItem, setDeleteItem] = useState<null | ShoppingListsItemsProps>(null);
+  const [deleteSuccessOpen, setDeleteSuccessOpen] = useState<boolean>(false);
   const [filterMoreInfo, setFilterMoreInfo] = useState<Array<any>>([]);
   const getFilterMoreList = useGetFilterMoreList();
 
-  const [isMobile] = useMobile();
   const b3Lang = useB3Lang();
 
   const [paginationTableRef] = useTableRef();
@@ -120,7 +253,10 @@ function ShoppingLists() {
       lineHeight: '24px',
       textAlign: 'center',
       verticalAlign: 'middle',
-      ml: '38px',
+      ml: {
+        xs: '0px !important',
+        sm: '38px',
+      },
       whiteSpace: 'nowrap',
       '&:hover': {
         backgroundColor: '#00965E',
@@ -202,12 +338,17 @@ function ShoppingLists() {
   };
 
   const handleDelete = (row: ShoppingListsItemsProps) => {
+    setDeleteSuccessOpen(false);
     setDeleteItem(row);
     setDeleteOpen(true);
   };
 
   const handleCancelClick = () => {
     setDeleteOpen(false);
+  };
+
+  const handleCloseDeleteSuccessModal = () => {
+    setDeleteSuccessOpen(false);
   };
 
   const handleDeleteUserClick = async () => {
@@ -218,7 +359,8 @@ function ShoppingLists() {
 
       await deleteShoppingList(deleteItem?.id || 0);
 
-      snackbar.success(b3Lang('shoppingLists.deleteSuccess'));
+      setDeleteSuccessOpen(true);
+      setDeleteItem(null);
     } finally {
       setIsRequestLoading(false);
       initSearchList();
@@ -276,19 +418,72 @@ function ShoppingLists() {
           handleLeftClick={handleCancelClick}
           handRightClick={handleDeleteUserClick}
           row={deleteItem}
+          leftStyleBtn={{
+            ...filterModalLeftButtonSx,
+            gap: '10px',
+          }}
           rightStyleBtn={{
-            color: '#D32F2F',
+            ...filterModalRightButtonSx,
+            gap: '10px',
           }}
           isShowBordered={false}
+          dialogWidth="min(449px, 95vw)"
+          applyDialogWidthOnMobile
+          dialogContentSx={shoppingListDeleteDialogContentSx}
+          dialogSx={shoppingListDeleteDialogSx}
+          fullScreenOnMobile={false}
         >
           <Box
             sx={{
               display: 'flex',
-              width: isMobile ? '100%' : '450px',
-              height: '100%',
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
             }}
           >
             {b3Lang('shoppingLists.confirmDelete')}
+          </Box>
+        </B3Dialog>
+        <B3Dialog
+          isOpen={deleteSuccessOpen}
+          title={b3Lang('shoppingLists.deleteSuccessTitle')}
+          showLeftBtn={false}
+          rightSizeBtn={b3Lang('shoppingLists.close')}
+          handleLeftClick={handleCloseDeleteSuccessModal}
+          handRightClick={handleCloseDeleteSuccessModal}
+          rightStyleBtn={{
+            ...filterModalRightButtonSx,
+          }}
+          isShowBordered={false}
+          dialogWidth="min(449px, 95vw)"
+          applyDialogWidthOnMobile
+          dialogContentSx={shoppingListDeleteSuccessDialogContentSx}
+          dialogSx={shoppingListDeleteSuccessDialogSx}
+          fullScreenOnMobile={false}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                fontFamily: "'Lato', sans-serif",
+                fontWeight: 600,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#000000',
+              }}
+            >
+              {b3Lang('shoppingLists.deleteSuccess')}
+            </Box>
           </Box>
         </B3Dialog>
       </Box>

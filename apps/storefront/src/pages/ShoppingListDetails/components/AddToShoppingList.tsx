@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react';
-import { UploadFile as UploadFileIcon } from '@mui/icons-material';
 import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
 
 import { B3Upload } from '@/components';
@@ -204,11 +203,38 @@ export default function AddToShoppingList(props: AddToListProps) {
     <Card
       sx={{
         marginBottom: '50px',
+        width: { xs: '100%', md: '362px' },
+        borderRadius: '0px',
+        borderWidth: '0px 0.3px 0.3px 0px',
+        borderStyle: 'solid',
+        borderColor: '#000000',
+        borderRightWidth: '0.3px',
+        borderBottomWidth: '0.3px',
+        boxShadow: 'none',
       }}
     >
-      <CardContent>
+      <CardContent
+        sx={{
+          padding: '24px 16px',
+          '&:last-child': {
+            paddingBottom: '24px',
+          },
+        }}
+      >
         <Box>
-          <Typography variant="h5">{b3Lang('shoppingList.addToShoppingList.addToList')}</Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 400,
+              fontSize: '20px',
+              lineHeight: '28px',
+              color: '#000000',
+              marginBottom: '24px',
+            }}
+          >
+            {b3Lang('shoppingList.addToShoppingList.addToList')}
+          </Typography>
           <SearchProduct updateList={updateList} addToList={addToList} type="shoppingList" />
 
           <Divider />
@@ -222,12 +248,42 @@ export default function AddToShoppingList(props: AddToListProps) {
               margin: '20px 0 0',
             }}
           >
-            <CustomButton variant="text" onClick={() => handleOpenUploadDiag()}>
-              <UploadFileIcon
-                sx={{
-                  marginRight: '8px',
-                }}
-              />
+            <CustomButton
+              variant="text"
+              onClick={() => handleOpenUploadDiag()}
+              sx={{
+                padding: 0,
+                textTransform: 'none',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#0067A0',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                minWidth: 'unset',
+                width: '100%',
+                justifyContent: 'center',
+              }}
+            >
+              <Box
+                component="svg"
+                width="18"
+                height="16"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                sx={{ height: '16px', width: 'auto' }}
+              >
+                <path
+                  d="M1 13L1 14C1 15.6569 2.34315 17 4 17L14 17C15.6569 17 17 15.6569 17 14L17 13M13 5L9 1M9 1L5 5M9 1L9 13"
+                  stroke="#0067A0"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </Box>
               {b3Lang('shoppingList.addToShoppingList.bulkUploadCsv')}
             </CustomButton>
           </Box>

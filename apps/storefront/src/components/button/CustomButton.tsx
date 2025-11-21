@@ -12,14 +12,7 @@ interface CustomButtonProps extends ButtonProps {
 const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
   ({ onClick, sx, children, ...rest }, ref) => {
     return (
-      <Button
-        ref={ref}
-        {...rest}
-        sx={{
-          ...(sx || {}),
-        }}
-        onClick={onClick}
-      >
+      <Button ref={ref} {...rest} sx={sx} onClick={onClick}>
         {children}
       </Button>
     );

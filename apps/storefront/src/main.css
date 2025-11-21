@@ -158,6 +158,19 @@ input[type='number']::-webkit-outer-spin-button {
   order: 2;
 }
 
+.css-1twtkmr,
+.css-bdddbb {
+  fill: none !important;
+}
+
+.css-u4ry9u {
+  margin-top: 15px !important;
+}
+
+.css-uauzqi {
+  margin-bottom: 15px !important;
+}
+
 .b2b-btn-loading {
   position: absolute;
   top: 50%;

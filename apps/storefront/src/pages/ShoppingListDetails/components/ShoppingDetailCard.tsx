@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { Delete, Edit, StickyNote2 } from '@mui/icons-material';
-import { Box, CardContent, styled, TextField, Typography } from '@mui/material';
+import { Box, CardContent, styled, Typography } from '@mui/material';
 
 import { PRODUCT_DEFAULT_IMAGE } from '@/constants';
 import { useB3Lang } from '@/lib/lang';
@@ -14,8 +14,11 @@ interface ShoppingDetailCardProps {
   item: any;
   onEdit: (item: any, variantId: number | string, itemId: number | string) => void;
   onDelete: (itemId: number) => void;
-  handleUpdateProductQty: (id: number | string, value: number | string) => void;
-  handleUpdateShoppingListItem: (itemId: number | string) => void;
+  handleUpdateProductQty: (id: number | string, value: number | string) => boolean;
+  handleUpdateShoppingListItem: (
+    itemId: number | string,
+    options?: { force?: boolean },
+  ) => Promise<void>;
   checkBox?: () => ReactElement;
   isReadForApprove: boolean;
   len: number;
@@ -29,9 +32,111 @@ interface ShoppingDetailCardProps {
 }
 
 const StyledImage = styled('img')(() => ({
-  maxWidth: '60px',
+  maxWidth: '85px',
+  maxHeight: '85px',
   height: 'auto',
   marginRight: '0.5rem',
+}));
+
+const QuantityControlsContainer = styled('div')(() => ({
+  display: 'inline-flex',
+  alignItems: 'stretch',
+  height: '40px',
+}));
+
+const quantityButtonBaseStyles = {
+  width: '27px',
+  backgroundColor: '#E6E6E6',
+  borderTop: '0.2px solid #000000',
+  borderBottom: '0.2px solid #000000',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 0,
+  cursor: 'pointer',
+  position: 'relative',
+  '&:disabled': {
+    cursor: 'not-allowed',
+    opacity: 0.5,
+  },
+} as const;
+
+const QuantityMinusButton = styled('button')(() => ({
+  ...quantityButtonBaseStyles,
+  borderLeft: '0.2px solid #000000',
+  borderRight: '0px',
+}));
+
+const QuantityPlusButton = styled('button')(() => ({
+  ...quantityButtonBaseStyles,
+  borderLeft: '0px',
+  borderRight: '0.2px solid #000000',
+}));
+
+const MinusSign = styled('span')(() => ({
+  width: '14px',
+  height: '2px',
+  backgroundColor: '#0067A0',
+  position: 'absolute',
+  top: 'calc(50% - 1px)',
+  left: 'calc(50% - 7px)',
+}));
+
+const PlusSign = styled('span')(() => ({
+  position: 'absolute',
+  width: '14px',
+  height: '14px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  '&::before': {
+    content: "''",
+    position: 'absolute',
+    width: '14px',
+    height: '2px',
+    backgroundColor: '#0067A0',
+  },
+  '&::after': {
+    content: "''",
+    position: 'absolute',
+    width: '2px',
+    height: '14px',
+    backgroundColor: '#0067A0',
+  },
+}));
+
+const QuantityInput = styled('input')(() => ({
+  width: '64px',
+  backgroundColor: '#E6E6E6',
+  borderLeft: '0px',
+  borderRight: '0px',
+  borderTop: '0.2px solid #000000',
+  borderBottom: '0.2px solid #000000',
+  fontFamily: 'Lato, sans-serif',
+  fontWeight: 400,
+  fontSize: '20px',
+  lineHeight: '28px',
+  textAlign: 'center',
+  verticalAlign: 'middle',
+  color: '#000000',
+  height: '40px',
+  outline: 'none',
+  padding: 0,
+  '&:disabled': {
+    cursor: 'not-allowed',
+    opacity: 0.6,
+  },
+  '&::-webkit-outer-spin-button': {
+    WebkitAppearance: 'none',
+    margin: 0,
+  },
+  '&::-webkit-inner-spin-button': {
+    WebkitAppearance: 'none',
+    margin: 0,
+  },
+  '&[type=number]': {
+    MozAppearance: 'textfield',
+  },
 }));
 
 function ShoppingDetailCard(props: ShoppingDetailCardProps) {
@@ -90,6 +195,9 @@ function ShoppingDetailCard(props: ShoppingDetailCardProps) {
   const currentImage =
     b2bGetVariantImageByVariantInfo(currentVariants, { variantId, variantSku }) || primaryImage;
 
+  const numericQuantity = Number(quantity) || 0;
+  const isQuantityDisabled = b2bAndBcShoppingListActionsPermissions ? isReadForApprove : true;
+
   return (
     <Box
       key={shoppingDetail.id}
@@ -120,7 +228,6 @@ function ShoppingDetailCard(props: ShoppingDetailCardProps) {
         >
           <Typography
             variant="body1"
-            color="#212121"
             onClick={() => {
               const {
                 location: { origin },
@@ -130,11 +237,25 @@ function ShoppingDetailCard(props: ShoppingDetailCardProps) {
             }}
             sx={{
               cursor: 'pointer',
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '14px',
+              lineHeight: '20px',
+              color: '#000000',
             }}
           >
             {productName}
           </Typography>
-          <Typography variant="body1" color="#616161">
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
+              fontSize: '14px',
+              lineHeight: '20px',
+              color: '#000000',
+            }}
+          >
             {variantSku}
           </Typography>
           <Box
@@ -147,9 +268,11 @@ function ShoppingDetailCard(props: ShoppingDetailCardProps) {
                 {optionsValue.map((option: any) => (
                   <Typography
                     sx={{
-                      fontSize: '0.75rem',
-                      lineHeight: '1.5',
-                      color: '#455A64',
+                      fontFamily: 'Lato, sans-serif',
+                      fontWeight: 600,
+                      fontSize: '14px',
+                      lineHeight: '20px',
+                      color: '#000000',
                     }}
                     key={option.valueLabel}
                   >
@@ -163,7 +286,10 @@ function ShoppingDetailCard(props: ShoppingDetailCardProps) {
           {productNote && productNote.trim().length > 0 && (
             <Typography
               sx={{
-                fontSize: '0.75rem',
+                fontSize: '14px',
+                lineHeight: '20px',
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 600,
                 color: '#ED6C02',
                 marginTop: '0.3rem',
                 marginBottom: '0.3rem',
@@ -175,8 +301,11 @@ function ShoppingDetailCard(props: ShoppingDetailCardProps) {
 
           <Typography
             sx={{
-              color: '#212121',
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
               fontSize: '14px',
+              lineHeight: '20px',
+              color: '#000000',
             }}
           >
             {b3Lang('shoppingList.shoppingDetailCard.price', {
@@ -184,40 +313,59 @@ function ShoppingDetailCard(props: ShoppingDetailCardProps) {
             })}
           </Typography>
 
-          <TextField
-            size="small"
-            type="number"
-            variant="filled"
-            label={b3Lang('shoppingList.shoppingDetailCard.quantity')}
-            disabled={b2bAndBcShoppingListActionsPermissions ? isReadForApprove : true}
-            inputProps={{
-              inputMode: 'numeric',
-              pattern: '[0-9]*',
-            }}
-            value={quantity}
+          <Box
             sx={{
               margin: '0.5rem 0',
-              width: '60%',
-              maxWidth: '100px',
-              '& label': {
-                zIndex: 0,
-                fontSize: '14px',
-              },
-              '& input': {
-                fontSize: '14px',
-              },
             }}
-            onChange={(e) => {
-              handleUpdateProductQty(shoppingDetail.id, e.target.value);
-            }}
-            onBlur={() => {
-              handleUpdateShoppingListItem(itemId);
-            }}
-          />
+          >
+            <QuantityControlsContainer>
+              <QuantityMinusButton
+                type="button"
+                disabled={isQuantityDisabled || numericQuantity <= 0}
+                onClick={() => {
+                  const nextValue = numericQuantity - 1;
+                  if (nextValue < 0) return;
+                  const hasChanged = handleUpdateProductQty(shoppingDetail.id, nextValue);
+                  if (hasChanged) {
+                    void handleUpdateShoppingListItem(itemId, { force: true });
+                  }
+                }}
+              >
+                <MinusSign />
+              </QuantityMinusButton>
+              <QuantityInput
+                type="number"
+                disabled={isQuantityDisabled}
+                value={quantity}
+                onChange={(event) => {
+                  handleUpdateProductQty(shoppingDetail.id, event.target.value);
+                }}
+                onBlur={() => {
+                  void handleUpdateShoppingListItem(itemId);
+                }}
+              />
+              <QuantityPlusButton
+                type="button"
+                disabled={isQuantityDisabled}
+                onClick={() => {
+                  const nextValue = numericQuantity + 1;
+                  const hasChanged = handleUpdateProductQty(shoppingDetail.id, nextValue);
+                  if (hasChanged) {
+                    void handleUpdateShoppingListItem(itemId, { force: true });
+                  }
+                }}
+              >
+                <PlusSign />
+              </QuantityPlusButton>
+            </QuantityControlsContainer>
+          </Box>
           <Typography
             sx={{
-              color: '#212121',
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 600,
               fontSize: '14px',
+              lineHeight: '20px',
+              color: '#000000',
             }}
           >
             {b3Lang('shoppingList.shoppingDetailCard.total', {

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Grid, useTheme } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 
 import B3Spin from '@/components/spin/B3Spin';
 import { useFeatureFlags, useMobile } from '@/hooks';
@@ -93,9 +93,6 @@ function useData() {
 
   const isAgenting = useAppSelector(({ b2bFeatures }) => b2bFeatures.masqueradeCompany.isAgenting);
 
-  const theme = useTheme();
-  const primaryColor = theme.palette.primary.main;
-
   const {
     shoppingListCreateActionsPermission,
     purchasabilityPermission,
@@ -130,7 +127,6 @@ function useData() {
     isB2BUser,
     role,
     isAgenting,
-    primaryColor,
     shoppingListCreateActionsPermission,
     submitShoppingListPermission,
     isCanAddToCart,
@@ -150,7 +146,6 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
     isB2BUser,
     role,
     isAgenting,
-    primaryColor,
     shoppingListCreateActionsPermission,
     submitShoppingListPermission,
     isCanAddToCart,
@@ -423,7 +418,6 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
           setOpenPage={setOpenPage}
           isAgenting={isAgenting}
           openAPPParams={openAPPParams}
-          customColor={primaryColor}
         />
 
         <Grid
@@ -486,6 +480,24 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
                 />
               </Grid>
             </B3Spin>
+
+            {!isReadForApprove &&
+              (allowJuniorPlaceOrder || productQuoteEnabled || !isJuniorApprove) && (
+                <ShoppingDetailFooter
+                  shoppingListInfo={shoppingListInfo}
+                  allowJuniorPlaceOrder={allowJuniorPlaceOrder}
+                  checkedArr={checkedArr}
+                  selectedSubTotal={calculateSubTotal(checkedArr)}
+                  setLoading={setIsRequestLoading}
+                  setDeleteOpen={setDeleteOpen}
+                  setValidateFailureProducts={setValidateFailureProducts}
+                  setValidateSuccessProducts={setValidateSuccessProducts}
+                  isB2BUser={isB2BUser}
+                  isCanEditShoppingList={isCanEditShoppingList}
+                  role={role}
+                  backendValidationEnabled={backendValidationEnabled}
+                />
+              )}
           </Box>
 
           <Grid
@@ -496,7 +508,7 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
                     flexBasis: '100%',
                   }
                 : {
-                    flexBasis: '340px',
+                    flexBasis: '362px',
                   }
             }
           >
@@ -509,25 +521,6 @@ function ShoppingListDetails({ setOpenPage }: PageProps) {
             )}
           </Grid>
         </Grid>
-
-        {!isReadForApprove &&
-          (allowJuniorPlaceOrder || productQuoteEnabled || !isJuniorApprove) && (
-            <ShoppingDetailFooter
-              shoppingListInfo={shoppingListInfo}
-              allowJuniorPlaceOrder={allowJuniorPlaceOrder}
-              checkedArr={checkedArr}
-              selectedSubTotal={calculateSubTotal(checkedArr)}
-              setLoading={setIsRequestLoading}
-              setDeleteOpen={setDeleteOpen}
-              setValidateFailureProducts={setValidateFailureProducts}
-              setValidateSuccessProducts={setValidateSuccessProducts}
-              isB2BUser={isB2BUser}
-              customColor={primaryColor}
-              isCanEditShoppingList={isCanEditShoppingList}
-              role={role}
-              backendValidationEnabled={backendValidationEnabled}
-            />
-          )}
       </Box>
 
       <ReAddToCart

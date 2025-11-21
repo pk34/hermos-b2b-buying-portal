@@ -24,6 +24,18 @@ const SPECIAL_PATH_TEXTS = {
   '/company-orders': 'global.companyOrders.title',
 } as const;
 
+const MOBILE_TITLE_PATHS = [
+  '/purchased-products',
+  '/orders',
+  '/company-orders',
+  '/invoice',
+  '/quotes',
+  '/shoppingLists',
+  '/addresses',
+  '/user-management',
+  '/accountSettings',
+];
+
 export default function B3Layout({ children }: { children: ReactNode }) {
   const [isMobile] = useMobile();
   const isDesktopLimit = useMediaQuery('(min-width:1775px)');
@@ -101,11 +113,18 @@ export default function B3Layout({ children }: { children: ReactNode }) {
     return {};
   }, [location]);
 
-  const pagesWithCustomMobileTitle = ['/addresses', '/user-management'];
-  const isCustomMobileTitlePage = pagesWithCustomMobileTitle.includes(location.pathname);
+  const isPurchasedProductsPage = location.pathname === '/purchased-products';
+
+  const shouldUseMobileTitleStyles = useMemo(() => {
+    if (location.pathname.startsWith('/shoppingList/')) {
+      return true;
+    }
+
+    return MOBILE_TITLE_PATHS.includes(location.pathname);
+  }, [location.pathname]);
 
   const mobileTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
-    if (!isMobile || !isCustomMobileTitlePage) {
+    if (!isMobile || !title || !shouldUseMobileTitleStyles) {
       return undefined;
     }
 
@@ -119,7 +138,20 @@ export default function B3Layout({ children }: { children: ReactNode }) {
       width: '100%',
       marginTop: '24px',
     };
-  }, [isCustomMobileTitlePage, isMobile]);
+  }, [isMobile, title, shouldUseMobileTitleStyles]);
+
+  const desktopTitleSx = useMemo<SxProps<Theme> | undefined>(() => {
+    if (isMobile || !title || !isPurchasedProductsPage) {
+      return undefined;
+    }
+
+    return {
+      fontFamily: 'Lato, sans-serif',
+      fontWeight: 600,
+      fontSize: '30px',
+      lineHeight: '38px',
+    };
+  }, [isMobile, title, isPurchasedProductsPage]);
 
   return (
     <Box>
@@ -171,7 +203,7 @@ export default function B3Layout({ children }: { children: ReactNode }) {
               ...overflowStyle,
             }}
           >
-            <B3MainHeader title={title} />
+            <B3MainHeader title={title} titleSx={desktopTitleSx} />
             <CompanyCredit />
             <Box
               component="main"

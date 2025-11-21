@@ -1,4 +1,12 @@
-import { ChangeEvent, FC, MouseEvent, ReactElement, ReactNode, useContext, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
@@ -20,11 +28,13 @@ import {
 import IconButton from '@mui/material/IconButton';
 import TableSortLabel from '@mui/material/TableSortLabel';
 
-import { useMobile } from '@/hooks';
 import { useB3Lang } from '@/lib/lang';
-import { CustomStyleContext } from '@/shared/customStyleButton';
 
-import { b3HexToRgb, getContrastColor } from '../outSideComponents/utils/b3CustomStyles';
+import {
+  TABLE_PAGINATION_SELECT_PROPS,
+  TABLE_PAGINATION_SX,
+  TablePaginationActions,
+} from './paginationStyles';
 
 import B3NoData from './B3NoData';
 
@@ -127,6 +137,25 @@ const MOUSE_POINTER_STYLE = {
   cursor: 'pointer',
 };
 
+const CHECKBOX_SX = {
+  padding: '4px',
+  '&:hover': {
+    backgroundColor: 'transparent',
+  },
+  '& .MuiSvgIcon-root': {
+    width: '22px',
+    height: '22px',
+    border: '0.2px solid #000000',
+    borderRadius: '5px',
+    boxSizing: 'border-box',
+  },
+  '&.Mui-checked .MuiSvgIcon-root': {
+    border: '0.2px solid #000000',
+    backgroundColor: '#0067A0',
+    color: '#FFFFFF',
+  },
+};
+
 function Row<Row>({
   columnItems,
   node,
@@ -149,6 +178,10 @@ function Row<Row>({
 
   const [open, setOpen] = useState<boolean>(isCollapse || false);
 
+  useEffect(() => {
+    setOpen(Boolean(isCollapse));
+  }, [isCollapse]);
+
   return (
     <>
       <TableRow
@@ -159,31 +192,73 @@ function Row<Row>({
         sx={clickableRowStyles}
         data-testid="tableBody-Row"
       >
-        {showCheckbox && selectedSymbol && (
+        {showCheckbox && CollapseComponent && selectedSymbol ? (
           <TableCell
-            key={`showItemCheckbox-${node.id}`}
+            key={`showItemControls-${node.id}`}
             sx={{
               borderBottom: showBorder ? '1px solid rgba(224, 224, 224, 1)' : lastItemBorderBottom,
             }}
           >
-            <Checkbox
-              // @ts-expect-error typed previously as an any
-              checked={selectCheckbox.includes(node[selectedSymbol])}
-              onChange={() => {
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Checkbox
                 // @ts-expect-error typed previously as an any
-                if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
-              }}
-              disabled={applyAllDisableCheckbox ? disableCheckbox : disableCurrentCheckbox}
-            />
+                checked={selectCheckbox.includes(node[selectedSymbol])}
+                onChange={() => {
+                  // @ts-expect-error typed previously as an any
+                  if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
+                }}
+                disabled={applyAllDisableCheckbox ? disableCheckbox : disableCurrentCheckbox}
+                sx={CHECKBOX_SX}
+              />
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setOpen((prevOpen) => !prevOpen);
+                }}
+              >
+                {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+              </IconButton>
+            </Box>
           </TableCell>
-        )}
+        ) : (
+          <>
+            {showCheckbox && selectedSymbol && (
+              <TableCell
+                key={`showItemCheckbox-${node.id}`}
+                sx={{
+                  borderBottom: showBorder ? '1px solid rgba(224, 224, 224, 1)' : lastItemBorderBottom,
+                }}
+              >
+                <Checkbox
+                  // @ts-expect-error typed previously as an any
+                  checked={selectCheckbox.includes(node[selectedSymbol])}
+                  onChange={() => {
+                    // @ts-expect-error typed previously as an any
+                    if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
+                  }}
+                  disabled={applyAllDisableCheckbox ? disableCheckbox : disableCurrentCheckbox}
+                  sx={CHECKBOX_SX}
+                />
+              </TableCell>
+            )}
 
-        {CollapseComponent && (
-          <TableCell>
-            <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-              {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
-            </IconButton>
-          </TableCell>
+            {CollapseComponent && (
+              <TableCell>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setOpen((prevOpen) => !prevOpen);
+                  }}
+                >
+                  {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+                </IconButton>
+              </TableCell>
+            )}
+          </>
         )}
 
         {columnItems.map((column) => (
@@ -257,16 +332,6 @@ export function B3Table<Row>({
   orderBy = '',
   customRenderFooter,
 }: TableProps<Row>) {
-  const {
-    state: {
-      portalStyle: { backgroundColor = '#FEF9F5' },
-    },
-  } = useContext(CustomStyleContext);
-
-  const customColor = getContrastColor(backgroundColor);
-
-  const [isMobile] = useMobile();
-
   const b3Lang = useB3Lang();
 
   const { offset, count, first } = pagination;
@@ -314,6 +379,7 @@ export function B3Table<Row>({
                 }
                 onChange={handleSelectAllItems}
                 disabled={disableCheckbox}
+                sx={CHECKBOX_SX}
               />
               Select all
             </Box>
@@ -331,6 +397,7 @@ export function B3Table<Row>({
                     if (handleSelectOneItem) handleSelectOneItem(node[selectedSymbol]);
                   }}
                   disabled={disable || disableCheckbox}
+                  sx={CHECKBOX_SX}
                 />
               );
               return (
@@ -351,15 +418,14 @@ export function B3Table<Row>({
               labelRowsPerPage={labelRowsPerPage || b3Lang('global.pagination.perPage')}
               component="div"
               sx={{
-                color: isMobile ? b3HexToRgb(customColor, 0.87) : 'rgba(0, 0, 0, 0.87)',
+                ...TABLE_PAGINATION_SX,
                 marginTop: '1.5rem',
                 '::-webkit-scrollbar': {
                   display: 'none',
                 },
-                '& svg': {
-                  color: isMobile ? b3HexToRgb(customColor, 0.87) : 'rgba(0, 0, 0, 0.87)',
-                },
               }}
+              SelectProps={TABLE_PAGINATION_SELECT_PROPS}
+              ActionsComponent={TablePaginationActions}
               count={count}
               rowsPerPage={first}
               page={first === 0 ? 0 : offset / first}
@@ -393,15 +459,14 @@ export function B3Table<Row>({
               labelRowsPerPage={labelRowsPerPage || b3Lang('global.pagination.cardsPerPage')}
               component="div"
               sx={{
-                color: customColor,
+                ...TABLE_PAGINATION_SX,
                 marginTop: '1.5rem',
                 '::-webkit-scrollbar': {
                   display: 'none',
                 },
-                '& svg': {
-                  color: customColor,
-                },
               }}
+              SelectProps={TABLE_PAGINATION_SELECT_PROPS}
+              ActionsComponent={TablePaginationActions}
               count={count}
               rowsPerPage={first}
               page={first === 0 ? 0 : offset / first}
@@ -429,20 +494,40 @@ export function B3Table<Row>({
               {!tableHeaderHide && (
                 <TableHead>
                   <TableRow data-testid="tableHead-Row">
-                    {showSelectAllCheckbox && (
-                      <TableCell key="showSelectAllCheckbox">
-                        <Checkbox
-                          checked={
-                            isSelectOtherPageCheckbox
-                              ? isAllSelect
-                              : selectCheckbox.length === listItems.length
-                          }
-                          onChange={handleSelectAllItems}
-                          disabled={disableCheckbox}
-                        />
+                    {CollapseComponent && showCheckbox ? (
+                      <TableCell key="showItemControlsHeader" width="2%">
+                        {showSelectAllCheckbox && (
+                          <Checkbox
+                            checked={
+                              isSelectOtherPageCheckbox
+                                ? isAllSelect
+                                : selectCheckbox.length === listItems.length
+                            }
+                            onChange={handleSelectAllItems}
+                            disabled={disableCheckbox}
+                            sx={CHECKBOX_SX}
+                          />
+                        )}
                       </TableCell>
+                    ) : (
+                      <>
+                        {showSelectAllCheckbox && (
+                          <TableCell key="showSelectAllCheckbox">
+                            <Checkbox
+                              checked={
+                                isSelectOtherPageCheckbox
+                                  ? isAllSelect
+                                  : selectCheckbox.length === listItems.length
+                              }
+                              onChange={handleSelectAllItems}
+                              disabled={disableCheckbox}
+                              sx={CHECKBOX_SX}
+                            />
+                          </TableCell>
+                        )}
+                        {CollapseComponent && <TableCell width="2%" />}
+                      </>
                     )}
-                    {CollapseComponent && <TableCell width="2%" />}
 
                     {columnItems.map((column) => (
                       <TableCell
@@ -517,11 +602,14 @@ export function B3Table<Row>({
               labelRowsPerPage={labelRowsPerPage || b3Lang('global.pagination.rowsPerPage')}
               component="div"
               sx={{
+                ...TABLE_PAGINATION_SX,
                 marginTop: '1.5rem',
                 '::-webkit-scrollbar': {
                   display: 'none',
                 },
               }}
+              SelectProps={TABLE_PAGINATION_SELECT_PROPS}
+              ActionsComponent={TablePaginationActions}
               count={count}
               rowsPerPage={first}
               page={first === 0 ? 0 : offset / first}

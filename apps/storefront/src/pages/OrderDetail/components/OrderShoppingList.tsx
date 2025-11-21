@@ -4,6 +4,7 @@ import { Box, ListItemText, MenuItem, MenuList, useTheme } from '@mui/material';
 
 import B3Dialog from '@/components/B3Dialog';
 import CustomButton from '@/components/button/CustomButton';
+import { filterModalLeftButtonSx } from '@/components/filter/styles';
 import { b3HexToRgb } from '@/components/outSideComponents/utils/b3CustomStyles';
 import B3Spin from '@/components/spin/B3Spin';
 import { useMobile } from '@/hooks';
@@ -12,6 +13,13 @@ import { getB2BShoppingList, getBcShoppingList } from '@/shared/service/b2b';
 import { isB2BUserSelector, rolePermissionSelector, useAppSelector } from '@/store';
 import { ShoppingListItem, ShoppingListStatus } from '@/types/shoppingList';
 import { channelId } from '@/utils';
+
+import {
+  orderDialogBodyTextSx,
+  orderDialogListContentSx,
+  orderDialogPrimaryButtonSx,
+  orderDialogSx,
+} from './dialogStyles';
 
 interface OrderShoppingListProps {
   isOpen: boolean;
@@ -96,6 +104,19 @@ export default function OrderShoppingList(props: OrderShoppingListProps) {
     setActiveId(item.node.id);
   };
 
+  const createButtonSx = {
+    textTransform: 'none' as const,
+    fontFamily: "'Lato', sans-serif",
+    fontWeight: 600,
+    fontSize: '14px',
+    lineHeight: '20px',
+    alignSelf: 'flex-start' as const,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: 0,
+  };
+
   return (
     <B3Dialog
       fullWidth
@@ -105,6 +126,11 @@ export default function OrderShoppingList(props: OrderShoppingListProps) {
       handleLeftClick={handleClose}
       handRightClick={handleConfirm}
       rightSizeBtn={confirmText}
+      isShowBordered={false}
+      leftStyleBtn={filterModalLeftButtonSx}
+      rightStyleBtn={orderDialogPrimaryButtonSx}
+      dialogSx={orderDialogSx}
+      dialogContentSx={orderDialogListContentSx}
     >
       <B3Spin isSpinning={isLoading} isFlex={false}>
         <Box
@@ -132,6 +158,7 @@ export default function OrderShoppingList(props: OrderShoppingListProps) {
                 className={activeId === item.node.id ? 'active' : ''}
                 onClick={handleListItemClicked(item)}
                 sx={{
+                  ...orderDialogBodyTextSx,
                   '&:hover': {
                     backgroundColor: b3HexToRgb(primaryColor, 0.12),
                   },
@@ -140,7 +167,13 @@ export default function OrderShoppingList(props: OrderShoppingListProps) {
                   },
                 }}
               >
-                <ListItemText>{item.node.name}</ListItemText>
+                <ListItemText
+                  primaryTypographyProps={{
+                    sx: orderDialogBodyTextSx,
+                  }}
+                >
+                  {item.node.name}
+                </ListItemText>
               </MenuItem>
             ))}
           </MenuList>
@@ -149,9 +182,7 @@ export default function OrderShoppingList(props: OrderShoppingListProps) {
         <CustomButton
           variant="text"
           onClick={handleCreate}
-          sx={{
-            textTransform: 'none',
-          }}
+          sx={createButtonSx}
         >
           <AddIcon
             sx={{

@@ -1,6 +1,7 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Grid, Typography } from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 
 import { CART_URL } from '@/constants';
 import { dispatchEvent } from '@/hooks';
@@ -18,7 +19,13 @@ import { SectionTitle } from '@/components';
 
 import B3StatusNotification from './B3StatusNotification';
 
-export default function MainHeader({ title }: { title: string }) {
+export default function MainHeader({
+  title,
+  titleSx,
+}: {
+  title: string;
+  titleSx?: SxProps<Theme>;
+}) {
   const isB2BUser = useAppSelector(isB2BUserSelector);
   const role = useAppSelector(({ company }) => company.customer.role);
   const companyInfo = useAppSelector(({ company }) => company.companyInfo);
@@ -57,6 +64,28 @@ export default function MainHeader({ title }: { title: string }) {
   useEffect(() => {
     b3TriggerCartNumber();
   }, []);
+
+  const headingSx = useMemo<SxProps<Theme>>(() => {
+    const baseTitleSx: SxProps<Theme> = {
+      display: 'flex',
+      alignItems: 'flex-end',
+      height: '40px',
+      mb: '24px',
+      mt: isMobile ? 0 : '24px',
+      ml: 0,
+      color: '#0067A0',
+    };
+
+    if (!titleSx) {
+      return baseTitleSx;
+    }
+
+    if (Array.isArray(titleSx)) {
+      return [baseTitleSx, ...titleSx];
+    }
+
+    return [baseTitleSx, titleSx];
+  }, [isMobile, titleSx]);
 
   return (
     <Box>
@@ -161,19 +190,7 @@ export default function MainHeader({ title }: { title: string }) {
         </Box>
       </Box>
       {title && (
-        <SectionTitle
-          sx={{
-            display: 'flex',
-            alignItems: 'flex-end',
-            height: '40px',
-            mb: '24px',
-            mt: isMobile ? 0 : '24px',
-            ml: 0,
-            color: '#0067A0',
-          }}
-        >
-          {title}
-        </SectionTitle>
+        <SectionTitle sx={headingSx}>{title}</SectionTitle>
       )}
       <B3StatusNotification title={title} />
     </Box>
