@@ -436,8 +436,8 @@ export const getBCQuotesList = (data: CustomFieldItems) =>
     query: getQuotesList(data, 'bc'),
   }).then((res) => res.customerQuotes);
 
-export const createQuote = (data: CustomFieldItems) =>
-  B3Request.graphqlB2B({
+export const createQuote = (data: CustomFieldItems): Promise<CreateQuoteResponse> =>
+  B3Request.graphqlB2B<CreateQuoteResponse>({
     query: quoteCreate(data),
   });
 

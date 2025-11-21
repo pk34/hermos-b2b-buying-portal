@@ -209,10 +209,8 @@ const buildQuotePayload = () => ({
 
 describe('HeadlessController quote utils', () => {
   const quoteCreateResponse: CreateQuoteResponse = {
-    data: {
-      quoteCreate: {
-        quote: { id: faker.number.int(), createdAt: faker.date.recent().toISOString() },
-      },
+    quoteCreate: {
+      quote: { id: faker.number.int(), createdAt: faker.date.recent().toISOString() },
     },
   };
 
@@ -240,11 +238,9 @@ describe('HeadlessController quote utils', () => {
 
     expect(onQuoteCreate).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({
-          storeHash: 'store-hash',
-          channelId: 1,
-          userEmail: customerEmail,
-        }),
+        storeHash: 'store-hash',
+        channelId: 1,
+        userEmail: customerEmail,
       }),
     );
     expect(createQuoteMock).toHaveBeenCalledWith(

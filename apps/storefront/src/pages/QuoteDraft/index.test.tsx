@@ -362,9 +362,7 @@ const buildCSVUploadWith = builder(() => ({
 }));
 
 const buildQuoteCreateResponseWith = builder<CreateQuoteResponse>(() => ({
-  data: {
-    quoteCreate: { quote: { id: faker.number.int(), createdAt: faker.date.anytime().toString() } },
-  },
+  quoteCreate: { quote: { id: faker.number.int(), createdAt: faker.date.anytime().toString() } },
 }));
 
 const customerEmail = 'info@abc.net';
@@ -1766,9 +1764,7 @@ describe('when the user is a B2B customer', () => {
         graphql.mutation('CreateQuote', () =>
           HttpResponse.json(
             buildQuoteCreateResponseWith({
-              data: {
-                quoteCreate: { quote: { id: 123, createdAt: '1245' } },
-              },
+              quoteCreate: { quote: { id: 123, createdAt: '1245' } },
             }),
           ),
         ),
