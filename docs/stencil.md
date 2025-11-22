@@ -138,3 +138,21 @@ Replace the following values:
   {{/if}}
 </script>
 ```
+
+## Loading the headless bundle in Stencil themes
+
+Stencil scripts default to classic modules, so loading `headless.js` without the `type="module"` attribute can surface a browser error similar to `Cannot use import statement outside a module`.
+
+To avoid the error while still passing the store hash and channel ID, use the provided loader script. It injects the correct module script tag for you:
+
+```html
+<script
+  src="<YOUR_APP_URL_HERE>/headless-loader.js"
+  data-storehash="{{settings.store_hash}}"
+  data-channelid="{{settings.channel_id}}"
+  data-environment="production"
+></script>
+```
+
+> [!NOTE]
+> The loader reads the attributes from the script tag and re-injects the Buyer Portal headless bundle with the required `type="module"` attribute, so no additional configuration is necessary.
