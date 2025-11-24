@@ -66,8 +66,10 @@ export default function B3Picker({
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={activeLang}>
         <DatePicker
           label={label}
-          DialogProps={{
-            container: container.current,
+          slotProps={{
+            dialog: {
+              container: container.current ?? undefined,
+            },
           }}
           onChange={(val: Dayjs | null) => val && onHandleChange(val)}
           onClose={() => {
