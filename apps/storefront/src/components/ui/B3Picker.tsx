@@ -1,11 +1,10 @@
 import { useContext, useRef, useState } from 'react';
-import { Box, TextField } from '@mui/material';
+import { Box } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs from 'dayjs';
-
+import dayjs, { Dayjs } from 'dayjs';
 import { GlobalContext } from '@/shared/global';
 
 import setDayjsLocale from './setDayjsLocale';
@@ -13,7 +12,7 @@ import setDayjsLocale from './setDayjsLocale';
 interface B3PickerProps {
   onChange: (date: Date | string | number) => void;
   variant?: 'filled' | 'outlined' | 'standard';
-  value: Date | string | number | undefined;
+  value: string | number | Date | Dayjs | null | undefined;
   label: string;
   disableOpenPicker?: boolean;
   formatInput?: string;
@@ -48,42 +47,44 @@ export default function B3Picker({
     }
   };
 
-  const onHandleChange = (value: Date | number | string) => {
-    if (typeof value !== 'string') {
-      const pickerValue = dayjs(value).format(formatInput);
-      onChange(pickerValue);
-    } else {
+  const onHandleChange = (value: Dayjs | Date | number | string) => {
+    if (typeof value === 'string') {
       onChange(value);
+      return;
     }
+
+    const pickerValue = dayjs(value).format(formatInput);
+    onChange(pickerValue);
   };
+
+  const pickerValue = value !== null && value !== undefined ? dayjs(value) : null;
   return (
     <>
       <Box ref={container} />
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={activeLang}>
         <DatePicker
           label={label}
-          DialogProps={{
-            container: container.current,
+          slotProps={{
+            dialog: {
+              container: container.current ?? undefined,
+            },
+            textField: {
+              size,
+              onMouseDown: () => {
+                openPickerClick();
+              },
+              variant,
+              sx: textFieldSx,
+              inputRef: pickerRef,
+            },
           }}
-          onChange={(val) => val && onHandleChange(val)}
+          onChange={(val: Dayjs | null) => val && onHandleChange(val)}
           onClose={() => {
             setOpen(false);
           }}
-          value={value || null}
+          value={pickerValue}
           open={open}
-          inputRef={pickerRef}
           disableOpenPicker={disableOpenPicker}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              size={size}
-              onMouseDown={() => {
-                openPickerClick();
-              }}
-              variant={variant}
-              sx={textFieldSx}
-            />
-          )}
         />
       </LocalizationProvider>
     </>
