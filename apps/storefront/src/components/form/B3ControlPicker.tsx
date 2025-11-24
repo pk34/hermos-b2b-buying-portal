@@ -1,6 +1,7 @@
 import { useContext, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { Box, TextField } from '@mui/material';
+import type { TextFieldProps } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -81,7 +82,7 @@ export default function B3ControlPicker({ control, errors, ...rest }: Form.B3UIP
                 label={label}
                 inputFormat={inputFormat}
                 {...muixPickerProps}
-                renderInput={(params) => (
+                renderInput={(params: TextFieldProps) => (
                   <TextField
                     {...params}
                     variant={variant || 'filled'}
