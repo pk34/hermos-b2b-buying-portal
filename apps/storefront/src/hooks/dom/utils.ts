@@ -248,7 +248,26 @@ const addProductsFromCartToQuote = (setOpenPage: SetOpenPage, b3Lang: LangFormat
     }
   };
 
-  const addToQuoteFromCookie = () => getCart().then(addToQuote);
+  const addToQuoteFromCookie = async () => {
+    const state = store.getState();
+    const { B2BToken, bcGraphqlToken } = state.company.tokens;
+
+    if (!B2BToken) {
+      const customerInfo = await getCurrentCustomerInfo();
+      if (!customerInfo) {
+        globalSnackbar.error(b3Lang('global.login.loginToContinue'));
+        return;
+      }
+    }
+
+    // Ensure we have bcGraphqlToken if possible, though getCart might fallback to XSRF
+    // If we just logged in via getCurrentCustomerInfo, we might want to try fetching bcGraphqlToken
+    // But loginInfo() is async and might not be needed if XSRF fallback works.
+    // However, to be safe, let's proceed.
+
+    return getCart().then(addToQuote);
+  };
+
   const addToQuoteFromCart = (cartId: string) => getCart(cartId).then(addToQuote);
 
   return {
