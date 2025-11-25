@@ -123,12 +123,19 @@ const useCartToQuote = ({ setOpenPage, cartQuoteEnabled }: MutationObserverProps
     addToQuote();
   }, [addLoading, addToQuote]);
 
+  const B2BToken = useAppSelector((state) => state.company.tokens.B2BToken);
+  const bcGraphqlToken = useAppSelector((state) => state.company.tokens.bcGraphqlToken);
+
   useEffect(() => {
-    window.b2bActions = {
-      ...window.b2bActions,
-      addToQuote: quoteCallBack,
-    };
-  }, [quoteCallBack]);
+    // Only expose the addToQuote function if both required tokens exist
+    // This prevents the storefront from calling it before the B2B app is ready
+    if (B2BToken && bcGraphqlToken) {
+      window.b2bActions = {
+        ...window.b2bActions,
+        addToQuote: quoteCallBack,
+      };
+    }
+  }, [quoteCallBack, B2BToken, bcGraphqlToken]);
 
   const {
     color = '',
