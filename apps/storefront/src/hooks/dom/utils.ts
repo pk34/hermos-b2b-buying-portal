@@ -181,9 +181,22 @@ const addProductsToDraftQuote = async (
   }
 };
 
+import { getCurrentCustomerInfo } from '@/utils/loginInfo';
+
 const addProductsFromCartToQuote = (setOpenPage: SetOpenPage, b3Lang: LangFormatFunction) => {
   const addToQuote = async (cartInfoWithOptions: GetCart) => {
     try {
+      const state = store.getState();
+      const { B2BToken } = state.company.tokens;
+
+      if (!B2BToken) {
+        const customerInfo = await getCurrentCustomerInfo();
+        if (!customerInfo) {
+          globalSnackbar.error(b3Lang('global.login.loginToContinue'));
+          return;
+        }
+      }
+
       if (!cartInfoWithOptions.data.site.cart) {
         globalSnackbar.error(b3Lang('pdp.cartToQuote.error.notFound'));
         return;
@@ -315,9 +328,9 @@ const addProductFromProductPageToQuote = (
           const message =
             currentProduct.type === 'oos'
               ? b3Lang('quoteDraft.productPageToQuote.outOfStock', {
-                  name: currentProduct?.name,
-                  qty: inventoryLevel,
-                })
+                name: currentProduct?.name,
+                qty: inventoryLevel,
+              })
               : b3Lang('quoteDraft.productPageToQuote.unavailable');
 
           globalSnackbar.error(message);
