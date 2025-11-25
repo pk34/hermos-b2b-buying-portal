@@ -250,7 +250,7 @@ const addProductsFromCartToQuote = (setOpenPage: SetOpenPage, b3Lang: LangFormat
 
   const addToQuoteFromCookie = async () => {
     const state = store.getState();
-    const { B2BToken, bcGraphqlToken } = state.company.tokens;
+    const { B2BToken } = state.company.tokens;
 
     if (!B2BToken) {
       const customerInfo = await getCurrentCustomerInfo();
