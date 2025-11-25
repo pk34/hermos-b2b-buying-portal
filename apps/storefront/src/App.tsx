@@ -34,6 +34,7 @@ import {
   rolePermissionSelector,
   setGlobalCommonState,
   setOpenPageReducer,
+  store,
   useAppDispatch,
   useAppSelector,
 } from './store';
@@ -173,8 +174,12 @@ export default function App() {
     loginAndRegister();
     const init = async () => {
       // bc graphql token
+      console.log('[B2B App Init] Starting initialization, bcGraphqlToken:', bcGraphqlToken ? 'EXISTS' : 'MISSING');
       if (!bcGraphqlToken) {
+        console.log('[B2B App Init] Calling loginInfo() to get bcGraphqlToken');
         await loginInfo();
+        const updatedToken = store.getState().company.tokens.bcGraphqlToken;
+        console.log('[B2B App Init] After loginInfo(), bcGraphqlToken:', updatedToken ? 'EXISTS' : 'MISSING');
       }
       setChannelStoreType();
 
@@ -194,10 +199,16 @@ export default function App() {
         isAgenting,
       };
 
+      console.log('[B2B App Init] customerId:', customerId ? 'EXISTS' : 'MISSING');
       if (!customerId) {
+        console.log('[B2B App Init] Calling getCurrentCustomerInfo() to get B2BToken');
         const info = await getCurrentCustomerInfo();
         if (info) {
           userInfo.role = info?.role;
+          const updatedB2BToken = store.getState().company.tokens.B2BToken;
+          console.log('[B2B App Init] After getCurrentCustomerInfo(), B2BToken:', updatedB2BToken ? 'EXISTS' : 'MISSING');
+        } else {
+          console.log('[B2B App Init] getCurrentCustomerInfo() returned no info');
         }
       }
 

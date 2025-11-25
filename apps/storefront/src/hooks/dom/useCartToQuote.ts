@@ -127,13 +127,18 @@ const useCartToQuote = ({ setOpenPage, cartQuoteEnabled }: MutationObserverProps
   const bcGraphqlToken = useAppSelector((state) => state.company.tokens.bcGraphqlToken);
 
   useEffect(() => {
+    console.log('[B2B Cart] useEffect running - B2BToken:', B2BToken ? 'EXISTS' : 'MISSING', 'bcGraphqlToken:', bcGraphqlToken ? 'EXISTS' : 'MISSING');
+
     // Only expose the addToQuote function if both required tokens exist
     // This prevents the storefront from calling it before the B2B app is ready
     if (B2BToken && bcGraphqlToken) {
+      console.log('[B2B Cart] Both tokens exist, exposing window.b2bActions.addToQuote');
       window.b2bActions = {
         ...window.b2bActions,
         addToQuote: quoteCallBack,
       };
+    } else {
+      console.log('[B2B Cart] Tokens not ready yet, window.b2bActions.addToQuote NOT exposed');
     }
   }, [quoteCallBack, B2BToken, bcGraphqlToken]);
 
