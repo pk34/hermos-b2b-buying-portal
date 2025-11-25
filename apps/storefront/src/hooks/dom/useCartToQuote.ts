@@ -20,6 +20,12 @@ import useStorageState from '../useStorageState';
 
 import { addProductsFromCartToQuote } from './utils';
 
+declare global {
+  interface Window {
+    b2bActions: any;
+  }
+}
+
 type DispatchProps = Dispatch<SetStateAction<OpenPageState>>;
 interface MutationObserverProps {
   setOpenPage: DispatchProps;
@@ -113,9 +119,16 @@ const useCartToQuote = ({ setOpenPage, cartQuoteEnabled }: MutationObserverProps
     const b2bLoading = document.querySelector('#b2b-div-loading');
     if (b3CartToQuote && !b2bLoading) {
       addLoading(b3CartToQuote);
-      addToQuote();
     }
+    addToQuote();
   }, [addLoading, addToQuote]);
+
+  useEffect(() => {
+    window.b2bActions = {
+      ...window.b2bActions,
+      addToQuote: quoteCallBack,
+    };
+  }, [quoteCallBack]);
 
   const {
     color = '',
