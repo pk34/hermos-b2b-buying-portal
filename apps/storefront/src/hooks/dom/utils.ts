@@ -250,20 +250,29 @@ const addProductsFromCartToQuote = (setOpenPage: SetOpenPage, b3Lang: LangFormat
 
   const addToQuoteFromCookie = async () => {
     const state = store.getState();
-    const { B2BToken, bcGraphqlToken } = state.company.tokens;
+    let { B2BToken, bcGraphqlToken } = state.company.tokens;
 
+    // Ensure B2BToken exists
     if (!B2BToken) {
       const customerInfo = await getCurrentCustomerInfo();
       if (!customerInfo) {
         globalSnackbar.error(b3Lang('global.login.loginToContinue'));
         return;
       }
+      // Refresh tokens after login
+      const updatedState = store.getState();
+      B2BToken = updatedState.company.tokens.B2BToken;
+      bcGraphqlToken = updatedState.company.tokens.bcGraphqlToken;
     }
 
-    // Ensure we have bcGraphqlToken if possible, though getCart might fallback to XSRF
-    // If we just logged in via getCurrentCustomerInfo, we might want to try fetching bcGraphqlToken
-    // But loginInfo() is async and might not be needed if XSRF fallback works.
-    // However, to be safe, let's proceed.
+    // Ensure bcGraphqlToken exists (required for graphqlBC calls to Storefront API)
+    if (!bcGraphqlToken) {
+      const { loginInfo } = await import('@/utils/loginInfo');
+      await loginInfo();
+      // Refresh token after loginInfo
+      const updatedState = store.getState();
+      bcGraphqlToken = updatedState.company.tokens.bcGraphqlToken;
+    }
 
     return getCart().then(addToQuote);
   };
