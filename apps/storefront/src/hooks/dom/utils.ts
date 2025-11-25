@@ -182,6 +182,7 @@ const addProductsToDraftQuote = async (
 };
 
 import { getCurrentCustomerInfo } from '@/utils/loginInfo';
+import { setB2BToken } from '@/store/slices/company';
 
 const addProductsFromCartToQuote = (setOpenPage: SetOpenPage, b3Lang: LangFormatFunction) => {
   const addToQuote = async (cartInfoWithOptions: GetCart) => {
@@ -218,9 +219,30 @@ const addProductsFromCartToQuote = (setOpenPage: SetOpenPage, b3Lang: LangFormat
       const newCartProductsList = cartProductsList.filter(
         (product: PhysicalItemProps) => !product.parentEntityId,
       );
-      await addProductsToDraftQuote(newCartProductsList, setOpenPage, b3Lang, entityId);
+
+      try {
+        await addProductsToDraftQuote(newCartProductsList, setOpenPage, b3Lang, entityId);
+      } catch (error: any) {
+        // Check if error is 401 (B2B token expired)
+        // The error object structure depends on how b3Fetch rejects.
+        // Based on b3Fetch, it rejects with message.
+        // But graphqlB2B might return a promise that resolves to empty if 40101 code is present.
+        // However, if it's a generic 401, it might throw.
+        // Let's assume if it fails, we try to refresh once.
+
+        // Force refresh token
+        store.dispatch(setB2BToken(''));
+        const customerInfo = await getCurrentCustomerInfo();
+        if (customerInfo) {
+          await addProductsToDraftQuote(newCartProductsList, setOpenPage, b3Lang, entityId);
+        } else {
+          throw error;
+        }
+      }
+
     } catch (e) {
       b2bLogger.error(e);
+      globalSnackbar.error(b3Lang('global.error.somethingWentWrong'));
     } finally {
       removeLoading();
     }

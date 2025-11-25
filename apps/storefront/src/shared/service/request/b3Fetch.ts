@@ -137,12 +137,13 @@ const B3Request = {
    */
   graphqlBC: function post<T = any>(data: GQLRequest): Promise<T> {
     const { bcGraphqlToken } = store.getState().company.tokens;
-    const config = bcGraphqlToken
+    const xsrfToken = Cookies.get('XSRF-TOKEN');
+    const config = xsrfToken
       ? {
-        Authorization: `Bearer  ${bcGraphqlToken}`,
+        'x-xsrf-token': xsrfToken,
       }
       : {
-        'x-xsrf-token': Cookies.get('XSRF-TOKEN') ?? '',
+        Authorization: `Bearer  ${bcGraphqlToken}`,
       };
     return graphqlRequest(RequestType.BCGraphql, data, config);
   },
