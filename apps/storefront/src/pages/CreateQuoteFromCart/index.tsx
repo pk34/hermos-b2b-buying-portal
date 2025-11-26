@@ -7,6 +7,7 @@ import { addProductsFromCartToQuote } from '@/hooks/dom/utils';
 import { getCart } from '@/shared/service/bc/graphql/cart';
 import { getCurrentCustomerInfo, loginInfo } from '@/utils/loginInfo';
 import { store } from '@/store';
+import { setB2BToken, setBcGraphQLToken } from '@/store/slices/company';
 
 import { PageProps } from '../PageProps';
 
@@ -17,6 +18,12 @@ export default function CreateQuoteFromCart({ setOpenPage }: PageProps) {
     useEffect(() => {
         const processQuote = async () => {
             try {
+                // CRITICAL: Force token refresh to ensure we have valid sessions
+                // This fixes the 401 error when redirecting from Storefront
+                console.log('[CreateQuoteFromCart] Force clearing tokens to trigger refresh');
+                store.dispatch(setB2BToken(''));
+                store.dispatch(setBcGraphQLToken(''));
+
                 // CRITICAL: Ensure both tokens are initialized before making any API calls
                 const state = store.getState();
                 let { B2BToken, bcGraphqlToken } = state.company.tokens;
