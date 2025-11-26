@@ -164,6 +164,13 @@ const useCartToQuote = ({ setOpenPage, cartQuoteEnabled }: MutationObserverProps
   const customTextColor = getStyles(cssValue).color || getContrastColor(color);
 
   useEffect(() => {
+    // IMPORTANT: Skip B2B cart-to-quote functionality on storefront cart page
+    // The storefront now handles quote creation via redirect to /create-quote-from-cart
+    if (!window.location.hash && window.location.pathname.includes('/cart')) {
+      console.log('[useCartToQuote] Skipping B2B cart-to-quote on storefront cart page');
+      return;
+    }
+
     const addToQuoteAll = document.querySelectorAll(config['dom.cartActions.container']);
     const CustomAddToQuoteAll = locationSelector ? document.querySelectorAll(locationSelector) : [];
 
