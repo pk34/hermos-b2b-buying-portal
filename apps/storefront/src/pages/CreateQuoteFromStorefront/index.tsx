@@ -4,8 +4,7 @@ import { v4 as uuid } from 'uuid';
 
 import { createQuote } from '@/shared/service/b2b';
 import { createOrUpdateExistingCart } from '@/utils/cartUtils';
-import { getActiveCurrencyInfo } from '@/utils/basicConfig';
-import { channelId, storeHash } from '@/utils';
+import { channelId, getActiveCurrencyInfo, storeHash } from '@/utils';
 import { getCurrentCustomerInfo, loginInfo } from '@/utils/loginInfo';
 import { store, useAppSelector } from '@/store';
 
