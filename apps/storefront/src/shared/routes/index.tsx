@@ -62,7 +62,6 @@ const routesMap: Record<string, LazyExoticComponent<(props: PageProps) => ReactE
   '/quoteDetail/:id': QuoteDetail,
   '/quotes/:id': QuoteDetail,
   '/company-hierarchy': CompanyHierarchy,
-  '/create-quote': CreateQuoteFromCart,
   '/create-quote-from-cart': CreateQuoteFromCart,
   '/create-quote': CreateQuoteFromStorefront,
 };
