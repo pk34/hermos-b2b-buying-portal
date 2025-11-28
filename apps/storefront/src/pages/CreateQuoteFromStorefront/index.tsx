@@ -23,6 +23,7 @@ interface StoredQuoteItem {
   variantId?: number;
   quantity: number;
   sku?: string;
+  imageUrl?: string;
   options?: StoredQuoteOption[];
 }
 
@@ -31,13 +32,14 @@ const ensureArray = (items: unknown): StoredQuoteItem[] => {
   return items
     .map((item) => {
       if (!item || typeof item !== 'object') return undefined;
-      const { productId, variantId, quantity, options, sku } = item as StoredQuoteItem;
+      const { productId, variantId, quantity, options, sku, imageUrl } = item as StoredQuoteItem;
       if (!productId || !quantity) return undefined;
       return {
         productId: Number(productId),
         variantId: variantId ? Number(variantId) : undefined,
         quantity: Number(quantity),
         sku: sku || '',
+        imageUrl: imageUrl || '',
         options: Array.isArray(options)
           ? options.map((option) => ({
             id: option.id,
@@ -134,6 +136,7 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
       variantId: item.variantId,
       quantity: item.quantity,
       sku: item.sku || '',
+      imageUrl: item.imageUrl || '',
       options: (item.options || []).map((option) => ({
         optionId: option.id,
         optionValue: option.value,
