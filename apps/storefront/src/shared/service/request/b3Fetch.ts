@@ -22,11 +22,11 @@ function request(path: string, config?: RequestInit, type?: RequestTypeKeys) {
   const getToken: HeadersInit =
     type === RequestType.BCRest
       ? {
-          'x-xsrf-token': Cookies.get('XSRF-TOKEN') ?? '',
-        }
+        'x-xsrf-token': Cookies.get('XSRF-TOKEN') ?? '',
+      }
       : {
-          authToken: B2BToken,
-        };
+        authToken: B2BToken,
+      };
 
   const {
     headers = {
@@ -114,7 +114,7 @@ const B3Request = {
           snackbar.error(message);
         }
 
-        return new Promise(() => {});
+        return new Promise(() => { });
       }
 
       if (extensions && extensions?.productValidationErrors) {
@@ -137,9 +137,13 @@ const B3Request = {
    */
   graphqlBC: function post<T = any>(data: GQLRequest): Promise<T> {
     const { bcGraphqlToken } = store.getState().company.tokens;
-    const config = {
-      Authorization: `Bearer  ${bcGraphqlToken}`,
-    };
+    const config = bcGraphqlToken
+      ? {
+        Authorization: `Bearer  ${bcGraphqlToken}`,
+      }
+      : {
+        'x-xsrf-token': Cookies.get('XSRF-TOKEN') ?? '',
+      };
     return graphqlRequest(RequestType.BCGraphql, data, config);
   },
   /**
@@ -150,12 +154,12 @@ const B3Request = {
 
     const config = B2BToken
       ? {
-          Authorization: `Bearer  ${B2BToken}`,
-        }
+        Authorization: `Bearer  ${B2BToken}`,
+      }
       : {
-          'Store-Hash': storeHash,
-          'BC-Channel-Id': channelId,
-        };
+        'Store-Hash': storeHash,
+        'BC-Channel-Id': channelId,
+      };
 
     return graphqlRequest(RequestType.BCProxyGraphql, data, config);
   },

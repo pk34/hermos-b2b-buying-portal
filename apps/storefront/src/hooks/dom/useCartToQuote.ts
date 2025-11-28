@@ -20,6 +20,12 @@ import useStorageState from '../useStorageState';
 
 import { addProductsFromCartToQuote } from './utils';
 
+declare global {
+  interface Window {
+    b2bActions: any;
+  }
+}
+
 type DispatchProps = Dispatch<SetStateAction<OpenPageState>>;
 interface MutationObserverProps {
   setOpenPage: DispatchProps;
@@ -113,9 +119,28 @@ const useCartToQuote = ({ setOpenPage, cartQuoteEnabled }: MutationObserverProps
     const b2bLoading = document.querySelector('#b2b-div-loading');
     if (b3CartToQuote && !b2bLoading) {
       addLoading(b3CartToQuote);
-      addToQuote();
     }
+    addToQuote();
   }, [addLoading, addToQuote]);
+
+  const B2BToken = useAppSelector((state) => state.company.tokens.B2BToken);
+  const bcGraphqlToken = useAppSelector((state) => state.company.tokens.bcGraphqlToken);
+
+  useEffect(() => {
+    console.log('[B2B Cart] useEffect running - B2BToken:', B2BToken ? 'EXISTS' : 'MISSING', 'bcGraphqlToken:', bcGraphqlToken ? 'EXISTS' : 'MISSING');
+
+    // Only expose the addToQuote function if both required tokens exist
+    // This prevents the storefront from calling it before the B2B app is ready
+    if (B2BToken && bcGraphqlToken) {
+      console.log('[B2B Cart] Both tokens exist, exposing window.b2bActions.addToQuote');
+      window.b2bActions = {
+        ...window.b2bActions,
+        addToQuote: quoteCallBack,
+      };
+    } else {
+      console.log('[B2B Cart] Tokens not ready yet, window.b2bActions.addToQuote NOT exposed');
+    }
+  }, [quoteCallBack, B2BToken, bcGraphqlToken]);
 
   const {
     color = '',
@@ -139,6 +164,13 @@ const useCartToQuote = ({ setOpenPage, cartQuoteEnabled }: MutationObserverProps
   const customTextColor = getStyles(cssValue).color || getContrastColor(color);
 
   useEffect(() => {
+    // IMPORTANT: Skip B2B cart-to-quote functionality on storefront cart page
+    // The storefront now handles quote creation via redirect to /create-quote-from-cart
+    if (!window.location.hash && window.location.pathname.includes('/cart')) {
+      console.log('[useCartToQuote] Skipping B2B cart-to-quote on storefront cart page');
+      return;
+    }
+
     const addToQuoteAll = document.querySelectorAll(config['dom.cartActions.container']);
     const CustomAddToQuoteAll = locationSelector ? document.querySelectorAll(locationSelector) : [];
 

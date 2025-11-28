@@ -1,5 +1,6 @@
 import { useContext, useRef, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
+import type { TextFieldProps } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -64,23 +65,25 @@ export default function B3Picker({
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={activeLang}>
         <DatePicker
           label={label}
-          slotProps={{
-            dialog: {
-              container: container.current ?? undefined,
-            },
-            textField: {
-              size,
-              onMouseDown: () => {
+          inputFormat={formatInput}
+          renderInput={(params: TextFieldProps) => (
+            <TextField
+              {...params}
+              size={size}
+              onMouseDown={() => {
                 openPickerClick();
-              },
-              variant,
-              sx: textFieldSx,
-              inputRef: pickerRef,
-            },
-          }}
+              }}
+              variant={variant}
+              sx={textFieldSx}
+              inputRef={pickerRef}
+            />
+          )}
           onChange={(val: Dayjs | null) => val && onHandleChange(val)}
           onClose={() => {
             setOpen(false);
+          }}
+          DialogProps={{
+            container: container.current ?? undefined,
           }}
           value={pickerValue}
           open={open}

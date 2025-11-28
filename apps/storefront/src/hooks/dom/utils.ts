@@ -181,9 +181,23 @@ const addProductsToDraftQuote = async (
   }
 };
 
+import { getCurrentCustomerInfo } from '@/utils/loginInfo';
+import { setB2BToken } from '@/store/slices/company';
+
 const addProductsFromCartToQuote = (setOpenPage: SetOpenPage, b3Lang: LangFormatFunction) => {
   const addToQuote = async (cartInfoWithOptions: GetCart) => {
     try {
+      const state = store.getState();
+      const { B2BToken } = state.company.tokens;
+
+      if (!B2BToken) {
+        const customerInfo = await getCurrentCustomerInfo();
+        if (!customerInfo) {
+          globalSnackbar.error(b3Lang('global.login.loginToContinue'));
+          return;
+        }
+      }
+
       if (!cartInfoWithOptions.data.site.cart) {
         globalSnackbar.error(b3Lang('pdp.cartToQuote.error.notFound'));
         return;
@@ -205,15 +219,64 @@ const addProductsFromCartToQuote = (setOpenPage: SetOpenPage, b3Lang: LangFormat
       const newCartProductsList = cartProductsList.filter(
         (product: PhysicalItemProps) => !product.parentEntityId,
       );
-      await addProductsToDraftQuote(newCartProductsList, setOpenPage, b3Lang, entityId);
+
+      try {
+        await addProductsToDraftQuote(newCartProductsList, setOpenPage, b3Lang, entityId);
+      } catch (error: any) {
+        // Check if error is 401 (B2B token expired)
+        // The error object structure depends on how b3Fetch rejects.
+        // Based on b3Fetch, it rejects with message.
+        // But graphqlB2B might return a promise that resolves to empty if 40101 code is present.
+        // However, if it's a generic 401, it might throw.
+        // Let's assume if it fails, we try to refresh once.
+
+        // Force refresh token
+        store.dispatch(setB2BToken(''));
+        const customerInfo = await getCurrentCustomerInfo();
+        if (customerInfo) {
+          await addProductsToDraftQuote(newCartProductsList, setOpenPage, b3Lang, entityId);
+        } else {
+          throw error;
+        }
+      }
+
     } catch (e) {
       b2bLogger.error(e);
+      globalSnackbar.error(b3Lang('global.error.somethingWentWrong'));
     } finally {
       removeLoading();
     }
   };
 
-  const addToQuoteFromCookie = () => getCart().then(addToQuote);
+  const addToQuoteFromCookie = async () => {
+    const state = store.getState();
+    let { B2BToken, bcGraphqlToken } = state.company.tokens;
+
+    // Ensure B2BToken exists
+    if (!B2BToken) {
+      const customerInfo = await getCurrentCustomerInfo();
+      if (!customerInfo) {
+        globalSnackbar.error(b3Lang('global.login.loginToContinue'));
+        return;
+      }
+      // Refresh tokens after login
+      const updatedState = store.getState();
+      B2BToken = updatedState.company.tokens.B2BToken;
+      bcGraphqlToken = updatedState.company.tokens.bcGraphqlToken;
+    }
+
+    // Ensure bcGraphqlToken exists (required for graphqlBC calls to Storefront API)
+    if (!bcGraphqlToken) {
+      const { loginInfo } = await import('@/utils/loginInfo');
+      await loginInfo();
+      // Refresh token after loginInfo
+      const updatedState = store.getState();
+      bcGraphqlToken = updatedState.company.tokens.bcGraphqlToken;
+    }
+
+    return getCart().then(addToQuote);
+  };
+
   const addToQuoteFromCart = (cartId: string) => getCart(cartId).then(addToQuote);
 
   return {
@@ -315,9 +378,9 @@ const addProductFromProductPageToQuote = (
           const message =
             currentProduct.type === 'oos'
               ? b3Lang('quoteDraft.productPageToQuote.outOfStock', {
-                  name: currentProduct?.name,
-                  qty: inventoryLevel,
-                })
+                name: currentProduct?.name,
+                qty: inventoryLevel,
+              })
               : b3Lang('quoteDraft.productPageToQuote.unavailable');
 
           globalSnackbar.error(message);

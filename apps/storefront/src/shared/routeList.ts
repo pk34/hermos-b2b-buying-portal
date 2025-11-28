@@ -238,6 +238,35 @@ export const routeList: (BuyerPortalRoute | RouteItem)[] = [
     isTokenLogin: false,
     idLang: 'global.navMenu.quoteDetail',
   },
+  {
+    path: '/quotes/:id',
+    name: 'Quote detail alias',
+    wsKey: 'quoteDetailAlias',
+    isMenuItem: false,
+    configKey: 'quoteDetail',
+    permissions: quoteDetailPermissions,
+    permissionCodes: quoteDetailPermissionCodes,
+    isTokenLogin: false,
+    idLang: 'global.navMenu.quoteDetail',
+  },
+  {
+    path: '/create-quote-from-cart',
+    name: 'Create Quote From Cart',
+    wsKey: 'createQuoteFromCart',
+    isMenuItem: false,
+    permissions: [0, 1, 2, 3, 99, 100], // Allow all user types
+    isTokenLogin: false, // Will handle auth internally
+    idLang: 'global.navMenu.createQuoteFromCart',
+  },
+  {
+    path: '/create-quote',
+    name: 'Create Quote From Storefront',
+    wsKey: 'createQuoteFromStorefront',
+    isMenuItem: false,
+    permissions: [0, 1, 2, 3, 99, 100],
+    isTokenLogin: false,
+    idLang: 'global.navMenu.createQuoteFromStorefront',
+  },
 ];
 
 export const getAllowedRoutesWithoutComponent = (globalState: GlobalState): BuyerPortalRoute[] => {
