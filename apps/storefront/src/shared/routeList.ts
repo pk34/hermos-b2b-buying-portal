@@ -239,6 +239,15 @@ export const routeList: (BuyerPortalRoute | RouteItem)[] = [
     idLang: 'global.navMenu.quoteDetail',
   },
   {
+    path: '/create-quote',
+    name: 'Create Quote',
+    wsKey: 'createQuote',
+    isMenuItem: false,
+    permissions: [0, 1, 2, 3, 99, 100], // Allow all user types
+    isTokenLogin: false, // Will handle auth internally
+    idLang: 'global.navMenu.createQuoteFromCart',
+  },
+  {
     path: '/create-quote-from-cart',
     name: 'Create Quote From Cart',
     wsKey: 'createQuoteFromCart',
