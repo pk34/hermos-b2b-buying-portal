@@ -24,6 +24,7 @@ interface StoredQuoteItem {
   quantity: number;
   sku?: string;
   imageUrl?: string;
+  productName?: string;
   options?: StoredQuoteOption[];
 }
 
@@ -32,7 +33,7 @@ const ensureArray = (items: unknown): StoredQuoteItem[] => {
   return items
     .map((item) => {
       if (!item || typeof item !== 'object') return undefined;
-      const { productId, variantId, quantity, options, sku, imageUrl } = item as StoredQuoteItem;
+      const { productId, variantId, quantity, options, sku, imageUrl, productName } = item as StoredQuoteItem;
       if (!productId || !quantity) return undefined;
       return {
         productId: Number(productId),
@@ -40,6 +41,7 @@ const ensureArray = (items: unknown): StoredQuoteItem[] => {
         quantity: Number(quantity),
         sku: sku || '',
         imageUrl: imageUrl || '',
+        productName: productName || '',
         options: Array.isArray(options)
           ? options.map((option) => ({
             id: option.id,
@@ -137,6 +139,7 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
       quantity: item.quantity,
       sku: item.sku || '',
       imageUrl: item.imageUrl || '',
+      productName: item.productName || '',
       options: (item.options || []).map((option) => ({
         optionId: option.id,
         optionValue: option.value,
