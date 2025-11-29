@@ -206,10 +206,11 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
       const payload = buildQuotePayload(items);
       const response = await createQuote(payload);
       const quoteId = response?.quoteCreate?.quote?.id;
+      const createdAt = response?.quoteCreate?.quote?.createdAt || Math.floor(Date.now() / 1000);
 
       if (quoteId) {
         clearCapturedItems();
-        window.location.replace(`#/quotes/${quoteId}`);
+        window.location.replace(`#/quoteDetail/${quoteId}?date=${createdAt}`);
         return;
       }
 
