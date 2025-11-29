@@ -75,7 +75,6 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
       sessionStorage.setItem(QUOTE_ITEMS_CACHE_KEY, JSON.stringify(parsedItems));
       return parsedItems;
     } catch (error) {
-      console.error('[CreateQuoteFromStorefront] Failed to parse quote items', error);
       sessionStorage.removeItem(QUOTE_ITEMS_KEY);
       sessionStorage.removeItem(QUOTE_ITEMS_CACHE_KEY);
       return [];
@@ -135,29 +134,41 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
     const decimalPlaces = currencyInfo?.decimal_places ?? 2;
     const toPriceString = (value: number) => value.toFixed(decimalPlaces);
 
-    const productList = items.map((item) => ({
-      productId: item.productId,
-      variantId: item.variantId,
-      quantity: item.quantity,
-      sku: item.sku || '',
-      imageUrl: item.imageUrl || '',
-      productName: item.productName || '',
-      options: (item.options || []).map((option) => ({
-        optionId: option.id,
-        optionValue: option.value,
-      })),
-      basePrice: toPriceString(item.basePrice || 0),
-      offeredPrice: toPriceString(item.basePrice || 0),
-      discount: toPriceString(0),
-      itemId: uuid(),
-    }));
+    const productList = items.map((item) => {
+      return {
+        productId: item.productId,
+        variantId: item.variantId,
+        quantity: item.quantity,
+        sku: item.sku || '',
+        imageUrl: item.imageUrl || '',
+        productName: item.productName || '',
+        options: (item.options || []).map((option) => ({
+          optionId: option.id,
+          optionValue: option.value,
+        })),
+        basePrice: toPriceString(item.basePrice || 0),
+        offeredPrice: toPriceString(item.basePrice || 0),
+        discount: toPriceString(0),
+        itemId: uuid(),
+      };
+    });
+
+    const calculateTotal = (itemsList: StoredQuoteItem[]) => {
+      return itemsList.reduce((acc, item) => {
+        const price = item.basePrice || 0;
+        return acc + price * item.quantity;
+      }, 0);
+    };
+
+    const total = calculateTotal(items);
+    const totalString = toPriceString(total);
 
     return {
       message: '',
       legalTerms: '',
-      totalAmount: toPriceString(0),
-      grandTotal: toPriceString(0),
-      subtotal: toPriceString(0),
+      totalAmount: totalString,
+      grandTotal: totalString,
+      subtotal: totalString,
       taxTotal: toPriceString(0),
       companyId: companyInfo.id || masqueradeCompanyId || '',
       storeHash,
