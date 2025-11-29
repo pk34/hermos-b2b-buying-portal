@@ -95,6 +95,7 @@ function PrintTemplate({ row }: PrintTemplateProps) {
           },
         }}
       >
+        {/* @ts-expect-error: react-resizable types are not compatible with React 18 */}
         <Resizable
           className="box"
           height={height}
