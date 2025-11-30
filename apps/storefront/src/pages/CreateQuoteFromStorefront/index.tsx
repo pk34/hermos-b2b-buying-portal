@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { createQuote } from '@/shared/service/b2b';
@@ -222,6 +222,7 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
       window.location.replace('/cart.php');
     } finally {
       setIsProcessing(false);
+      isProcessingRef.current = false;
     }
   };
 
@@ -230,10 +231,13 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
     setQuoteItems(capturedItems);
   }, [capturedItems]);
 
+  const isProcessingRef = useRef(false);
+
   useEffect(() => {
     const processQuote = async () => {
-      if (!quoteItems.length || isProcessing || awaitingLogin) return;
+      if (!quoteItems.length || isProcessing || isProcessingRef.current || awaitingLogin) return;
       setIsProcessing(true);
+      isProcessingRef.current = true;
 
       const isAuthenticated = await ensureAuthenticated();
 
@@ -241,6 +245,8 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
         setAwaitingLogin(true);
         sessionStorage.setItem(QUOTE_ITEMS_CACHE_KEY, JSON.stringify(quoteItems));
         setOpenPage({ isOpen: true, openUrl: '/login?loginFlag=loggedOutLogin&&closeIsLogout=1' });
+        isProcessingRef.current = false;
+        setIsProcessing(false);
         return;
       }
 
