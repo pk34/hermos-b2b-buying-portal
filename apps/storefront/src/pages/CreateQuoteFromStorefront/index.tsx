@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { createQuote } from '@/shared/service/b2b';
@@ -222,7 +222,7 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
       window.location.replace('/cart.php');
     } finally {
       setIsProcessing(false);
-      isProcessingRef.current = false;
+      sessionStorage.removeItem(PROCESSING_KEY);
     }
   };
 
@@ -231,13 +231,19 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
     setQuoteItems(capturedItems);
   }, [capturedItems]);
 
-  const isProcessingRef = useRef(false);
+  const PROCESSING_KEY = 'quote_creation_processing';
 
   useEffect(() => {
     const processQuote = async () => {
-      if (!quoteItems.length || isProcessing || isProcessingRef.current || awaitingLogin) return;
+      if (!quoteItems.length || isProcessing || awaitingLogin) return;
+
+      if (sessionStorage.getItem(PROCESSING_KEY)) {
+        console.log('[CreateQuoteFromStorefront] Quote creation already in progress (lock found)');
+        return;
+      }
+
       setIsProcessing(true);
-      isProcessingRef.current = true;
+      sessionStorage.setItem(PROCESSING_KEY, 'true');
 
       const isAuthenticated = await ensureAuthenticated();
 
@@ -245,7 +251,7 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
         setAwaitingLogin(true);
         sessionStorage.setItem(QUOTE_ITEMS_CACHE_KEY, JSON.stringify(quoteItems));
         setOpenPage({ isOpen: true, openUrl: '/login?loginFlag=loggedOutLogin&&closeIsLogout=1' });
-        isProcessingRef.current = false;
+        sessionStorage.removeItem(PROCESSING_KEY);
         setIsProcessing(false);
         return;
       }
@@ -254,7 +260,7 @@ export default function CreateQuoteFromStorefront({ setOpenPage }: PageProps) {
     };
 
     processQuote();
-  }, [quoteItems, isProcessing, awaitingLogin, setOpenPage]);
+  }, [quoteItems, awaitingLogin, setOpenPage]);
 
   useEffect(() => {
     if (!awaitingLogin) return;
